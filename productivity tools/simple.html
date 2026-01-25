@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productivity Tools - Simple Version</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; }
+        .container { display: flex; height: 100vh; }
+        .sidebar { width: 250px; background: white; border-right: 1px solid #ddd; padding: 20px; }
+        .main { flex: 1; padding: 20px; }
+        .nav-item { display: block; padding: 10px; margin: 5px 0; background: #f0f0f0; cursor: pointer; border-radius: 5px; }
+        .nav-item:hover { background: #e0e0e0; }
+        .nav-item.active { background: #4F46E5; color: white; }
+        .task { background: white; padding: 15px; margin: 10px 0; border-radius: 5px; cursor: pointer; }
+        .task:hover { background: #f9f9f9; }
+        .task.completed { opacity: 0.5; text-decoration: line-through; }
+        .notification { position: fixed; top: 20px; right: 20px; background: #4F46E5; color: white; padding: 15px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h2>Productivity Tools</h2>
+            <div class="nav-item active" onclick="handleNavClick(this, 'home')">🏠 Home</div>
+            <div class="nav-item" onclick="handleNavClick(this, 'focus')">🎯 Focus</div>
+            <div class="nav-item" onclick="handleNavClick(this, 'planning')">📅 Daily Planning</div>
+            <div class="nav-item" onclick="handleNavClick(this, 'tasks')">✅ Task List</div>
+        </div>
+        
+        <div class="main">
+            <h1>Daily Planner</h1>
+            <p>Today: March 20, 2024</p>
+            
+            <h3>Monday Tasks</h3>
+            <div class="task" onclick="toggleTask(this)">9:00 AM - Review Q1 goals #planning</div>
+            <div class="task" onclick="toggleTask(this)">10:00 AM - Team standup #product</div>
+            <div class="task" onclick="toggleTask(this)">2:00 PM - User research #product</div>
+            
+            <h3>Tuesday Tasks</h3>
+            <div class="task" onclick="toggleTask(this)">9:00 AM - Competitive analysis #growth</div>
+            <div class="task" onclick="toggleTask(this)">11:00 AM - Growth strategy #growth</div>
+        </div>
+    </div>
+
+    <script>
+        function handleNavClick(element, page) {
+            console.log('Navigation clicked:', page);
+            
+            // Remove active from all
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Add active to clicked
+            element.classList.add('active');
+            
+            // Show notification
+            showNotification('Navigated to: ' + page);
+        }
+        
+        function toggleTask(element) {
+            element.classList.toggle('completed');
+            const isCompleted = element.classList.contains('completed');
+            showNotification(isCompleted ? 'Task completed!' : 'Task reopened');
+        }
+        
+        function showNotification(message) {
+            // Remove existing notifications
+            document.querySelectorAll('.notification').forEach(n => n.remove());
+            
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+        
+        console.log('Simple app loaded successfully');
+    </script>
+</body>
+</html>

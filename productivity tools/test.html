@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productivity Tools - Test</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>Productivity Tools</h2>
+            </div>
+            <nav class="nav-menu">
+                <ul>
+                    <li><a href="#" class="nav-item active" data-page="home"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="#" class="nav-item" data-page="focus"><i class="fas fa-crosshairs"></i> Focus</a></li>
+                    <li><a href="#" class="nav-item" data-page="daily-planning"><i class="fas fa-calendar-day"></i> Daily planning</a></li>
+                    <li><a href="#" class="nav-item" data-page="daily-task-list"><i class="fas fa-list-check"></i> Daily task list</a></li>
+                    <li><a href="#" class="nav-item" data-page="daily-shutdown"><i class="fas fa-power-off"></i> Daily shutdown</a></li>
+                    <li><a href="#" class="nav-item" data-page="daily-highlights"><i class="fas fa-star"></i> Daily highlights</a></li>
+                    <li><a href="#" class="nav-item" data-page="weekly-planning"><i class="fas fa-calendar-week"></i> Weekly planning</a></li>
+                    <li><a href="#" class="nav-item" data-page="weekly-review"><i class="fas fa-calendar-check"></i> Weekly review</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1>Daily Planner</h1>
+                <div class="date-navigation">
+                    <button class="nav-btn" onclick="showAlert('Previous day')"><i class="fas fa-chevron-left"></i></button>
+                    <span class="current-date">Today, March 20, 2024</span>
+                    <button class="nav-btn" onclick="showAlert('Next day')"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+
+            <div class="days-container">
+                <!-- Monday -->
+                <div class="day-column">
+                    <div class="day-header">
+                        <h3>Monday</h3>
+                        <span class="day-date">March 18</span>
+                    </div>
+                    <div class="task-list" id="monday-tasks">
+                        <div class="task-item" onclick="toggleTask(this)">
+                            <div class="task-time">9:00 AM</div>
+                            <div class="task-content">
+                                <p class="task-description">Review Q1 goals and set OKRs for Q2 #planning</p>
+                                <div class="task-meta">
+                                    <span class="task-duration">1h</span>
+                                    <span class="task-project">Product</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="task-item" onclick="toggleTask(this)">
+                            <div class="task-time">10:00 AM</div>
+                            <div class="task-content">
+                                <p class="task-description">Team standup and project sync #product</p>
+                                <div class="task-meta">
+                                    <span class="task-duration">30m</span>
+                                    <span class="task-project">Product</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tuesday -->
+                <div class="day-column">
+                    <div class="day-header">
+                        <h3>Tuesday</h3>
+                        <span class="day-date">March 19</span>
+                    </div>
+                    <div class="task-list" id="tuesday-tasks">
+                        <div class="task-item" onclick="toggleTask(this)">
+                            <div class="task-time">9:00 AM</div>
+                            <div class="task-content">
+                                <p class="task-description">Competitive analysis and market research #growth</p>
+                                <div class="task-meta">
+                                    <span class="task-duration">2h</span>
+                                    <span class="task-project">Growth</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wednesday -->
+                <div class="day-column today">
+                    <div class="day-header">
+                        <h3>Wednesday</h3>
+                        <span class="day-date">March 20</span>
+                        <span class="today-badge">Today</span>
+                    </div>
+                    <div class="task-list" id="wednesday-tasks">
+                        <div class="task-item" onclick="toggleTask(this)">
+                            <div class="task-time">9:00 AM</div>
+                            <div class="task-content">
+                                <p class="task-description">Product roadmap planning and prioritization #product</p>
+                                <div class="task-meta">
+                                    <span class="task-duration">2h</span>
+                                    <span class="task-project">Product</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Right Sidebar - Calendar/Time View -->
+        <aside class="calendar-sidebar">
+            <div class="calendar-header">
+                <h3>Today's Schedule</h3>
+                <span class="current-time">9:00 AM</span>
+            </div>
+            <div class="time-slots">
+                <div class="time-slot">
+                    <div class="slot-time">7:00 AM</div>
+                    <div class="slot-content">
+                        <div class="scheduled-item morning-routine">
+                            <i class="fas fa-sun"></i>
+                            <span>Morning routine</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="time-slot current">
+                    <div class="slot-time">9:00 AM</div>
+                    <div class="slot-content">
+                        <div class="scheduled-item">
+                            <i class="fas fa-users"></i>
+                            <span>Product roadmap planning</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        // Simple test functions
+        function showAlert(message) {
+            alert('Button clicked: ' + message);
+        }
+
+        function toggleTask(element) {
+            element.classList.toggle('completed');
+            console.log('Task toggled:', element);
+        }
+
+        // Navigation click handlers
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded');
+            
+            // Navigation items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Navigation clicked:', this.dataset.page);
+                    
+                    // Remove active class from all
+                    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                    // Add active class to clicked
+                    this.classList.add('active');
+                    
+                    // Show message
+                    const pageName = this.dataset.page.replace('-', ' ').toUpperCase();
+                    alert('Navigating to: ' + pageName);
+                });
+            });
+
+            // Mobile navigation
+            document.querySelectorAll('.mobile-nav-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Mobile nav clicked');
+                    
+                    // Remove active class from all
+                    document.querySelectorAll('.mobile-nav-item').forEach(nav => nav.classList.remove('active'));
+                    // Add active class to clicked
+                    this.classList.add('active');
+                });
+            });
+
+            console.log('Event listeners setup complete');
+        });
+    </script>
+</body>
+</html>
