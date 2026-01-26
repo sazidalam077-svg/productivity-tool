@@ -135,7 +135,7 @@ class ProductivityApp {
                 this.showWeeklyReviewView();
                 break;
             default:
-                this.showDailyPlanningView();
+                this.showHomeView();
         }
     }
 
@@ -240,8 +240,58 @@ class ProductivityApp {
     }
 
     showDailyPlanningView() {
-        // This is the default view that's already loaded
-        location.reload();
+        const mainContent = document.querySelector('.main-content');
+        mainContent.innerHTML = `
+            <div class="content-header">
+                <h1>Daily Planning</h1>
+                <div class="date-navigation">
+                    <button class="nav-btn"><i class="fas fa-chevron-left"></i></button>
+                    <span class="current-date">Loading...</span>
+                    <button class="nav-btn"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+            
+            <div class="planning-container" style="max-width: 900px; margin: 0 auto;">
+                <div class="planning-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-bottom: 24px;">
+                    <h3>Today's Focus</h3>
+                    <p style="color: var(--text-secondary); margin-top: 8px;">What is the single most important thing you need to accomplish today?</p>
+                    <textarea id="focus-input" style="width: 100%; height: 80px; border: 1px solid var(--border-color); border-radius: var(--radius); padding: 12px; margin-top: 16px; font-family: inherit; font-size: 1rem;" placeholder="e.g., Finalize Q2 product roadmap presentation"></textarea>
+                </div>
+                
+                <div class="planning-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-bottom: 24px;">
+                    <h3>Schedule Overview</h3>
+                    <div id="schedule-list" style="margin-top: 16px;">
+                        <div class="schedule-item" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed var(--border-color); margin-bottom: 10px;">
+                            <input type="time" style="border: 1px solid var(--border-color); border-radius: 4px; padding: 4px 8px;" value="09:00">
+                            <input type="text" style="border: 1px solid var(--border-color); border-radius: 4px; padding: 4px 8px; flex: 1; margin: 0 10px;" placeholder="Activity description">
+                            <button onclick="removeScheduleItem(this)" style="background: #EF4444; color: white; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer;">Remove</button>
+                        </div>
+                    </div>
+                    <button onclick="addScheduleItem()" style="background: var(--primary-color); color: white; border: none; border-radius: var(--radius); padding: 8px 16px; cursor: pointer; font-weight: 500; margin-top: 10px;">
+                        <i class="fas fa-plus"></i> Add Schedule Item
+                    </button>
+                </div>
+                
+                <div class="planning-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px;">
+                    <h3>Tasks for Today</h3>
+                    <div id="tasks-list" style="margin-top: 16px;">
+                        <div class="task-item" style="display: flex; align-items: center; margin-bottom: 10px; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius);">
+                            <input type="checkbox" style="margin-right: 12px;">
+                            <input type="text" style="flex: 1; border: none; outline: none; padding: 4px; font-size: 1rem;" placeholder="Enter a task...">
+                        </div>
+                    </div>
+                    <button onclick="addTaskItem()" style="background: var(--primary-color); color: white; border: none; border-radius: var(--radius); padding: 8px 16px; cursor: pointer; font-weight: 500; margin-top: 10px;">
+                        <i class="fas fa-plus"></i> Add Task
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        // Re-attach event listeners
+        setTimeout(() => {
+            this.attachEventListeners();
+            updateDateDisplay();
+        }, 10);
     }
 
     showDailyTaskListView() {
