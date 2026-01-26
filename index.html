@@ -501,6 +501,183 @@
                     return;
                 }
                 
+                // Add Schedule Item button
+                if (e.target.closest('button') && e.target.textContent.includes('Add Schedule Item')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const scheduleList = document.querySelector('.schedule-list');
+                    if (scheduleList) {
+                        const newItem = document.createElement('div');
+                        newItem.className = 'schedule-item';
+                        newItem.innerHTML = `
+                            <div class="schedule-time">
+                                <input type="time" value="09:00">
+                            </div>
+                            <div class="schedule-content">
+                                <input type="text" placeholder="Enter task..." class="schedule-input">
+                                <button class="remove-btn"><i class="fas fa-times"></i></button>
+                            </div>
+                        `;
+                        scheduleList.appendChild(newItem);
+                        console.log('Schedule item added');
+                    }
+                    return;
+                }
+                
+                // Add Task button
+                if (e.target.closest('button') && e.target.textContent.includes('Add Task')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const taskList = document.querySelector('.task-list');
+                    if (taskList) {
+                        const newItem = document.createElement('div');
+                        newItem.className = 'task-item';
+                        newItem.innerHTML = `
+                            <div class="task-time">
+                                <input type="time" value="10:00">
+                            </div>
+                            <div class="task-content">
+                                <input type="text" placeholder="Enter task..." class="task-input">
+                                <button class="remove-btn"><i class="fas fa-times"></i></button>
+                            </div>
+                        `;
+                        taskList.appendChild(newItem);
+                        console.log('Task item added');
+                    }
+                    return;
+                }
+                
+                // Add Win button
+                if (e.target.closest('button') && e.target.textContent.includes('Add Win')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const winList = document.querySelector('.wins-list');
+                    if (winList) {
+                        const newItem = document.createElement('div');
+                        newItem.className = 'win-item';
+                        newItem.innerHTML = `
+                            <input type="text" placeholder="What was your win?" class="win-input">
+                            <button class="remove-btn"><i class="fas fa-times"></i></button>
+                        `;
+                        winList.appendChild(newItem);
+                        console.log('Win item added');
+                    }
+                    return;
+                }
+                
+                // Add Other buttons (for highlights)
+                if (e.target.closest('button') && e.target.textContent.includes('Add Other')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const otherList = document.querySelector('.other-list');
+                    if (otherList) {
+                        const newItem = document.createElement('div');
+                        newItem.className = 'other-item';
+                        newItem.innerHTML = `
+                            <input type="text" placeholder="What else happened?" class="other-input">
+                            <button class="remove-btn"><i class="fas fa-times"></i></button>
+                        `;
+                        otherList.appendChild(newItem);
+                        console.log('Other item added');
+                    }
+                    return;
+                }
+                
+                // Save Weekly Plan button
+                if (e.target.closest('button') && e.target.textContent.includes('Save Weekly Plan')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const planData = {
+                        date: new Date().toISOString(),
+                        goals: Array.from(document.querySelectorAll('.goal-input')).map(input => input.value),
+                        tasks: Array.from(document.querySelectorAll('.task-input')).map(input => input.value)
+                    };
+                    
+                    localStorage.setItem('weekly-plan', JSON.stringify(planData));
+                    
+                    const successMsg = document.createElement('div');
+                    successMsg.textContent = 'Weekly plan saved successfully! 🎯';
+                    successMsg.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: #10B981;
+                        color: white;
+                        padding: 12px 20px;
+                        border-radius: 8px;
+                        z-index: 1000;
+                        animation: slideIn 0.3s ease;
+                    `;
+                    document.body.appendChild(successMsg);
+                    
+                    setTimeout(() => {
+                        successMsg.remove();
+                    }, 3000);
+                    
+                    console.log('Weekly plan saved:', planData);
+                    return;
+                }
+                
+                // Save Weekly Review button
+                if (e.target.closest('button') && e.target.textContent.includes('Save Weekly Review')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const reviewData = {
+                        date: new Date().toISOString(),
+                        accomplishments: Array.from(document.querySelectorAll('.accomplishment-input')).map(input => input.value),
+                        challenges: Array.from(document.querySelectorAll('.challenge-input')).map(input => input.value),
+                        learnings: Array.from(document.querySelectorAll('.learning-input')).map(input => input.value)
+                    };
+                    
+                    localStorage.setItem('weekly-review', JSON.stringify(reviewData));
+                    
+                    const successMsg = document.createElement('div');
+                    successMsg.textContent = 'Weekly review saved successfully! 📊';
+                    successMsg.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: #3B82F6;
+                        color: white;
+                        padding: 12px 20px;
+                        border-radius: 8px;
+                        z-index: 1000;
+                        animation: slideIn 0.3s ease;
+                    `;
+                    document.body.appendChild(successMsg);
+                    
+                    setTimeout(() => {
+                        successMsg.remove();
+                    }, 3000);
+                    
+                    console.log('Weekly review saved:', reviewData);
+                    return;
+                }
+                
+                // Remove buttons
+                if (e.target.closest('button') && e.target.textContent.includes('Remove')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.target.parentElement.remove();
+                    console.log('Item removed');
+                    return;
+                }
+                
+                // Remove buttons with icon
+                if (e.target.closest('.remove-btn')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.target.closest('.remove-btn').parentElement.remove();
+                    console.log('Item removed');
+                    return;
+                }
+                
                 // Duration change functionality
                 if (e.target.closest('select') && e.target.closest('.focus-settings')) {
                     e.preventDefault();
