@@ -994,10 +994,11 @@
                     return;
                 }
                 
-                // Focus mode functionality - PLAY AND PAUSE BUTTONS
+                // Focus mode functionality - SIMPLE TEST
                 if (e.target.closest('.focus-play-btn')) {
                     e.preventDefault();
                     e.stopPropagation();
+                    alert('Play button clicked!');
                     console.log('Play button clicked');
                     startFocusTimer();
                     return;
@@ -1006,6 +1007,7 @@
                 if (e.target.closest('.focus-pause-btn')) {
                     e.preventDefault();
                     e.stopPropagation();
+                    alert('Pause button clicked!');
                     console.log('Pause button clicked');
                     pauseFocusTimer();
                     return;
