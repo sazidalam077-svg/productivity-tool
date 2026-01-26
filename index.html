@@ -333,6 +333,55 @@
                         }
                     });
                 });
+                
+                // Add right-click to clear and restore functionality
+                items.forEach((item, index) => {
+                    item.addEventListener('contextmenu', function(e) {
+                        e.preventDefault();
+                        
+                        if (confirm('Clear this calendar item?')) {
+                            this.innerHTML = `
+                                <div class="scheduled-item" style="cursor: pointer; transition: all 0.3s ease; background: linear-gradient(135deg, #EBF8FF, #DBEAFE);">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Click to add item</span>
+                                    <i class="fas fa-check" style="margin-left: auto; opacity: 0; transition: opacity 0.3s ease;"></i>
+                                </div>
+                            `;
+                            
+                            // Re-attach event listeners
+                            setTimeout(() => {
+                                makeCalendarWork();
+                                addCalendarItemFunctionality();
+                            }, 100);
+                        }
+                    });
+                });
+            }
+            
+            // Add functionality to create new calendar items
+            function addCalendarItemFunctionality() {
+                const emptySlots = document.querySelectorAll('.scheduled-item:has(.fa-plus)');
+                
+                emptySlots.forEach(slot => {
+                    slot.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        
+                        const newItem = prompt('Enter calendar item:');
+                        if (newItem) {
+                            this.innerHTML = `
+                                <i class="fas fa-calendar"></i>
+                                <span>${newItem}</span>
+                                <i class="fas fa-check" style="margin-left: auto; opacity: 0; transition: opacity 0.3s ease;"></i>
+                            `;
+                            
+                            // Re-attach event listeners
+                            setTimeout(() => {
+                                makeCalendarWork();
+                                addCalendarItemFunctionality();
+                            }, 100);
+                        }
+                    });
+                });
             }
             
             // Update calendar content based on day
@@ -382,6 +431,7 @@
                     setTimeout(() => {
                         updateAllDateDisplays(currentDayOffset);
                         makeCalendarWork();
+                        addCalendarItemFunctionality();
                     }, 100);
                 }
             });
@@ -414,11 +464,13 @@
             // Initialize everything
             updateAllDateDisplays(0);
             makeCalendarWork();
+            addCalendarItemFunctionality();
             
             // Keep updating to ensure everything works
             setInterval(() => {
                 updateAllDateDisplays(currentDayOffset);
                 makeCalendarWork();
+                addCalendarItemFunctionality();
             }, 1000);
         });
     </script>
