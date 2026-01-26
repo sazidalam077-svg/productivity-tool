@@ -459,6 +459,48 @@
                 if (e.target.closest('.save-btn')) {
                     console.log('Save button clicked');
                 }
+                
+                // Daily Planning - Add Schedule Item
+                if (e.target.closest('button') && e.target.textContent.includes('Add Schedule Item')) {
+                    e.preventDefault();
+                    const scheduleList = document.getElementById('schedule-list');
+                    if (scheduleList) {
+                        const newItem = document.createElement('div');
+                        newItem.className = 'schedule-item';
+                        newItem.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed var(--border-color); margin-bottom: 10px;';
+                        newItem.innerHTML = `
+                            <input type="time" style="border: 1px solid var(--border-color); border-radius: 4px; padding: 4px 8px;" value="09:00">
+                            <input type="text" style="border: 1px solid var(--border-color); border-radius: 4px; padding: 4px 8px; flex: 1; margin: 0 10px;" placeholder="Activity description">
+                            <button onclick="this.parentElement.remove()" style="background: #EF4444; color: white; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer;">Remove</button>
+                        `;
+                        scheduleList.appendChild(newItem);
+                        console.log('Schedule item added');
+                    }
+                }
+                
+                // Daily Planning - Add Task
+                if (e.target.closest('button') && e.target.textContent.includes('Add Task')) {
+                    e.preventDefault();
+                    const tasksList = document.getElementById('tasks-list');
+                    if (tasksList) {
+                        const newItem = document.createElement('div');
+                        newItem.className = 'task-item';
+                        newItem.style.cssText = 'display: flex; align-items: center; margin-bottom: 10px; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius);';
+                        newItem.innerHTML = `
+                            <input type="checkbox" style="margin-right: 12px;">
+                            <input type="text" style="flex: 1; border: none; outline: none; padding: 4px; font-size: 1rem;" placeholder="Enter a task...">
+                        `;
+                        tasksList.appendChild(newItem);
+                        console.log('Task added');
+                    }
+                }
+                
+                // Remove buttons
+                if (e.target.closest('button') && e.target.textContent.includes('Remove')) {
+                    e.preventDefault();
+                    e.target.parentElement.remove();
+                    console.log('Item removed');
+                }
             });
             
             // Initialize everything
