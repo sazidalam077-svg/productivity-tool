@@ -680,51 +680,6 @@ class ProductivityApp {
             </div>
             
             <div class="highlights-container" style="max-width: 800px; margin: 0 auto;">
-                <div class="highlights-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-bottom: 24px;">
-                    <h3>🌟 Today's Wins</h3>
-                    <div id="wins-list" style="margin-top: 16px;">
-                        <div class="highlight-item" style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 12px;">
-                            <span style="font-size: 1.5rem;">🏆</span>
-                            <input type="text" style="flex: 1; border: none; outline: none; padding: 4px; font-size: 1rem;" placeholder="What was your biggest win today?">
-                        </div>
-                    </div>
-                    <button onclick="addHighlight('win')" style="background: var(--primary-color); color: white; border: none; border-radius: var(--radius); padding: 8px 16px; cursor: pointer; font-weight: 500; margin-top: 10px;">
-                        <i class="fas fa-plus"></i> Add Win
-                    </button>
-                </div>
-                
-                <div class="highlights-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-bottom: 24px;">
-                    <h3>💡 Key Insights</h3>
-                    <div id="insights-list" style="margin-top: 16px;">
-                        <div class="highlight-item" style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 12px;">
-                            <span style="font-size: 1.5rem;">💡</span>
-                            <input type="text" style="flex: 1; border: none; outline: none; padding: 4px; font-size: 1rem;" placeholder="What insight did you gain today?">
-                        </div>
-                    </div>
-                    <button onclick="addHighlight('insight')" style="background: var(--primary-color); color: white; border: none; border-radius: var(--radius); padding: 8px 16px; cursor: pointer; font-weight: 500; margin-top: 10px;">
-                        <i class="fas fa-plus"></i> Add Insight
-                    </button>
-                </div>
-                
-                <div class="highlights-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-bottom: 24px;">
-                    <h3>🙏 Gratitude Moments</h3>
-                    <div id="gratitude-list" style="margin-top: 16px;">
-                        <div class="highlight-item" style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 12px;">
-                            <span style="font-size: 1.5rem;">🙏</span>
-                            <input type="text" style="flex: 1; border: none; outline: none; padding: 4px; font-size: 1rem;" placeholder="What are you grateful for today?">
-                        </div>
-                    </div>
-                    <button onclick="addHighlight('gratitude')" style="background: var(--primary-color); color: white; border: none; border-radius: var(--radius); padding: 8px 16px; cursor: pointer; font-weight: 500; margin-top: 10px;">
-                        <i class="fas fa-plus"></i> Add Gratitude
-                    </button>
-                </div>
-                
-                <div class="highlights-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px;">
-                    <h3>📊 Daily Summary</h3>
-                    <div style="margin-top: 16px; text-align: center;">
-                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px;">
-                            <div style="text-align: center;">
-                                <div style="font-size: 2rem; font-weight: 700; color: var(--primary-color);" id="wins-count">0</div>
                                 <div style="font-size: 0.875rem; color: var(--text-secondary);">Wins</div>
                             </div>
                             <div style="text-align: center;">
