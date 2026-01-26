@@ -947,34 +947,166 @@
                 const weeklyReview = localStorage.getItem('weekly-review');
                 const dailyShutdown = localStorage.getItem('daily-shutdown');
                 
+                // Format highlights data
+                let highlightsHtml = '';
+                if (highlights) {
+                    const data = JSON.parse(highlights);
+                    const date = new Date(data.date).toLocaleDateString();
+                    highlightsHtml = `
+                        <div style="margin-bottom: 16px;">
+                            <p style="color: #6B7280; font-size: 0.9rem; margin: 0 0 8px 0;">📅 ${date}</p>
+                            ${data.wins.length > 0 ? `
+                                <div style="margin-bottom: 12px;">
+                                    <strong style="color: #059669;">🏆 Wins:</strong>
+                                    <ul style="margin: 4px 0; padding-left: 20px;">
+                                        ${data.wins.map(win => `<li style="margin-bottom: 4px;">${win}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                            ${data.insights.length > 0 ? `
+                                <div style="margin-bottom: 12px;">
+                                    <strong style="color: #059669;">💡 Insights:</strong>
+                                    <ul style="margin: 4px 0; padding-left: 20px;">
+                                        ${data.insights.map(insight => `<li style="margin-bottom: 4px;">${insight}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                            ${data.gratitude.length > 0 ? `
+                                <div style="margin-bottom: 12px;">
+                                    <strong style="color: #059669;">🙏 Gratitude:</strong>
+                                    <ul style="margin: 4px 0; padding-left: 20px;">
+                                        ${data.gratitude.map(item => `<li style="margin-bottom: 4px;">${item}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                } else {
+                    highlightsHtml = '<p style="color: #9CA3AF; font-style: italic;">No highlights saved</p>';
+                }
+                
+                // Format weekly plan data
+                let weeklyPlanHtml = '';
+                if (weeklyPlan) {
+                    const data = JSON.parse(weeklyPlan);
+                    const date = new Date(data.date).toLocaleDateString();
+                    weeklyPlanHtml = `
+                        <div style="margin-bottom: 16px;">
+                            <p style="color: #6B7280; font-size: 0.9rem; margin: 0 0 8px 0;">� ${date}</p>
+                            ${data.goals.length > 0 ? `
+                                <ul style="margin: 4px 0; padding-left: 20px;">
+                                    ${data.goals.map(goal => `
+                                        <li style="margin-bottom: 8px;">
+                                            <span style="${goal.completed ? 'text-decoration: line-through; color: #6B7280;' : ''}">${goal.text}</span>
+                                            <span style="background: ${goal.priority === 'High' ? '#EF4444' : goal.priority === 'Medium' ? '#F59E0B' : '#10B981'}; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; margin-left: 8px;">${goal.priority}</span>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            ` : ''}
+                        </div>
+                    `;
+                } else {
+                    weeklyPlanHtml = '<p style="color: #9CA3AF; font-style: italic;">No weekly plan saved</p>';
+                }
+                
+                // Format weekly review data
+                let weeklyReviewHtml = '';
+                if (weeklyReview) {
+                    const data = JSON.parse(weeklyReview);
+                    const date = new Date(data.date).toLocaleDateString();
+                    weeklyReviewHtml = `
+                        <div style="margin-bottom: 16px;">
+                            <p style="color: #6B7280; font-size: 0.9rem; margin: 0 0 8px 0;">📅 ${date}</p>
+                            ${data.achievements.length > 0 ? `
+                                <div style="margin-bottom: 12px;">
+                                    <strong style="color: #7C3AED;">🏆 Achievements:</strong>
+                                    <ul style="margin: 4px 0; padding-left: 20px;">
+                                        ${data.achievements.map(achievement => `<li style="margin-bottom: 4px;">${achievement}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                            ${data.lessons.length > 0 ? `
+                                <div style="margin-bottom: 12px;">
+                                    <strong style="color: #7C3AED;">💡 Lessons:</strong>
+                                    <ul style="margin: 4px 0; padding-left: 20px;">
+                                        ${data.lessons.map(lesson => `<li style="margin-bottom: 4px;">${lesson}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                            ${data.improvements.length > 0 ? `
+                                <div style="margin-bottom: 12px;">
+                                    <strong style="color: #7C3AED;">🎯 Improvements:</strong>
+                                    <ul style="margin: 4px 0; padding-left: 20px;">
+                                        ${data.improvements.map(improvement => `<li style="margin-bottom: 4px;">${improvement}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                } else {
+                    weeklyReviewHtml = '<p style="color: #9CA3AF; font-style: italic;">No weekly review saved</p>';
+                }
+                
+                // Format daily shutdown data
+                let dailyShutdownHtml = '';
+                if (dailyShutdown) {
+                    const data = JSON.parse(dailyShutdown);
+                    const date = new Date(data.date).toLocaleDateString();
+                    dailyShutdownHtml = `
+                        <div style="margin-bottom: 16px;">
+                            <p style="color: #6B7280; font-size: 0.9rem; margin: 0 0 8px 0;">📅 ${date}</p>
+                            ${data.accomplishments ? `
+                                <div style="margin-bottom: 12px;">
+                                    <strong style="color: #D97706;">✅ Accomplishments:</strong>
+                                    <p style="margin: 4px 0; padding: 8px; background: #FEF3C7; border-radius: 4px; white-space: pre-wrap;">${data.accomplishments}</p>
+                                </div>
+                            ` : ''}
+                            ${data.lessons ? `
+                                <div style="margin-bottom: 12px;">
+                                    <strong style="color: #D97706;">💭 Lessons:</strong>
+                                    <p style="margin: 4px 0; padding: 8px; background: #FEF3C7; border-radius: 4px; white-space: pre-wrap;">${data.lessons}</p>
+                                </div>
+                            ` : ''}
+                            ${data.priorities ? `
+                                <div style="margin-bottom: 12px;">
+                                    <strong style="color: #D97706;">🎯 Priorities:</strong>
+                                    <p style="margin: 4px 0; padding: 8px; background: #FEF3C7; border-radius: 4px; white-space: pre-wrap;">${data.priorities}</p>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                } else {
+                    dailyShutdownHtml = '<p style="color: #9CA3AF; font-style: italic;">No daily shutdown saved</p>';
+                }
+                
                 let dataHtml = `
-                    <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 24px; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); z-index: 10000; max-width: 600px; max-height: 80vh; overflow-y: auto;">
-                        <h2 style="margin-top: 0; color: #1F2937;">📊 Saved Data</h2>
-                        <button onclick="this.parentElement.remove()" style="position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 24px; cursor: pointer;">×</button>
+                    <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 24px; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); z-index: 10000; max-width: 700px; max-height: 80vh; overflow-y: auto;">
+                        <h2 style="margin-top: 0; color: #1F2937; margin-bottom: 20px;">📊 Your Saved Data</h2>
+                        <button onclick="this.parentElement.remove()" style="position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 24px; cursor: pointer; color: #6B7280;">×</button>
                         
-                        <div style="margin-bottom: 20px;">
-                            <h3 style="color: #059669;">🌟 Daily Highlights</h3>
-                            <pre style="background: #F3F4F6; padding: 12px; border-radius: 6px; white-space: pre-wrap;">${highlights ? JSON.stringify(JSON.parse(highlights), null, 2) : 'No data saved'}</pre>
+                        <div style="margin-bottom: 24px; padding: 16px; background: #F0FDF4; border-radius: 8px; border-left: 4px solid #10B981;">
+                            <h3 style="color: #059669; margin: 0 0 12px 0;">� Daily Highlights</h3>
+                            ${highlightsHtml}
                         </div>
                         
-                        <div style="margin-bottom: 20px;">
-                            <h3 style="color: #2563EB;">📋 Weekly Plan</h3>
-                            <pre style="background: #F3F4F6; padding: 12px; border-radius: 6px; white-space: pre-wrap;">${weeklyPlan ? JSON.stringify(JSON.parse(weeklyPlan), null, 2) : 'No data saved'}</pre>
+                        <div style="margin-bottom: 24px; padding: 16px; background: #EFF6FF; border-radius: 8px; border-left: 4px solid #3B82F6;">
+                            <h3 style="color: #2563EB; margin: 0 0 12px 0;">📋 Weekly Plan</h3>
+                            ${weeklyPlanHtml}
                         </div>
                         
-                        <div style="margin-bottom: 20px;">
-                            <h3 style="color: #7C3AED;">📊 Weekly Review</h3>
-                            <pre style="background: #F3F4F6; padding: 12px; border-radius: 6px; white-space: pre-wrap;">${weeklyReview ? JSON.stringify(JSON.parse(weeklyReview), null, 2) : 'No data saved'}</pre>
+                        <div style="margin-bottom: 24px; padding: 16px; background: #F5F3FF; border-radius: 8px; border-left: 4px solid #8B5CF6;">
+                            <h3 style="color: #7C3AED; margin: 0 0 12px 0;">📊 Weekly Review</h3>
+                            ${weeklyReviewHtml}
                         </div>
                         
-                        <div style="margin-bottom: 20px;">
-                            <h3 style="color: #D97706;">🎯 Daily Shutdown</h3>
-                            <pre style="background: #F3F4F6; padding: 12px; border-radius: 6px; white-space: pre-wrap;">${dailyShutdown ? JSON.stringify(JSON.parse(dailyShutdown), null, 2) : 'No data saved'}</pre>
+                        <div style="margin-bottom: 24px; padding: 16px; background: #FEF3C7; border-radius: 8px; border-left: 4px solid #F59E0B;">
+                            <h3 style="color: #D97706; margin: 0 0 12px 0;">🎯 Daily Shutdown</h3>
+                            ${dailyShutdownHtml}
                         </div>
                         
-                        <div style="margin-top: 20px;">
+                        <div style="margin-top: 20px; text-align: right;">
                             <button onclick="clearAllData()" style="background: #EF4444; color: white; border: none; border-radius: 6px; padding: 8px 16px; cursor: pointer; margin-right: 8px;">Clear All Data</button>
-                            <button onclick="this.parentElement.remove()" style="background: #6B7280; color: white; border: none; border-radius: 6px; padding: 8px 16px; cursor: pointer;">Close</button>
+                            <button onclick="this.parentElement.parentElement.remove()" style="background: #6B7280; color: white; border: none; border-radius: 6px; padding: 8px 16px; cursor: pointer;">Close</button>
                         </div>
                     </div>
                 `;
