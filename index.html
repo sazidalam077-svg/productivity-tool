@@ -343,6 +343,106 @@
                     document.querySelector('.modal-overlay').remove();
                 }
             };
+
+            // Add Highlight Function
+            window.addHighlight = function(type) {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.placeholder = type === 'win' ? 'Describe your win...' : 'Describe your highlight...';
+                input.style.cssText = `
+                    width: 100%;
+                    padding: 12px;
+                    border: 1px solid var(--border-color);
+                    border-radius: 8px;
+                    margin-top: 10px;
+                    background: var(--surface);
+                    color: var(--text-primary);
+                    font-size: 14px;
+                `;
+                
+                const saveBtn = document.createElement('button');
+                saveBtn.textContent = 'Save';
+                saveBtn.style.cssText = `
+                    background: var(--primary-color);
+                    color: white;
+                    border: none;
+                    border-radius: 6px;
+                    padding: 8px 16px;
+                    margin-top: 8px;
+                    cursor: pointer;
+                    font-weight: 500;
+                `;
+                
+                const cancelBtn = document.createElement('button');
+                cancelBtn.textContent = 'Cancel';
+                cancelBtn.style.cssText = `
+                    background: var(--surface);
+                    color: var(--text-primary);
+                    border: 1px solid var(--border-color);
+                    border-radius: 6px;
+                    padding: 8px 16px;
+                    margin-top: 8px;
+                    margin-left: 8px;
+                    cursor: pointer;
+                `;
+                
+                const container = document.createElement('div');
+                container.style.cssText = `
+                    margin-top: 10px;
+                    padding: 16px;
+                    background: var(--background);
+                    border-radius: 8px;
+                    border: 1px solid var(--border-color);
+                `;
+                container.appendChild(input);
+                container.appendChild(saveBtn);
+                container.appendChild(cancelBtn);
+                
+                // Insert after the button that was clicked
+                const clickedBtn = event.target;
+                clickedBtn.parentNode.insertBefore(container, clickedBtn.nextSibling);
+                input.focus();
+                
+                saveBtn.addEventListener('click', function() {
+                    const text = input.value.trim();
+                    if (text) {
+                        // Get existing highlights
+                        const highlights = JSON.parse(localStorage.getItem('daily-highlights') || '[]');
+                        highlights.push({
+                            type: type,
+                            text: text,
+                            date: new Date().toISOString(),
+                            completed: false
+                        });
+                        localStorage.setItem('daily-highlights', JSON.stringify(highlights));
+                        
+                        // Show success message
+                        const successMsg = document.createElement('div');
+                        successMsg.textContent = '✅ ' + (type === 'win' ? 'Win' : 'Highlight') + ' added successfully!';
+                        successMsg.style.cssText = `
+                            color: #10B981;
+                            font-weight: 500;
+                            margin-top: 8px;
+                            font-size: 14px;
+                        `;
+                        container.appendChild(successMsg);
+                        
+                        // Remove input and buttons
+                        input.remove();
+                        saveBtn.remove();
+                        cancelBtn.remove();
+                        
+                        // Remove container after 2 seconds
+                        setTimeout(() => {
+                            container.remove();
+                        }, 2000);
+                    }
+                });
+                
+                cancelBtn.addEventListener('click', function() {
+                    container.remove();
+                });
+            };
             
             // Focus Timer Variables and Functions
             let focusTimer = null;
