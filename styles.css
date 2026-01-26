@@ -19,6 +19,34 @@
     color: white !important;
 }
 
+/* Productivity Tools Logo Box */
+.logo {
+    background: #4F46E5 !important;
+    color: white !important;
+    padding: 12px 16px !important;
+    border-radius: 8px !important;
+    margin-bottom: 20px !important;
+    text-align: center !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    height: 50px !important;
+}
+
+.logo i {
+    font-size: 18px !important;
+    color: white !important;
+}
+
+.logo span {
+    color: white !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+}
+
 * {
     margin: 0;
     padding: 0;
