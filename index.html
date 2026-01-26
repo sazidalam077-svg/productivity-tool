@@ -305,6 +305,18 @@
                 if (mainDateElement) {
                     mainDateElement.textContent = dateString;
                 }
+                
+                // Update home page specific date displays
+                const homeDateElements = document.querySelectorAll('.dashboard-card .date');
+                homeDateElements.forEach(element => {
+                    element.textContent = dateString;
+                });
+                
+                // Update any date in dashboard cards
+                const dashboardDates = document.querySelectorAll('.stat-date, .card-date');
+                dashboardDates.forEach(element => {
+                    element.textContent = dateString;
+                });
             }
             
             // Calendar functionality
@@ -492,6 +504,126 @@
                         `;
                         tasksList.appendChild(newItem);
                         console.log('Task added');
+                    }
+                }
+                
+                // Daily Highlights - Add buttons
+                if (e.target.closest('button') && e.target.textContent.includes('Add Win')) {
+                    e.preventDefault();
+                    const winsList = document.getElementById('wins-list');
+                    if (winsList) {
+                        const newItem = document.createElement('div');
+                        newItem.className = 'highlight-item';
+                        newItem.style.cssText = 'display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 12px;';
+                        newItem.innerHTML = `
+                            <span style="font-size: 1.5rem;">🏆</span>
+                            <input type="text" style="flex: 1; border: none; outline: none; padding: 4px; font-size: 1rem;" placeholder="What was your biggest win today?">
+                        `;
+                        winsList.appendChild(newItem);
+                        console.log('Win added');
+                    }
+                }
+                
+                if (e.target.closest('button') && e.target.textContent.includes('Add Insight')) {
+                    e.preventDefault();
+                    const insightsList = document.getElementById('insights-list');
+                    if (insightsList) {
+                        const newItem = document.createElement('div');
+                        newItem.className = 'highlight-item';
+                        newItem.style.cssText = 'display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 12px;';
+                        newItem.innerHTML = `
+                            <span style="font-size: 1.5rem;">💡</span>
+                            <input type="text" style="flex: 1; border: none; outline: none; padding: 4px; font-size: 1rem;" placeholder="What insight did you gain today?">
+                        `;
+                        insightsList.appendChild(newItem);
+                        console.log('Insight added');
+                    }
+                }
+                
+                if (e.target.closest('button') && e.target.textContent.includes('Add Gratitude')) {
+                    e.preventDefault();
+                    const gratitudeList = document.getElementById('gratitude-list');
+                    if (gratitudeList) {
+                        const newItem = document.createElement('div');
+                        newItem.className = 'highlight-item';
+                        newItem.style.cssText = 'display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 12px;';
+                        newItem.innerHTML = `
+                            <span style="font-size: 1.5rem;">🙏</span>
+                            <input type="text" style="flex: 1; border: none; outline: none; padding: 4px; font-size: 1rem;" placeholder="What are you grateful for today?">
+                        `;
+                        gratitudeList.appendChild(newItem);
+                        console.log('Gratitude added');
+                    }
+                }
+                
+                // Weekly Planning - Add Goal
+                if (e.target.closest('button') && e.target.textContent.includes('Add Goal')) {
+                    e.preventDefault();
+                    const goalsList = document.getElementById('weekly-goals');
+                    if (goalsList) {
+                        const newItem = document.createElement('div');
+                        newItem.className = 'goal-item';
+                        newItem.style.cssText = 'display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 12px;';
+                        newItem.innerHTML = `
+                            <input type="checkbox" style="margin-right: 8px;">
+                            <input type="text" style="flex: 1; border: none; outline: none; padding: 4px; font-size: 1rem;" placeholder="Enter weekly goal...">
+                            <select style="padding: 4px 8px; border: 1px solid var(--border-color); border-radius: 4px;">
+                                <option>High Priority</option>
+                                <option>Medium Priority</option>
+                                <option>Low Priority</option>
+                            </select>
+                        `;
+                        goalsList.appendChild(newItem);
+                        console.log('Weekly goal added');
+                    }
+                }
+                
+                // Weekly Review - Add buttons
+                if (e.target.closest('button') && e.target.textContent.includes('Add Achievement')) {
+                    e.preventDefault();
+                    const achievementsList = document.getElementById('achievements-list');
+                    if (achievementsList) {
+                        const newItem = document.createElement('div');
+                        newItem.className = 'achievement-item';
+                        newItem.style.cssText = 'display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 12px;';
+                        newItem.innerHTML = `
+                            <span style="font-size: 1.5rem;">🏆</span>
+                            <input type="text" style="flex: 1; border: none; outline: none; padding: 4px; font-size: 1rem;" placeholder="What was your biggest achievement this week?">
+                        `;
+                        achievementsList.appendChild(newItem);
+                        console.log('Achievement added');
+                    }
+                }
+                
+                if (e.target.closest('button') && e.target.textContent.includes('Add Lesson')) {
+                    e.preventDefault();
+                    const lessonsList = document.getElementById('lessons-list');
+                    if (lessonsList) {
+                        const newItem = document.createElement('div');
+                        newItem.className = 'lesson-item';
+                        newItem.style.cssText = 'display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 12px;';
+                        newItem.innerHTML = `
+                            <span style="font-size: 1.5rem;">💡</span>
+                            <input type="text" style="flex: 1; border: none; outline: none; padding: 4px; font-size: 1rem;" placeholder="What did you learn this week?">
+                        `;
+                        lessonsList.appendChild(newItem);
+                        console.log('Lesson added');
+                    }
+                }
+                
+                if (e.target.closest('button') && e.target.textContent.includes('Add Improvement')) {
+                    e.preventDefault();
+                    const improvementsList = document.getElementById('improvements-list');
+                    if (improvementsList) {
+                        const newItem = document.createElement('div');
+                        newItem.className = 'improvement-item';
+                        newItem.style.cssText = 'display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 12px;';
+                        newItem.innerHTML = `
+                            <span style="font-size: 1.5rem;">🎯</span>
+                            <input type="text" style="flex: 1; border: none; outline: none; padding: 4px; font-size: 1rem;" placeholder="What could be improved next week?">
+                        `;
+                        improvementsList.appendChild(newItem);
+                        console.log('Improvement added');
                     }
                 }
                 
