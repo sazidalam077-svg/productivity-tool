@@ -902,8 +902,18 @@
                 const existingBtn = document.querySelector('.view-data-btn');
                 if (existingBtn) return; // Don't remove if it already exists
                 
-                // Find navigation area and add button near Home button
-                const nav = document.querySelector('.nav');
+                // Try multiple selectors to find the navigation
+                let nav = document.querySelector('.nav');
+                if (!nav) {
+                    nav = document.querySelector('nav');
+                }
+                if (!nav) {
+                    nav = document.querySelector('.navigation');
+                }
+                if (!nav) {
+                    nav = document.querySelector('header');
+                }
+                
                 if (nav) {
                     const viewDataBtn = document.createElement('button');
                     viewDataBtn.className = 'view-data-btn nav-item';
@@ -921,6 +931,7 @@
                         text-align: center;
                         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                         margin-left: 8px;
+                        vertical-align: middle;
                     `;
                     viewDataBtn.onmouseover = () => {
                         viewDataBtn.style.background = '#4F46E5';
@@ -932,16 +943,22 @@
                     };
                     viewDataBtn.onclick = showSavedData;
                     
-                    // Find the Home button and add button after it
-                    const homeBtn = Array.from(nav.querySelectorAll('.nav-item')).find(btn => 
+                    // Try to find Home button and add after it
+                    const homeBtn = Array.from(nav.querySelectorAll('button, .nav-item, a')).find(btn => 
                         btn.textContent.includes('Home') || btn.dataset.page === 'home'
                     );
                     if (homeBtn) {
                         homeBtn.insertAdjacentElement('afterend', viewDataBtn);
+                        console.log('Button added after Home button');
                     } else {
                         // If no Home button found, add to the end of nav
                         nav.appendChild(viewDataBtn);
+                        console.log('Button added to end of nav');
                     }
+                } else {
+                    // Fallback: add to body if no nav found
+                    document.body.appendChild(viewDataBtn);
+                    console.log('Button added to body as fallback');
                 }
             }
             
