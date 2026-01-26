@@ -462,9 +462,8 @@
                     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
                     position: relative;
                     z-index: 1000;
-                    max-width: 500px;
-                    margin-left: auto;
-                    margin-right: auto;
+                    width: 100%;
+                    box-sizing: border-box;
                 `;
                 
                 const formHeader = document.createElement('div');
@@ -594,11 +593,11 @@
                 container.appendChild(descInput);
                 container.appendChild(buttonContainer);
                 
-                // Find the parent section and insert the form
+                // Find the first schedule section and insert the form right after it
                 const clickedBtn = event.target;
-                const parentSection = clickedBtn.closest('.schedule-section, .task-section, .card, div');
-                if (parentSection) {
-                    parentSection.appendChild(container);
+                const firstScheduleSection = document.querySelector('.schedule-section');
+                if (firstScheduleSection) {
+                    firstScheduleSection.parentNode.insertBefore(container, firstScheduleSection.nextSibling);
                 } else {
                     clickedBtn.parentNode.appendChild(container);
                 }
