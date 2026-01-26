@@ -892,9 +892,9 @@
                 const existingBtn = document.querySelector('.view-data-btn');
                 if (existingBtn) existingBtn.remove();
                 
-                // Find content header and add button
-                const contentHeader = document.querySelector('.content-header');
-                if (contentHeader) {
+                // Find calendar sidebar and add button in the middle
+                const calendarSidebar = document.querySelector('.calendar-sidebar');
+                if (calendarSidebar) {
                     const viewDataBtn = document.createElement('button');
                     viewDataBtn.className = 'view-data-btn';
                     viewDataBtn.textContent = '📊 View Saved Data';
@@ -903,26 +903,34 @@
                         color: white;
                         border: none;
                         border-radius: 6px;
-                        padding: 8px 16px;
+                        padding: 10px 16px;
                         cursor: pointer;
-                        font-size: 0.9rem;
+                        font-size: 0.85rem;
                         transition: all 0.3s ease;
-                        margin: 0 auto;
+                        width: 100%;
+                        margin: 20px auto;
                         display: block;
-                        width: fit-content;
-                        margin-top: 12px;
-                        margin-bottom: 12px;
+                        text-align: center;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                     `;
                     viewDataBtn.onmouseover = () => {
                         viewDataBtn.style.background = '#4F46E5';
+                        viewDataBtn.style.transform = 'translateY(-2px)';
                     };
                     viewDataBtn.onmouseout = () => {
                         viewDataBtn.style.background = '#6366F1';
+                        viewDataBtn.style.transform = 'translateY(0)';
                     };
                     viewDataBtn.onclick = showSavedData;
                     
-                    // Add button in the middle of the header
-                    contentHeader.appendChild(viewDataBtn);
+                    // Find calendar header and insert button after it
+                    const calendarHeader = calendarSidebar.querySelector('.calendar-header');
+                    if (calendarHeader) {
+                        calendarHeader.insertAdjacentElement('after', viewDataBtn);
+                    } else {
+                        // If no header, add to the top of sidebar
+                        calendarSidebar.insertBefore(viewDataBtn, calendarSidebar.firstChild);
+                    }
                 }
             }
             
