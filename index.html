@@ -275,5 +275,43 @@
     </div>
 
     <script src="script.js"></script>
+    <script>
+        // Direct working calendar fix
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Calendar fix loaded');
+            
+            function makeCalendarWork() {
+                const items = document.querySelectorAll('.scheduled-item');
+                console.log('Found calendar items:', items.length);
+                
+                items.forEach((item, index) => {
+                    item.style.cursor = 'pointer';
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        console.log('Calendar item clicked:', index);
+                        
+                        const check = this.querySelector('.fa-check');
+                        if (check) {
+                            const isDone = check.style.opacity === '1';
+                            check.style.opacity = isDone ? '0' : '1';
+                            
+                            if (isDone) {
+                                this.style.background = 'linear-gradient(135deg, #FEF3C7, #FDE68A)';
+                                console.log('Marked as incomplete');
+                            } else {
+                                this.style.background = 'linear-gradient(135deg, #D1FAE5, #A7F3D0)';
+                                console.log('Marked as complete');
+                            }
+                        }
+                    });
+                });
+            }
+            
+            // Run immediately and also after a delay
+            makeCalendarWork();
+            setTimeout(makeCalendarWork, 1000);
+            setTimeout(makeCalendarWork, 3000);
+        });
+    </script>
 </body>
 </html>
