@@ -288,43 +288,67 @@ class ProductivityApp {
         mainContent.innerHTML = `
             <div class="content-header">
                 <h1>Daily Shutdown</h1>
-                <span class="shutdown-time">6:00 PM</span>
+                <div class="date-navigation">
+                    <button class="nav-btn"><i class="fas fa-chevron-left"></i></button>
+                    <span class="current-date">Loading...</span>
+                    <button class="nav-btn"><i class="fas fa-chevron-right"></i></button>
+                </div>
             </div>
             
-            <div class="shutdown-container">
-                <div class="shutdown-checklist">
-                    <h3>Complete these before shutting down:</h3>
-                    <div class="checklist-items">
-                        <label class="checklist-item">
-                            <input type="checkbox">
-                            <span>Review today's accomplishments</span>
-                        </label>
-                        <label class="checklist-item">
-                            <input type="checkbox">
-                            <span>Plan tomorrow's priorities</span>
-                        </label>
-                        <label class="checklist-item">
-                            <input type="checkbox">
-                            <span>Clear email inbox</span>
-                        </label>
-                        <label class="checklist-item">
-                            <input type="checkbox">
-                            <span>Update project status</span>
-                        </label>
-                        <label class="checklist-item">
-                            <input type="checkbox">
-                            <span>Tidy up workspace</span>
-                        </label>
+            <div class="shutdown-container" style="max-width: 800px; margin: 0 auto;">
+                <div class="shutdown-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-bottom: 24px;">
+                    <h3>Today's Accomplishments</h3>
+                    <p style="color: var(--text-secondary); margin-top: 8px;">What did you accomplish today?</p>
+                    <textarea id="accomplishments" style="width: 100%; height: 120px; border: 1px solid var(--border-color); border-radius: var(--radius); padding: 12px; margin-top: 16px; font-family: inherit; font-size: 1rem;" placeholder="List your key achievements and wins today..."></textarea>
+                </div>
+                
+                <div class="shutdown-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-bottom: 24px;">
+                    <h3>Lessons Learned</h3>
+                    <p style="color: var(--text-secondary); margin-top: 8px;">What did you learn today?</p>
+                    <textarea id="lessons" style="width: 100%; height: 100px; border: 1px solid var(--border-color); border-radius: var(--radius); padding: 12px; margin-top: 16px; font-family: inherit; font-size: 1rem;" placeholder="Key insights, challenges overcome, or skills learned..."></textarea>
+                </div>
+                
+                <div class="shutdown-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-bottom: 24px;">
+                    <h3>Tomorrow's Priorities</h3>
+                    <p style="color: var(--text-secondary); margin-top: 8px;">What are your top priorities for tomorrow?</p>
+                    <textarea id="priorities" style="width: 100%; height: 100px; border: 1px solid var(--border-color); border-radius: var(--radius); padding: 12px; margin-top: 16px; font-family: inherit; font-size: 1rem;" placeholder="List your top 3-5 priorities for tomorrow..."></textarea>
+                </div>
+                
+                <div class="shutdown-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px;">
+                    <h3>Mood & Energy Check</h3>
+                    <div style="margin-top: 16px;">
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 500;">How was your energy today?</label>
+                            <div style="display: flex; gap: 12px;">
+                                <button class="mood-btn" data-mood="low" style="flex: 1; padding: 8px; border: 1px solid var(--border-color); border-radius: var(--radius); background: var(--surface); cursor: pointer;">😴 Low</button>
+                                <button class="mood-btn" data-mood="medium" style="flex: 1; padding: 8px; border: 1px solid var(--border-color); border-radius: var(--radius); background: var(--surface); cursor: pointer;">😐 Medium</button>
+                                <button class="mood-btn" data-mood="high" style="flex: 1; padding: 8px; border: 1px solid var(--border-color); border-radius: var(--radius); background: var(--surface); cursor: pointer;">⚡ High</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 8px; font-weight: 500;">How do you feel overall?</label>
+                            <div style="display: flex; gap: 12px;">
+                                <button class="feeling-btn" data-feeling="stressed" style="flex: 1; padding: 8px; border: 1px solid var(--border-color); border-radius: var(--radius); background: var(--surface); cursor: pointer;">😰 Stressed</button>
+                                <button class="feeling-btn" data-feeling="neutral" style="flex: 1; padding: 8px; border: 1px solid var(--border-color); border-radius: var(--radius); background: var(--surface); cursor: pointer;">😐 Neutral</button>
+                                <button class="feeling-btn" data-feeling="happy" style="flex: 1; padding: 8px; border: 1px solid var(--border-color); border-radius: var(--radius); background: var(--surface); cursor: pointer;">😊 Happy</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="shutdown-reflection">
-                    <h3>Today's Reflection</h3>
-                    <textarea placeholder="What went well today? What could be improved?"></textarea>
-                    <button class="save-reflection-btn">Save Reflection</button>
+                <div style="text-align: center; margin-top: 32px;">
+                    <button onclick="saveShutdown()" style="background: var(--primary-color); color: white; border: none; border-radius: var(--radius); padding: 12px 32px; cursor: pointer; font-weight: 500; font-size: 1.1rem;">
+                        <i class="fas fa-check"></i> Complete Daily Shutdown
+                    </button>
                 </div>
             </div>
         `;
+        
+        // Re-attach event listeners
+        setTimeout(() => {
+            this.attachEventListeners();
+            updateDateDisplay();
+        }, 10);
     }
 
     showDailyHighlightsView() {
@@ -332,37 +356,83 @@ class ProductivityApp {
         mainContent.innerHTML = `
             <div class="content-header">
                 <h1>Daily Highlights</h1>
-                <button class="add-highlight-btn">
-                    <i class="fas fa-plus"></i> Add Highlight
-                </button>
+                <div class="date-navigation">
+                    <button class="nav-btn"><i class="fas fa-chevron-left"></i></button>
+                    <span class="current-date">Loading...</span>
+                    <button class="nav-btn"><i class="fas fa-chevron-right"></i></button>
+                </div>
             </div>
             
-            <div class="highlights-container">
-                <div class="highlight-item">
-                    <div class="highlight-date">Today</div>
-                    <div class="highlight-content">
-                        <h3>Completed product roadmap planning</h3>
-                        <p>Successfully finalized Q2 product roadmap with stakeholder approval.</p>
-                        <div class="highlight-tags">
-                            <span class="tag">#product</span>
-                            <span class="tag">#planning</span>
+            <div class="highlights-container" style="max-width: 800px; margin: 0 auto;">
+                <div class="highlights-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-bottom: 24px;">
+                    <h3>🌟 Today's Wins</h3>
+                    <div id="wins-list" style="margin-top: 16px;">
+                        <div class="highlight-item" style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 12px;">
+                            <span style="font-size: 1.5rem;">🏆</span>
+                            <input type="text" style="flex: 1; border: none; outline: none; padding: 4px; font-size: 1rem;" placeholder="What was your biggest win today?">
                         </div>
                     </div>
+                    <button onclick="addHighlight('win')" style="background: var(--primary-color); color: white; border: none; border-radius: var(--radius); padding: 8px 16px; cursor: pointer; font-weight: 500; margin-top: 10px;">
+                        <i class="fas fa-plus"></i> Add Win
+                    </button>
                 </div>
                 
-                <div class="highlight-item">
-                    <div class="highlight-date">Yesterday</div>
-                    <div class="highlight-content">
-                        <h3>Launched new feature</h3>
-                        <p>Successfully deployed the user dashboard update with positive feedback.</p>
-                        <div class="highlight-tags">
-                            <span class="tag">#development</span>
-                            <span class="tag">#launch</span>
+                <div class="highlights-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-bottom: 24px;">
+                    <h3>💡 Key Insights</h3>
+                    <div id="insights-list" style="margin-top: 16px;">
+                        <div class="highlight-item" style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 12px;">
+                            <span style="font-size: 1.5rem;">💡</span>
+                            <input type="text" style="flex: 1; border: none; outline: none; padding: 4px; font-size: 1rem;" placeholder="What insight did you gain today?">
                         </div>
+                    </div>
+                    <button onclick="addHighlight('insight')" style="background: var(--primary-color); color: white; border: none; border-radius: var(--radius); padding: 8px 16px; cursor: pointer; font-weight: 500; margin-top: 10px;">
+                        <i class="fas fa-plus"></i> Add Insight
+                    </button>
+                </div>
+                
+                <div class="highlights-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-bottom: 24px;">
+                    <h3>🙏 Gratitude Moments</h3>
+                    <div id="gratitude-list" style="margin-top: 16px;">
+                        <div class="highlight-item" style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 12px;">
+                            <span style="font-size: 1.5rem;">🙏</span>
+                            <input type="text" style="flex: 1; border: none; outline: none; padding: 4px; font-size: 1rem;" placeholder="What are you grateful for today?">
+                        </div>
+                    </div>
+                    <button onclick="addHighlight('gratitude')" style="background: var(--primary-color); color: white; border: none; border-radius: var(--radius); padding: 8px 16px; cursor: pointer; font-weight: 500; margin-top: 10px;">
+                        <i class="fas fa-plus"></i> Add Gratitude
+                    </button>
+                </div>
+                
+                <div class="highlights-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px;">
+                    <h3>📊 Daily Summary</h3>
+                    <div style="margin-top: 16px; text-align: center;">
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 2rem; font-weight: 700; color: var(--primary-color);" id="wins-count">0</div>
+                                <div style="font-size: 0.875rem; color: var(--text-secondary);">Wins</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 2rem; font-weight: 700; color: var(--primary-color);" id="insights-count">0</div>
+                                <div style="font-size: 0.875rem; color: var(--text-secondary);">Insights</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 2rem; font-weight: 700; color: var(--primary-color);" id="gratitude-count">0</div>
+                                <div style="font-size: 0.875rem; color: var(--text-secondary);">Gratitude</div>
+                            </div>
+                        </div>
+                        <button onclick="saveHighlights()" style="background: var(--primary-color); color: white; border: none; border-radius: var(--radius); padding: 12px 32px; cursor: pointer; font-weight: 500;">
+                            <i class="fas fa-save"></i> Save Highlights
+                        </button>
                     </div>
                 </div>
             </div>
         `;
+        
+        // Re-attach event listeners
+        setTimeout(() => {
+            this.attachEventListeners();
+            updateDateDisplay();
+        }, 10);
     }
 
     showWeeklyPlanningView() {
@@ -370,36 +440,96 @@ class ProductivityApp {
         mainContent.innerHTML = `
             <div class="content-header">
                 <h1>Weekly Planning</h1>
-                <span class="week-range">Mar 18 - Mar 24</span>
+                <div class="date-navigation">
+                    <button class="nav-btn"><i class="fas fa-chevron-left"></i></button>
+                    <span class="current-date">Loading...</span>
+                    <button class="nav-btn"><i class="fas fa-chevron-right"></i></button>
+                </div>
             </div>
             
-            <div class="weekly-planning-container">
-                <div class="weekly-goals">
-                    <h3>Weekly Goals</h3>
-                    <div class="goal-item">
-                        <input type="text" placeholder="Add a new goal..." class="goal-input">
+            <div class="weekly-container" style="max-width: 1000px; margin: 0 auto;">
+                <div class="weekly-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-bottom: 24px;">
+                    <h3>🎯 Weekly Goals</h3>
+                    <div id="weekly-goals" style="margin-top: 16px;">
+                        <div class="goal-item" style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 12px;">
+                            <input type="checkbox" style="margin-right: 8px;">
+                            <input type="text" style="flex: 1; border: none; outline: none; padding: 4px; font-size: 1rem;" placeholder="Enter weekly goal...">
+                            <select style="padding: 4px 8px; border: 1px solid var(--border-color); border-radius: 4px;">
+                                <option>High Priority</option>
+                                <option>Medium Priority</option>
+                                <option>Low Priority</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="addWeeklyGoal()" style="background: var(--primary-color); color: white; border: none; border-radius: var(--radius); padding: 8px 16px; cursor: pointer; font-weight: 500; margin-top: 10px;">
+                        <i class="fas fa-plus"></i> Add Goal
+                    </button>
+                </div>
+                
+                <div class="weekly-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-bottom: 24px;">
+                    <div class="day-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 16px;">
+                        <h4>Monday</h4>
+                        <div class="day-tasks" style="margin-top: 8px;">
+                            <input type="text" style="width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; margin-bottom: 8px;" placeholder="Key task for Monday...">
+                        </div>
+                    </div>
+                    <div class="day-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 16px;">
+                        <h4>Tuesday</h4>
+                        <div class="day-tasks" style="margin-top: 8px;">
+                            <input type="text" style="width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; margin-bottom: 8px;" placeholder="Key task for Tuesday...">
+                        </div>
+                    </div>
+                    <div class="day-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 16px;">
+                        <h4>Wednesday</h4>
+                        <div class="day-tasks" style="margin-top: 8px;">
+                            <input type="text" style="width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; margin-bottom: 8px;" placeholder="Key task for Wednesday...">
+                        </div>
+                    </div>
+                    <div class="day-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 16px;">
+                        <h4>Thursday</h4>
+                        <div class="day-tasks" style="margin-top: 8px;">
+                            <input type="text" style="width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; margin-bottom: 8px;" placeholder="Key task for Thursday...">
+                        </div>
+                    </div>
+                    <div class="day-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 16px;">
+                        <h4>Friday</h4>
+                        <div class="day-tasks" style="margin-top: 8px;">
+                            <input type="text" style="width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; margin-bottom: 8px;" placeholder="Key task for Friday...">
+                        </div>
                     </div>
                 </div>
                 
-                <div class="weekly-priorities">
-                    <h3>Top Priorities</h3>
-                    <div class="priority-list">
-                        <div class="priority-item high">
-                            <span class="priority-title">Complete Q2 roadmap</span>
-                            <span class="priority-status">In Progress</span>
+                <div class="weekly-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px;">
+                    <h3>📋 Weekly Focus Areas</h3>
+                    <div style="margin-top: 16px;">
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 500;">Primary Focus</label>
+                            <input type="text" style="width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px;" placeholder="What's your main focus this week?">
                         </div>
-                        <div class="priority-item medium">
-                            <span class="priority-title">User research analysis</span>
-                            <span class="priority-status">To Do</span>
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 500;">Secondary Focus</label>
+                            <input type="text" style="width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px;" placeholder="What's your secondary focus?">
                         </div>
-                        <div class="priority-item low">
-                            <span class="priority-title">Team building activities</span>
-                            <span class="priority-status">To Do</span>
+                        <div>
+                            <label style="display: block; margin-bottom: 8px; font-weight: 500;">Personal Development</label>
+                            <input type="text" style="width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px;" placeholder="What skill will you develop?">
                         </div>
                     </div>
                 </div>
+                
+                <div style="text-align: center; margin-top: 24px;">
+                    <button onclick="saveWeeklyPlan()" style="background: var(--primary-color); color: white; border: none; border-radius: var(--radius); padding: 12px 32px; cursor: pointer; font-weight: 500;">
+                        <i class="fas fa-save"></i> Save Weekly Plan
+                    </button>
+                </div>
             </div>
         `;
+        
+        // Re-attach event listeners
+        setTimeout(() => {
+            this.attachEventListeners();
+            updateDateDisplay();
+        }, 10);
     }
 
     showWeeklyReviewView() {
@@ -407,39 +537,114 @@ class ProductivityApp {
         mainContent.innerHTML = `
             <div class="content-header">
                 <h1>Weekly Review</h1>
-                <span class="review-week">Week of Mar 18</span>
+                <div class="date-navigation">
+                    <button class="nav-btn"><i class="fas fa-chevron-left"></i></button>
+                    <span class="current-date">Loading...</span>
+                    <button class="nav-btn"><i class="fas fa-chevron-right"></i></button>
+                </div>
             </div>
             
-            <div class="weekly-review-container">
-                <div class="review-section">
-                    <h3>Accomplishments</h3>
-                    <div class="accomplishment-list">
-                        <div class="accomplishment-item">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Completed product roadmap planning</span>
+            <div class="review-container" style="max-width: 900px; margin: 0 auto;">
+                <div class="review-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-bottom: 24px;">
+                    <h3>📊 Week Performance</h3>
+                    <div style="margin-top: 16px;">
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 20px;">
+                            <div>
+                                <label style="display: block; margin-bottom: 8px; font-weight: 500;">Goals Completed</label>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <input type="number" style="width: 80px; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px;" placeholder="0" value="0">
+                                    <span>/</span>
+                                    <input type="number" style="width: 80px; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px;" placeholder="0" value="0">
+                                </div>
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 8px; font-weight: 500;">Focus Time (hours)</label>
+                                <input type="number" style="width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px;" placeholder="0" value="0">
+                            </div>
                         </div>
-                        <div class="accomplishment-item">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Conducted user research interviews</span>
-                        </div>
-                        <div class="accomplishment-item">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Launched new dashboard feature</span>
+                        <div>
+                            <label style="display: block; margin-bottom: 8px; font-weight: 500;">Overall Rating</label>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="rating-btn" data-rating="1" style="flex: 1; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); background: var(--surface); cursor: pointer; font-size: 1.2rem;">⭐</button>
+                                <button class="rating-btn" data-rating="2" style="flex: 1; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); background: var(--surface); cursor: pointer; font-size: 1.2rem;">⭐⭐</button>
+                                <button class="rating-btn" data-rating="3" style="flex: 1; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); background: var(--surface); cursor: pointer; font-size: 1.2rem;">⭐⭐⭐</button>
+                                <button class="rating-btn" data-rating="4" style="flex: 1; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); background: var(--surface); cursor: pointer; font-size: 1.2rem;">⭐⭐⭐⭐</button>
+                                <button class="rating-btn" data-rating="5" style="flex: 1; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); background: var(--surface); cursor: pointer; font-size: 1.2rem;">⭐⭐⭐⭐⭐</button>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="review-section">
-                    <h3>Challenges & Learnings</h3>
-                    <textarea placeholder="What challenges did you face? What did you learn?"></textarea>
+                <div class="review-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-bottom: 24px;">
+                    <h3>🎯 Key Achievements</h3>
+                    <div id="achievements-list" style="margin-top: 16px;">
+                        <div class="achievement-item" style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 12px;">
+                            <span style="font-size: 1.5rem;">🏆</span>
+                            <input type="text" style="flex: 1; border: none; outline: none; padding: 4px; font-size: 1rem;" placeholder="What was your biggest achievement this week?">
+                        </div>
+                    </div>
+                    <button onclick="addAchievement()" style="background: var(--primary-color); color: white; border: none; border-radius: var(--radius); padding: 8px 16px; cursor: pointer; font-weight: 500; margin-top: 10px;">
+                        <i class="fas fa-plus"></i> Add Achievement
+                    </button>
                 </div>
                 
-                <div class="review-section">
-                    <h3>Next Week Focus</h3>
-                    <textarea placeholder="What will you focus on next week?"></textarea>
+                <div class="review-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-bottom: 24px;">
+                    <h3>🧠 Lessons Learned</h3>
+                    <div id="lessons-list" style="margin-top: 16px;">
+                        <div class="lesson-item" style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 12px;">
+                            <span style="font-size: 1.5rem;">💡</span>
+                            <input type="text" style="flex: 1; border: none; outline: none; padding: 4px; font-size: 1rem;" placeholder="What did you learn this week?">
+                        </div>
+                    </div>
+                    <button onclick="addLesson()" style="background: var(--primary-color); color: white; border: none; border-radius: var(--radius); padding: 8px 16px; cursor: pointer; font-weight: 500; margin-top: 10px;">
+                        <i class="fas fa-plus"></i> Add Lesson
+                    </button>
+                </div>
+                
+                <div class="review-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-bottom: 24px;">
+                    <h3>🔄 Areas for Improvement</h3>
+                    <div id="improvements-list" style="margin-top: 16px;">
+                        <div class="improvement-item" style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 12px;">
+                            <span style="font-size: 1.5rem;">🎯</span>
+                            <input type="text" style="flex: 1; border: none; outline: none; padding: 4px; font-size: 1rem;" placeholder="What could be improved next week?">
+                        </div>
+                    </div>
+                    <button onclick="addImprovement()" style="background: var(--primary-color); color: white; border: none; border-radius: var(--radius); padding: 8px 16px; cursor: pointer; font-weight: 500; margin-top: 10px;">
+                        <i class="fas fa-plus"></i> Add Improvement
+                    </button>
+                </div>
+                
+                <div class="review-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px;">
+                    <h3>📈 Next Week Planning</h3>
+                    <div style="margin-top: 16px;">
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 500;">Top 3 Priorities</label>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <input type="text" style="padding: 8px; border: 1px solid var(--border-color); border-radius: 4px;" placeholder="Priority #1">
+                                <input type="text" style="padding: 8px; border: 1px solid var(--border-color); border-radius: 4px;" placeholder="Priority #2">
+                                <input type="text" style="padding: 8px; border: 1px solid var(--border-color); border-radius: 4px;" placeholder="Priority #3">
+                            </div>
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 8px; font-weight: 500;">Weekly Focus</label>
+                            <input type="text" style="width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px;" placeholder="What will be your main focus next week?">
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 24px;">
+                    <button onclick="saveWeeklyReview()" style="background: var(--primary-color); color: white; border: none; border-radius: var(--radius); padding: 12px 32px; cursor: pointer; font-weight: 500;">
+                        <i class="fas fa-save"></i> Save Weekly Review
+                    </button>
                 </div>
             </div>
         `;
+        
+        // Re-attach event listeners
+        setTimeout(() => {
+            this.attachEventListeners();
+            updateDateDisplay();
+        }, 10);
     }
 
     updateCurrentTime() {
@@ -678,6 +883,164 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Add some additional CSS for new components
+// Supporting functions for new features
+function addHighlight(type) {
+    const listId = type + '-list';
+    const list = document.getElementById(listId);
+    if (list) {
+        const newItem = document.createElement('div');
+        newItem.className = 'highlight-item';
+        newItem.style.cssText = 'display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 12px;';
+        
+        const icons = {
+            win: '🏆',
+            insight: '💡',
+            gratitude: '🙏'
+        };
+        
+        newItem.innerHTML = `
+            <span style="font-size: 1.5rem;">${icons[type]}</span>
+            <input type="text" style="flex: 1; border: none; outline: none; padding: 4px; font-size: 1rem;" placeholder="Add another ${type}...">
+        `;
+        
+        list.appendChild(newItem);
+        updateHighlightCounts();
+        showNotification(`${type.charAt(0).toUpperCase() + type.slice(1)} added!`);
+    }
+}
+
+function updateHighlightCounts() {
+    const winsCount = document.querySelectorAll('#wins-list .highlight-item').length;
+    const insightsCount = document.querySelectorAll('#insights-list .highlight-item').length;
+    const gratitudeCount = document.querySelectorAll('#gratitude-list .highlight-item').length;
+    
+    const winsElement = document.getElementById('wins-count');
+    const insightsElement = document.getElementById('insights-count');
+    const gratitudeElement = document.getElementById('gratitude-count');
+    
+    if (winsElement) winsElement.textContent = winsCount;
+    if (insightsElement) insightsElement.textContent = insightsCount;
+    if (gratitudeElement) gratitudeElement.textContent = gratitudeCount;
+}
+
+function saveHighlights() {
+    showNotification('Highlights saved successfully! 🌟');
+}
+
+function addWeeklyGoal() {
+    const goalsList = document.getElementById('weekly-goals');
+    if (goalsList) {
+        const newItem = document.createElement('div');
+        newItem.className = 'goal-item';
+        newItem.style.cssText = 'display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 12px;';
+        newItem.innerHTML = `
+            <input type="checkbox" style="margin-right: 8px;">
+            <input type="text" style="flex: 1; border: none; outline: none; padding: 4px; font-size: 1rem;" placeholder="Enter weekly goal...">
+            <select style="padding: 4px 8px; border: 1px solid var(--border-color); border-radius: 4px;">
+                <option>High Priority</option>
+                <option>Medium Priority</option>
+                <option>Low Priority</option>
+            </select>
+        `;
+        goalsList.appendChild(newItem);
+        showNotification('Weekly goal added! 🎯');
+    }
+}
+
+function saveWeeklyPlan() {
+    showNotification('Weekly plan saved successfully! 📋');
+}
+
+function addAchievement() {
+    const list = document.getElementById('achievements-list');
+    if (list) {
+        const newItem = document.createElement('div');
+        newItem.className = 'achievement-item';
+        newItem.style.cssText = 'display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 12px;';
+        newItem.innerHTML = `
+            <span style="font-size: 1.5rem;">🏆</span>
+            <input type="text" style="flex: 1; border: none; outline: none; padding: 4px; font-size: 1rem;" placeholder="What was your biggest achievement this week?">
+        `;
+        list.appendChild(newItem);
+        showNotification('Achievement added! 🏆');
+    }
+}
+
+function addLesson() {
+    const list = document.getElementById('lessons-list');
+    if (list) {
+        const newItem = document.createElement('div');
+        newItem.className = 'lesson-item';
+        newItem.style.cssText = 'display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 12px;';
+        newItem.innerHTML = `
+            <span style="font-size: 1.5rem;">💡</span>
+            <input type="text" style="flex: 1; border: none; outline: none; padding: 4px; font-size: 1rem;" placeholder="What did you learn this week?">
+        `;
+        list.appendChild(newItem);
+        showNotification('Lesson added! 💡');
+    }
+}
+
+function addImprovement() {
+    const list = document.getElementById('improvements-list');
+    if (list) {
+        const newItem = document.createElement('div');
+        newItem.className = 'improvement-item';
+        newItem.style.cssText = 'display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 12px;';
+        newItem.innerHTML = `
+            <span style="font-size: 1.5rem;">🎯</span>
+            <input type="text" style="flex: 1; border: none; outline: none; padding: 4px; font-size: 1rem;" placeholder="What could be improved next week?">
+        `;
+        list.appendChild(newItem);
+        showNotification('Improvement area added! 🎯');
+    }
+}
+
+function saveWeeklyReview() {
+    showNotification('Weekly review saved successfully! 📊');
+}
+
+function saveShutdown() {
+    showNotification('Daily shutdown completed! Great job today! 🎉');
+}
+
+// Add event listeners for mood and feeling buttons
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('mood-btn')) {
+        // Remove active state from all mood buttons
+        document.querySelectorAll('.mood-btn').forEach(btn => {
+            btn.style.background = 'var(--surface)';
+        });
+        // Add active state to clicked button
+        e.target.style.background = 'var(--primary-color)';
+        e.target.style.color = 'white';
+        showNotification('Energy level: ' + e.target.dataset.mood);
+    }
+    
+    if (e.target.classList.contains('feeling-btn')) {
+        // Remove active state from all feeling buttons
+        document.querySelectorAll('.feeling-btn').forEach(btn => {
+            btn.style.background = 'var(--surface)';
+        });
+        // Add active state to clicked button
+        e.target.style.background = 'var(--primary-color)';
+        e.target.style.color = 'white';
+        showNotification('Feeling: ' + e.target.dataset.feeling);
+    }
+    
+    if (e.target.classList.contains('rating-btn')) {
+        // Remove active state from all rating buttons
+        document.querySelectorAll('.rating-btn').forEach(btn => {
+            btn.style.background = 'var(--surface)';
+        });
+        // Add active state to clicked button
+        e.target.style.background = 'var(--primary-color)';
+        e.target.style.color = 'white';
+        const rating = e.target.dataset.rating;
+        showNotification('Week rating: ' + rating + ' stars ⭐');
+    }
+});
+
 const additionalCSS = `
 .dashboard-grid {
     display: grid;
