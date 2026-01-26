@@ -964,9 +964,38 @@ class ProductivityApp {
         // Task items
         const taskItems = document.querySelectorAll('.task-item');
         taskItems.forEach(item => {
+            // Add status indicator if not already present
+            if (!item.querySelector('.task-status')) {
+                const statusIndicator = document.createElement('div');
+                statusIndicator.className = 'task-status';
+                statusIndicator.style.cssText = `
+                    position: absolute;
+                    top: 5px;
+                    right: 5px;
+                    background: ${item.classList.contains('completed') ? '#10B981' : '#F59E0B'};
+                    color: white;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    z-index: 10;
+                `;
+                statusIndicator.textContent = item.classList.contains('completed') ? 'Completed' : 'Pending';
+                item.style.position = 'relative';
+                item.appendChild(statusIndicator);
+            }
+            
             item.addEventListener('click', function() {
                 this.classList.toggle('completed');
                 const isCompleted = this.classList.contains('completed');
+                
+                // Update status indicator
+                const statusIndicator = this.querySelector('.task-status');
+                if (statusIndicator) {
+                    statusIndicator.style.background = isCompleted ? '#10B981' : '#F59E0B';
+                    statusIndicator.textContent = isCompleted ? 'Completed' : 'Pending';
+                }
+                
                 this.showNotification(isCompleted ? 'Task completed!' : 'Task marked as incomplete');
             }.bind(this));
         });
