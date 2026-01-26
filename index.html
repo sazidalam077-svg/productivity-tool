@@ -280,6 +280,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Calendar fix loaded');
             
+            let currentDayOffset = 0;
+            
             function makeCalendarWork() {
                 const items = document.querySelectorAll('.scheduled-item');
                 console.log('Found calendar items:', items.length);
@@ -306,6 +308,120 @@
                     });
                 });
             }
+            
+            // Date navigation with calendar content update
+            function updateCalendarForDay(offset) {
+                const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                const today = new Date();
+                const targetDate = new Date(today);
+                targetDate.setDate(today.getDate() + offset);
+                
+                const dayName = days[targetDate.getDay()];
+                const dateStr = targetDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                
+                console.log('Updating calendar for:', dayName, dateStr);
+                
+                // Update calendar header
+                const calendarHeader = document.querySelector('.calendar-header h3');
+                if (calendarHeader) {
+                    calendarHeader.textContent = `${dayName}'s Schedule`;
+                }
+                
+                // Update time slots based on day
+                const timeSlots = document.querySelectorAll('.time-slot');
+                timeSlots.forEach((slot, index) => {
+                    const slotContent = slot.querySelector('.slot-content');
+                    if (slotContent) {
+                        // Different schedule for different days
+                        const schedules = {
+                            'Monday': [
+                                { time: '9:00 AM', icon: 'fa-briefcase', text: 'Weekly planning meeting' },
+                                { time: '11:00 AM', icon: 'fa-users', text: 'Team standup' },
+                                { time: '2:00 PM', icon: 'fa-code', text: 'Development work' },
+                                { time: '4:00 PM', icon: 'fa-chart-line', text: 'Progress review' }
+                            ],
+                            'Tuesday': [
+                                { time: '9:00 AM', icon: 'fa-laptop', text: 'Client presentation' },
+                                { time: '11:00 AM', icon: 'fa-phone', text: 'Sales call' },
+                                { time: '2:00 PM', icon: 'fa-edit', text: 'Content creation' },
+                                { time: '4:00 PM', icon: 'fa-envelope', text: 'Email follow-up' }
+                            ],
+                            'Wednesday': [
+                                { time: '7:00 AM', icon: 'fa-sun', text: 'Morning routine', special: true },
+                                { time: '9:00 AM', icon: 'fa-users', text: 'Product roadmap planning' },
+                                { time: '11:00 AM', icon: 'fa-handshake', text: 'Stakeholder meeting' },
+                                { time: '12:00 PM', icon: 'fa-utensils', text: 'Lunch', special: true },
+                                { time: '2:00 PM', icon: 'fa-palette', text: 'Design system review' },
+                                { time: '4:00 PM', icon: 'fa-chart-line', text: 'Team retrospective' },
+                                { time: '6:00 PM', icon: 'fa-laptop', text: 'Review prototype' }
+                            ],
+                            'Thursday': [
+                                { time: '9:00 AM', icon: 'fa-graduation-cap', text: 'Learning session' },
+                                { time: '11:00 AM', icon: 'fa-bug', text: 'Bug fixing' },
+                                { time: '2:00 PM', icon: 'fa-file-code', text: 'Code review' },
+                                { time: '4:00 PM', icon: 'fa-tasks', text: 'Task prioritization' }
+                            ],
+                            'Friday': [
+                                { time: '9:00 AM', icon: 'fa-chart-bar', text: 'Weekly report' },
+                                { time: '11:00 AM', icon: 'fa-comments', text: 'Team feedback' },
+                                { time: '2:00 PM', icon: 'fa-rocket', text: 'Feature launch prep' },
+                                { time: '4:00 PM', icon: 'fa-beer', text: 'Team social' }
+                            ],
+                            'Saturday': [
+                                { time: '10:00 AM', icon: 'fa-home', text: 'Personal projects' },
+                                { time: '2:00 PM', icon: 'fa-dumbbell', text: 'Workout' },
+                                { time: '6:00 PM', icon: 'fa-film', text: 'Movie night' }
+                            ],
+                            'Sunday': [
+                                { time: '9:00 AM', icon: 'fa-coffee', text: 'Relaxed morning' },
+                                { time: '11:00 AM', icon: 'fa-book', text: 'Reading time' },
+                                { time: '3:00 PM', icon: 'fa-shopping-cart', text: 'Grocery shopping' },
+                                { time: '7:00 PM', icon: 'fa-utensils', text: 'Family dinner' }
+                            ]
+                        };
+                        
+                        const daySchedule = schedules[dayName] || schedules['Wednesday'];
+                        
+                        if (index < daySchedule.length) {
+                            const item = daySchedule[index];
+                            const bgColor = item.special ? 
+                                (item.text === 'Lunch' ? 'linear-gradient(135deg, #D1FAE5, #A7F3D0)' : 'linear-gradient(135deg, #FEF3C7, #FDE68A)') : 
+                                'linear-gradient(135deg, #EBF8FF, #DBEAFE)';
+                            
+                            slotContent.innerHTML = `
+                                <div class="scheduled-item" style="cursor: pointer; transition: all 0.3s ease; background: ${bgColor};">
+                                    <i class="fas ${item.icon}"></i>
+                                    <span>${item.text}</span>
+                                    <i class="fas fa-check" style="margin-left: auto; opacity: 0; transition: opacity 0.3s ease;"></i>
+                                </div>
+                            `;
+                        } else {
+                            slotContent.innerHTML = '';
+                        }
+                    }
+                });
+                
+                // Re-attach event listeners to new items
+                setTimeout(makeCalendarWork, 100);
+            }
+            
+            // Handle date navigation clicks
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.nav-btn')) {
+                    const btn = e.target.closest('.nav-btn');
+                    const isNext = btn.querySelector('.fa-chevron-right');
+                    
+                    if (isNext) {
+                        currentDayOffset++;
+                        console.log('Next day clicked, offset:', currentDayOffset);
+                    } else {
+                        currentDayOffset--;
+                        console.log('Previous day clicked, offset:', currentDayOffset);
+                    }
+                    
+                    updateCalendarForDay(currentDayOffset);
+                }
+            });
             
             // Run immediately and also after a delay
             makeCalendarWork();
