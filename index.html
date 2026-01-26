@@ -376,9 +376,9 @@
             <div class="content-header">
                 <h1>Daily Planner</h1>
                 <div class="date-navigation">
-                    <button class="nav-btn" onclick="navigatePreviousDay()"><i class="fas fa-chevron-left"></i></button>
-                    <span class="current-date">Loading...</span>
-                    <button class="nav-btn" onclick="navigateNextDay()"><i class="fas fa-chevron-right"></i></button>
+                    <button class="nav-btn" onclick="showNotification('Previous day')"><i class="fas fa-chevron-left"></i></button>
+                    <span class="current-date">Today, March 20, 2024</span>
+                    <button class="nav-btn" onclick="showNotification('Next day')"><i class="fas fa-chevron-right"></i></button>
                 </div>
             </div>
 
@@ -621,53 +621,6 @@
         // Simple working JavaScript - NO EXTERNAL DEPENDENCIES
         console.log('Script starting...');
         
-        // Date navigation functionality
-        let currentDate = new Date();
-
-        function updateDateDisplay() {
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const dateString = currentDate.toLocaleDateString('en-US', options);
-            
-            // Update all date displays
-            const dateElements = document.querySelectorAll('.current-date');
-            dateElements.forEach(element => {
-                element.textContent = dateString;
-            });
-        }
-
-        function navigatePreviousDay() {
-            currentDate.setDate(currentDate.getDate() - 1);
-            updateDateDisplay();
-            showNotification('Navigated to previous day');
-            
-            // Clear the plan when changing dates
-            if (document.getElementById('focus-input')) {
-                clearPlan();
-            }
-        }
-
-        function navigateNextDay() {
-            currentDate.setDate(currentDate.getDate() + 1);
-            updateDateDisplay();
-            showNotification('Navigated to next day');
-            
-            // Clear the plan when changing dates
-            if (document.getElementById('focus-input')) {
-                clearPlan();
-            }
-        }
-
-        function navigateToToday() {
-            currentDate = new Date();
-            updateDateDisplay();
-            showNotification('Navigated to today');
-            
-            // Clear the plan when changing dates
-            if (document.getElementById('focus-input')) {
-                clearPlan();
-            }
-        }
-        
         function showNotification(message) {
             console.log('Showing notification:', message);
             
@@ -696,13 +649,14 @@
         }
 
         function updateTime() {
+            const timeElements = document.querySelectorAll('.current-time');
             const now = new Date();
             const timeString = now.toLocaleTimeString('en-US', { 
                 hour: 'numeric', 
                 minute: '2-digit',
                 hour12: true 
             });
-            const timeElements = document.querySelectorAll('.current-time');
+            
             timeElements.forEach(element => {
                 element.textContent = timeString;
             });
@@ -717,9 +671,6 @@
 
         function init() {
             console.log('Initializing app...');
-            
-            // Initialize date display immediately
-            updateDateDisplay();
             
             // Navigation items
             const navItems = document.querySelectorAll('.nav-item');
@@ -759,187 +710,9 @@
                         <div class="content-header">
                             <h1>Welcome Back!</h1>
                             <div class="date-navigation">
-                                <button class="nav-btn" onclick="navigatePreviousDay()"><i class="fas fa-chevron-left"></i></button>
-                                <span class="current-date">Loading...</span>
-                                <button class="nav-btn" onclick="navigateNextDay()"><i class="fas fa-chevron-right"></i></button>
-                            </div>
-                        </div>
-                        
-                        <div class="dashboard-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 32px;">
-                            <div class="dashboard-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px;">
-                                <h3>Today's Progress</h3>
-                                <div class="progress-stats" style="display: flex; justify-content: space-between; margin-top: 16px;">
-                                    <div class="stat" style="text-align: center;">
-                                        <span class="stat-number" style="display: block; font-size: 2rem; font-weight: 700; color: var(--primary-color);">8</span>
-                                        <span class="stat-label" style="font-size: 0.875rem; color: var(--text-secondary);">Tasks Completed</span>
-                                    </div>
-                                    <div class="stat" style="text-align: center;">
-                                        <span class="stat-number" style="display: block; font-size: 2rem; font-weight: 700; color: var(--primary-color);">3</span>
-                                        <span class="stat-label" style="font-size: 0.875rem; color: var(--text-secondary);">In Progress</span>
-                                    </div>
-                                    <div class="stat" style="text-align: center;">
-                                        <span class="stat-number" style="display: block; font-size: 2rem; font-weight: 700; color: var(--primary-color);">2</span>
-                                        <span class="stat-label" style="font-size: 0.875rem; color: var(--text-secondary);">Upcoming</span>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="dashboard-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px;">
-                                <h3>Weekly Overview</h3>
-                                <div class="week-progress" style="margin-top: 16px;">
-                                    <div class="progress-bar" style="width: 100%; height: 8px; background: var(--border-color); border-radius: 4px; margin-bottom: 8px;">
-                                        <div class="progress-fill" style="height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); border-radius: 4px; width: 65%;"></div>
-                                    </div>
-                                    <span style="font-size: 0.875rem; color: var(--text-secondary);">65% Complete</span>
-                                </div>
-                            </div>
-                            
-                            <div class="dashboard-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px;">
-                                <h3>Focus Time</h3>
-                                <div class="focus-stats" style="margin-top: 16px; text-align: center;">
-                                    <span class="focus-time" style="display: block; font-size: 2rem; font-weight: 700; color: var(--primary-color);">4h 32m</span>
-                                    <span class="focus-label" style="font-size: 0.875rem; color: var(--text-secondary);">Total focus time today</span>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    break;
-                    
-                case 'focus':
-                    mainContent.innerHTML = `
-                        <div class="content-header">
-                            <h1>Focus Mode</h1>
-                            <button class="focus-toggle-btn" style="background: var(--primary-color); color: white; border: none; border-radius: var(--radius); padding: 12px 24px; cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 8px;" onclick="toggleFocusTimer()">
-                                <i class="fas fa-play"></i> Start Focus Session
-                            </button>
-                        </div>
-                        
-                        <div class="focus-container" style="max-width: 600px; margin: 0 auto; text-align: center;">
-                            <div class="focus-timer" style="margin-bottom: 48px;">
-                                <div class="timer-display" style="font-size: 4rem; font-weight: 700; color: var(--primary-color); margin-bottom: 24px;" id="timer-display">25:00</div>
-                                <div class="timer-controls" style="display: flex; justify-content: center; gap: 16px;">
-                                    <button class="timer-btn" style="width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--border-color); background: var(--surface); cursor: pointer; transition: var(--transition);" onclick="startTimer()"><i class="fas fa-play"></i></button>
-                                    <button class="timer-btn" style="width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--border-color); background: var(--surface); cursor: pointer; transition: var(--transition);" onclick="pauseTimer()"><i class="fas fa-pause"></i></button>
-                                    <button class="timer-btn" style="width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--border-color); background: var(--surface); cursor: pointer; transition: var(--transition);" onclick="resetTimer()"><i class="fas fa-redo"></i></button>
-                                </div>
-                            </div>
-                            
-                            <div class="focus-task" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-bottom: 32px;">
-                                <h3>Current Task</h3>
-                                <p class="focus-task-description" style="margin-top: 8px;">Product roadmap planning and prioritization</p>
-                            </div>
-                            
-                            <div class="focus-settings" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; text-align: left;">
-                                <h3>Focus Settings</h3>
-                                <div class="setting-item" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                                    <label style="font-weight: 500;">Session Duration</label>
-                                    <select style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: var(--radius); background: var(--surface);" onchange="changeSessionDuration()">
-                                        <option>25 minutes</option>
-                                        <option>45 minutes</option>
-                                        <option>60 minutes</option>
-                                    </select>
-                                </div>
-                                <div class="setting-item" style="display: flex; justify-content: space-between; align-items: center;">
-                                    <label style="font-weight: 500;">Break Duration</label>
-                                    <select style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: var(--radius); background: var(--surface);">
-                                        <option>5 minutes</option>
-                                        <option>10 minutes</option>
-                                        <option>15 minutes</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    break;
-                    
-                case 'daily-task-list':
-                    mainContent.innerHTML = `
-                        <div class="content-header">
-                            <h1>Daily Task List</h1>
-                            <button class="add-task-btn" style="background: var(--primary-color); color: white; border: none; border-radius: var(--radius); padding: 12px 24px; cursor: pointer; font-weight: 500;" onclick="showNotification('Add task feature coming soon!')">
-                                <i class="fas fa-plus"></i> Add Task
-                            </button>
-                        </div>
-                        
-                        <div class="task-list-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
-                            <div class="task-section">
-                                <h3>To Do</h3>
-                                <div class="task-group" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 16px; min-height: 200px;">
-                                    <div class="task-item" onclick="toggleTask(this)" style="display: flex; gap: 16px; padding: 16px; border-radius: var(--radius); margin-bottom: 8px; transition: var(--transition); cursor: pointer;">
-                                        <div class="task-checkbox" style="margin-right: 12px;"><input type="checkbox"></div>
-                                        <div class="task-content" style="flex: 1;">
-                                            <p class="task-description" style="font-weight: 500; margin-bottom: 8px;">Review Q1 goals and set OKRs for Q2</p>
-                                            <div class="task-meta" style="display: flex; gap: 12px; align-items: center;">
-                                                <span class="task-duration" style="color: var(--text-secondary); font-size: 0.875rem;">1h</span>
-                                                <span class="task-project" style="background: var(--background); padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; color: var(--primary-color);">Product</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="task-item" onclick="toggleTask(this)" style="display: flex; gap: 16px; padding: 16px; border-radius: var(--radius); margin-bottom: 8px; transition: var(--transition); cursor: pointer;">
-                                        <div class="task-checkbox" style="margin-right: 12px;"><input type="checkbox"></div>
-                                        <div class="task-content" style="flex: 1;">
-                                            <p class="task-description" style="font-weight: 500; margin-bottom: 8px;">Competitive analysis and market research</p>
-                                            <div class="task-meta" style="display: flex; gap: 12px; align-items: center;">
-                                                <span class="task-duration" style="color: var(--text-secondary); font-size: 0.875rem;">2h</span>
-                                                <span class="task-project" style="background: var(--background); padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; color: var(--primary-color);">Growth</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="task-section">
-                                <h3>In Progress</h3>
-                                <div class="task-group" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 16px; min-height: 200px;">
-                                    <div class="task-item" onclick="toggleTask(this)" style="display: flex; gap: 16px; padding: 16px; border-radius: var(--radius); margin-bottom: 8px; transition: var(--transition); cursor: pointer;">
-                                        <div class="task-checkbox" style="margin-right: 12px;"><input type="checkbox"></div>
-                                        <div class="task-content" style="flex: 1;">
-                                            <p class="task-description" style="font-weight: 500; margin-bottom: 8px;">Product roadmap planning and prioritization</p>
-                                            <div class="task-meta" style="display: flex; gap: 12px; align-items: center;">
-                                                <span class="task-duration" style="color: var(--text-secondary); font-size: 0.875rem;">2h</span>
-                                                <span class="task-project" style="background: var(--background); padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; color: var(--primary-color);">Product</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="task-section">
-                                <h3>Completed</h3>
-                                <div class="task-group" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 16px; min-height: 200px;">
-                                    <div class="task-item completed" onclick="toggleTask(this)" style="display: flex; gap: 16px; padding: 16px; border-radius: var(--radius); margin-bottom: 8px; transition: var(--transition); cursor: pointer; opacity: 0.6;">
-                                        <div class="task-checkbox" style="margin-right: 12px;"><input type="checkbox" checked></div>
-                                        <div class="task-content" style="flex: 1;">
-                                            <p class="task-description" style="font-weight: 500; margin-bottom: 8px; text-decoration: line-through;">Team standup and project sync</p>
-                                            <div class="task-meta" style="display: flex; gap: 12px; align-items: center;">
-                                                <span class="task-duration" style="color: var(--text-secondary); font-size: 0.875rem;">30m</span>
-                                                <span class="task-project" style="background: var(--background); padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; color: var(--primary-color);">Product</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    break;
-            }
-            
-            // Update date display after content is loaded
-            setTimeout(updateDateDisplay, 10);
-        }
-
-        function updateMainContent(page) {
-            const mainContent = document.querySelector('.main-content');
-            
-            switch(page) {
-                case 'home':
-                    mainContent.innerHTML = `
-                        <div class="content-header">
-                            <h1>Welcome Back!</h1>
-                            <div class="date-navigation">
-                                <button class="nav-btn" onclick="navigatePreviousDay()"><i class="fas fa-chevron-left"></i></button>
-                                <span class="current-date">Loading...</span>
-                                <button class="nav-btn" onclick="navigateNextDay()"><i class="fas fa-chevron-right"></i></button>
+                                <button class="nav-btn" onclick="showNotification('Previous day')"><i class="fas fa-chevron-left"></i></button>
+                                <span class="current-date">Today, March 20, 2024</span>
+                                <button class="nav-btn" onclick="showNotification('Next day')"><i class="fas fa-chevron-right"></i></button>
                             </div>
                         </div>
                         
@@ -1386,28 +1159,6 @@
             timerInterval = null;
             timeLeft = 25 * 60;
             updateTimerDisplay();
-            function showNotification(message) {
-                const notification = document.createElement('div');
-                notification.style.cssText = `
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    background: var(--primary-color);
-                    color: white;
-                    padding: 12px 20px;
-                    border-radius: var(--radius);
-                    z-index: 1000;
-                    animation: slideIn 0.3s ease;
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                `;
-                notification.textContent = message;
-                document.body.appendChild(notification);
-                
-                setTimeout(() => {
-                    notification.style.animation = 'slideOut 0.3s ease';
-                    setTimeout(() => notification.remove(), 300);
-                }, 3000);
-            }
         }
 
         function updateTimerDisplay() {

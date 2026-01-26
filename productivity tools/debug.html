@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Test</title>
+</head>
+<body>
+    <h1>Debug Test Page</h1>
+    <button onclick="testClick()">Test Click</button>
+    <div id="output"></div>
+    
+    <script>
+        function testClick() {
+            alert('JavaScript is working!');
+            document.getElementById('output').innerHTML = 'Button clicked at ' + new Date();
+        }
+        
+        console.log('Debug page loaded');
+    </script>
+</body>
+</html>
