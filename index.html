@@ -915,36 +915,37 @@
                 }
                 
                 if (nav) {
-                    const viewDataBtn = document.createElement('button');
+                    const viewDataBtn = document.createElement('div');
                     viewDataBtn.className = 'view-data-btn nav-item';
                     viewDataBtn.textContent = '📊 View Saved Data';
+                    viewDataBtn.setAttribute('data-page', 'view-saved-data');
                     viewDataBtn.style.cssText = `
-                        background: #6366F1;
-                        color: white;
-                        border: none;
+                        padding: 12px 16px;
                         border-radius: 8px;
-                        padding: 10px 16px;
                         cursor: pointer;
-                        font-size: 0.9rem;
+                        font-weight: 500;
                         transition: all 0.3s ease;
+                        background: rgba(255, 255, 255, 0.1);
+                        color: white;
+                        border: 1px solid rgba(255, 255, 255, 0.2);
+                        backdrop-filter: blur(10px);
                         display: inline-block;
                         text-align: center;
-                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                         margin-left: 8px;
                         vertical-align: middle;
                     `;
                     viewDataBtn.onmouseover = () => {
-                        viewDataBtn.style.background = '#4F46E5';
+                        viewDataBtn.style.background = 'rgba(255, 255, 255, 0.2)';
                         viewDataBtn.style.transform = 'translateY(-2px)';
                     };
                     viewDataBtn.onmouseout = () => {
-                        viewDataBtn.style.background = '#6366F1';
+                        viewDataBtn.style.background = 'rgba(255, 255, 255, 0.1)';
                         viewDataBtn.style.transform = 'translateY(0)';
                     };
                     viewDataBtn.onclick = showSavedData;
                     
                     // Try to find Home button and add after it
-                    const homeBtn = Array.from(nav.querySelectorAll('button, .nav-item, a')).find(btn => 
+                    const homeBtn = Array.from(nav.querySelectorAll('.nav-item')).find(btn => 
                         btn.textContent.includes('Home') || btn.dataset.page === 'home'
                     );
                     if (homeBtn) {
@@ -957,6 +958,33 @@
                     }
                 } else {
                     // Fallback: add to body if no nav found
+                    const viewDataBtn = document.createElement('div');
+                    viewDataBtn.className = 'view-data-btn nav-item';
+                    viewDataBtn.textContent = '📊 View Saved Data';
+                    viewDataBtn.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        padding: 12px 16px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-weight: 500;
+                        transition: all 0.3s ease;
+                        background: #6366F1;
+                        color: white;
+                        border: none;
+                        z-index: 1000;
+                        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                    `;
+                    viewDataBtn.onmouseover = () => {
+                        viewDataBtn.style.background = '#4F46E5';
+                        viewDataBtn.style.transform = 'translateY(-2px)';
+                    };
+                    viewDataBtn.onmouseout = () => {
+                        viewDataBtn.style.background = '#6366F1';
+                        viewDataBtn.style.transform = 'translateY(0)';
+                    };
+                    viewDataBtn.onclick = showSavedData;
                     document.body.appendChild(viewDataBtn);
                     console.log('Button added to body as fallback');
                 }
