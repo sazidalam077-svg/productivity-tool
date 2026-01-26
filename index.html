@@ -902,25 +902,25 @@
                 const existingBtn = document.querySelector('.view-data-btn');
                 if (existingBtn) return; // Don't remove if it already exists
                 
-                // Find main content area and add button below Save Weekly Review button
-                const mainContent = document.querySelector('.main-content');
-                if (mainContent) {
+                // Find navigation area and add button near Home button
+                const nav = document.querySelector('.nav');
+                if (nav) {
                     const viewDataBtn = document.createElement('button');
-                    viewDataBtn.className = 'view-data-btn';
+                    viewDataBtn.className = 'view-data-btn nav-item';
                     viewDataBtn.textContent = '📊 View Saved Data';
                     viewDataBtn.style.cssText = `
                         background: #6366F1;
                         color: white;
                         border: none;
-                        border-radius: 6px;
-                        padding: 12px 20px;
+                        border-radius: 8px;
+                        padding: 10px 16px;
                         cursor: pointer;
                         font-size: 0.9rem;
                         transition: all 0.3s ease;
-                        margin: 20px 0;
                         display: inline-block;
                         text-align: center;
                         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                        margin-left: 8px;
                     `;
                     viewDataBtn.onmouseover = () => {
                         viewDataBtn.style.background = '#4F46E5';
@@ -932,15 +932,15 @@
                     };
                     viewDataBtn.onclick = showSavedData;
                     
-                    // Find the Save Weekly Review button and add button after it
-                    const saveWeeklyReviewBtn = Array.from(mainContent.querySelectorAll('button')).find(btn => 
-                        btn.textContent.includes('Save Weekly Review')
+                    // Find the Home button and add button after it
+                    const homeBtn = Array.from(nav.querySelectorAll('.nav-item')).find(btn => 
+                        btn.textContent.includes('Home') || btn.dataset.page === 'home'
                     );
-                    if (saveWeeklyReviewBtn) {
-                        saveWeeklyReviewBtn.insertAdjacentElement('afterend', viewDataBtn);
+                    if (homeBtn) {
+                        homeBtn.insertAdjacentElement('afterend', viewDataBtn);
                     } else {
-                        // If no specific button found, add to the end of main content
-                        mainContent.appendChild(viewDataBtn);
+                        // If no Home button found, add to the end of nav
+                        nav.appendChild(viewDataBtn);
                     }
                 }
             }
