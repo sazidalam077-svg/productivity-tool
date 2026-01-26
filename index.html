@@ -292,12 +292,6 @@
                 if (!isTimerRunning) {
                     isTimerRunning = true;
                     
-                    // Update single control button
-                    const controlBtn = document.querySelector('.focus-control-btn');
-                    if (controlBtn) {
-                        controlBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
-                    }
-                    
                     focusTimer = setInterval(() => {
                         if (focusTimeLeft > 0) {
                             focusTimeLeft--;
@@ -319,12 +313,6 @@
                     clearInterval(focusTimer);
                     isTimerRunning = false;
                     
-                    // Update single control button
-                    const controlBtn = document.querySelector('.focus-control-btn');
-                    if (controlBtn) {
-                        controlBtn.innerHTML = '<i class="fas fa-play"></i> Start';
-                    }
-                    
                     console.log('Focus timer paused');
                 }
             }
@@ -335,12 +323,6 @@
                 isFocusSession = true;
                 focusTimeLeft = sessionDuration * 60;
                 updateTimerDisplay();
-                
-                // Update single control button
-                const controlBtn = document.querySelector('.focus-control-btn');
-                if (controlBtn) {
-                    controlBtn.innerHTML = '<i class="fas fa-play"></i> Start';
-                }
                 
                 console.log('Focus timer reset');
             }
