@@ -504,40 +504,11 @@
                 addViewDataButton(); // Ensure button always exists
             }, 1000);
             
-            // Add event listener only once to prevent duplicates
-            let eventListenerAttached = false;
+            // Remove all existing event listeners to prevent duplicates
+            document.removeEventListener('click', handleButtonClicks);
             
-            // Handle all interactive elements
-            document.addEventListener('click', function(e) {
-                if (eventListenerAttached) return; // Prevent multiple executions
-                eventListenerAttached = true;
-                
-                setTimeout(() => {
-                    eventListenerAttached = false; // Reset after processing
-                }, 100);
-                
-                // Task items
-                if (e.target.closest('.task-item')) {
-                    const taskItem = e.target.closest('.task-item');
-                    taskItem.classList.toggle('completed');
-                    console.log('Task clicked:', taskItem);
-                }
-                
-                // Focus timer buttons
-                if (e.target.closest('.focus-btn')) {
-                    console.log('Focus button clicked');
-                }
-                
-                // Add buttons
-                if (e.target.closest('.add-btn')) {
-                    console.log('Add button clicked');
-                }
-                
-                // Save buttons
-                if (e.target.closest('.save-btn')) {
-                    console.log('Save button clicked');
-                }
-                
+            // Handle all interactive elements with a single event listener
+            function handleButtonClicks(e) {
                 // Daily Planning - Add Schedule Item
                 if (e.target.closest('button') && e.target.textContent.includes('Add Schedule Item')) {
                     e.preventDefault();
@@ -555,6 +526,7 @@
                         scheduleList.appendChild(newItem);
                         console.log('Schedule item added');
                     }
+                    return;
                 }
                 
                 // Daily Planning - Add Task
@@ -573,9 +545,10 @@
                         tasksList.appendChild(newItem);
                         console.log('Task added');
                     }
+                    return;
                 }
                 
-                // Daily Highlights - Add buttons
+                // Daily Highlights - Add Win
                 if (e.target.closest('button') && e.target.textContent.includes('Add Win')) {
                     e.preventDefault();
                     e.stopPropagation();
@@ -591,8 +564,10 @@
                         winsList.appendChild(newItem);
                         console.log('Win added');
                     }
+                    return;
                 }
                 
+                // Daily Highlights - Add Insight
                 if (e.target.closest('button') && e.target.textContent.includes('Add Insight')) {
                     e.preventDefault();
                     e.stopPropagation();
@@ -608,8 +583,10 @@
                         insightsList.appendChild(newItem);
                         console.log('Insight added');
                     }
+                    return;
                 }
                 
+                // Daily Highlights - Add Gratitude
                 if (e.target.closest('button') && e.target.textContent.includes('Add Gratitude')) {
                     e.preventDefault();
                     e.stopPropagation();
@@ -625,6 +602,7 @@
                         gratitudeList.appendChild(newItem);
                         console.log('Gratitude added');
                     }
+                    return;
                 }
                 
                 // Weekly Planning - Add Goal
@@ -648,9 +626,10 @@
                         goalsList.appendChild(newItem);
                         console.log('Weekly goal added');
                     }
+                    return;
                 }
                 
-                // Weekly Review - Add buttons
+                // Weekly Review - Add Achievement
                 if (e.target.closest('button') && e.target.textContent.includes('Add Achievement')) {
                     e.preventDefault();
                     e.stopPropagation();
@@ -666,8 +645,10 @@
                         achievementsList.appendChild(newItem);
                         console.log('Achievement added');
                     }
+                    return;
                 }
                 
+                // Weekly Review - Add Lesson
                 if (e.target.closest('button') && e.target.textContent.includes('Add Lesson')) {
                     e.preventDefault();
                     e.stopPropagation();
@@ -683,8 +664,10 @@
                         lessonsList.appendChild(newItem);
                         console.log('Lesson added');
                     }
+                    return;
                 }
                 
+                // Weekly Review - Add Improvement
                 if (e.target.closest('button') && e.target.textContent.includes('Add Improvement')) {
                     e.preventDefault();
                     e.stopPropagation();
@@ -700,12 +683,28 @@
                         improvementsList.appendChild(newItem);
                         console.log('Improvement added');
                     }
+                    return;
                 }
                 
-                // SAVE BUTTONS
+                // Remove buttons
+                if (e.target.closest('button') && e.target.textContent.includes('Remove')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.target.parentElement.remove();
+                    console.log('Item removed');
+                    return;
+                }
+            }
+            
+            // Add the single event listener
+            document.addEventListener('click', handleButtonClicks);
+            
+            // SAVE BUTTONS FUNCTIONALITY
+            document.addEventListener('click', function(e) {
+                // Save Highlights
                 if (e.target.closest('button') && e.target.textContent.includes('Save Highlights')) {
                     e.preventDefault();
-                    // Collect all highlights data
+                    e.stopPropagation();
                     const wins = [];
                     const insights = [];
                     const gratitude = [];
@@ -722,7 +721,6 @@
                         if (input.value.trim()) gratitude.push(input.value.trim());
                     });
                     
-                    // Save to localStorage
                     const highlightsData = {
                         date: new Date().toISOString(),
                         wins: wins,
@@ -732,9 +730,8 @@
                     
                     localStorage.setItem('daily-highlights', JSON.stringify(highlightsData));
                     
-                    // Show success message
                     const successMsg = document.createElement('div');
-                    successMsg.textContent = 'Highlights saved successfully! 🌟';
+                    successMsg.textContent = 'Highlights saved successfully! �';
                     successMsg.style.cssText = `
                         position: fixed;
                         top: 20px;
@@ -754,283 +751,7 @@
                     
                     console.log('Highlights saved:', highlightsData);
                 }
-                
-                if (e.target.closest('button') && e.target.textContent.includes('Save Weekly Plan')) {
-                    e.preventDefault();
-                    // Collect weekly plan data
-                    const goals = [];
-                    
-                    document.querySelectorAll('#weekly-goals .goal-item').forEach(item => {
-                        const checkbox = item.querySelector('input[type="checkbox"]');
-                        const text = item.querySelector('input[type="text"]');
-                        const priority = item.querySelector('select');
-                        
-                        if (text && text.value.trim()) {
-                            goals.push({
-                                text: text.value.trim(),
-                                priority: priority ? priority.value : 'Medium',
-                                completed: checkbox ? checkbox.checked : false
-                            });
-                        }
-                    });
-                    
-                    // Save to localStorage
-                    const weeklyPlanData = {
-                        date: new Date().toISOString(),
-                        goals: goals
-                    };
-                    
-                    localStorage.setItem('weekly-plan', JSON.stringify(weeklyPlanData));
-                    
-                    // Show success message
-                    const successMsg = document.createElement('div');
-                    successMsg.textContent = 'Weekly plan saved successfully! 📋';
-                    successMsg.style.cssText = `
-                        position: fixed;
-                        top: 20px;
-                        right: 20px;
-                        background: #3B82F6;
-                        color: white;
-                        padding: 12px 20px;
-                        border-radius: 8px;
-                        z-index: 1000;
-                        animation: slideIn 0.3s ease;
-                    `;
-                    document.body.appendChild(successMsg);
-                    
-                    setTimeout(() => {
-                        successMsg.remove();
-                    }, 3000);
-                    
-                    console.log('Weekly plan saved:', weeklyPlanData);
-                }
-                
-                if (e.target.closest('button') && e.target.textContent.includes('Save Weekly Review')) {
-                    e.preventDefault();
-                    // Collect weekly review data
-                    const achievements = [];
-                    const lessons = [];
-                    const improvements = [];
-                    
-                    document.querySelectorAll('#achievements-list input').forEach(input => {
-                        if (input.value.trim()) achievements.push(input.value.trim());
-                    });
-                    
-                    document.querySelectorAll('#lessons-list input').forEach(input => {
-                        if (input.value.trim()) lessons.push(input.value.trim());
-                    });
-                    
-                    document.querySelectorAll('#improvements-list input').forEach(input => {
-                        if (input.value.trim()) improvements.push(input.value.trim());
-                    });
-                    
-                    // Save to localStorage
-                    const weeklyReviewData = {
-                        date: new Date().toISOString(),
-                        achievements: achievements,
-                        lessons: lessons,
-                        improvements: improvements
-                    };
-                    
-                    localStorage.setItem('weekly-review', JSON.stringify(weeklyReviewData));
-                    
-                    // Show success message
-                    const successMsg = document.createElement('div');
-                    successMsg.textContent = 'Weekly review saved successfully! 📊';
-                    successMsg.style.cssText = `
-                        position: fixed;
-                        top: 20px;
-                        right: 20px;
-                        background: #8B5CF6;
-                        color: white;
-                        padding: 12px 20px;
-                        border-radius: 8px;
-                        z-index: 1000;
-                        animation: slideIn 0.3s ease;
-                    `;
-                    document.body.appendChild(successMsg);
-                    
-                    setTimeout(() => {
-                        successMsg.remove();
-                    }, 3000);
-                    
-                    console.log('Weekly review saved:', weeklyReviewData);
-                }
-                
-                if (e.target.closest('button') && e.target.textContent.includes('Complete Daily Shutdown')) {
-                    e.preventDefault();
-                    // Collect shutdown data
-                    const accomplishments = document.getElementById('accomplishments')?.value || '';
-                    const lessons = document.getElementById('lessons')?.value || '';
-                    const priorities = document.getElementById('priorities')?.value || '';
-                    
-                    // Save to localStorage
-                    const shutdownData = {
-                        date: new Date().toISOString(),
-                        accomplishments: accomplishments,
-                        lessons: lessons,
-                        priorities: priorities
-                    };
-                    
-                    localStorage.setItem('daily-shutdown', JSON.stringify(shutdownData));
-                    
-                    // Show success message
-                    const successMsg = document.createElement('div');
-                    successMsg.textContent = 'Daily shutdown completed! Great job today! 🎉';
-                    successMsg.style.cssText = `
-                        position: fixed;
-                        top: 20px;
-                        right: 20px;
-                        background: #F59E0B;
-                        color: white;
-                        padding: 12px 20px;
-                        border-radius: 8px;
-                        z-index: 1000;
-                        animation: slideIn 0.3s ease;
-                    `;
-                    document.body.appendChild(successMsg);
-                    
-                    setTimeout(() => {
-                        successMsg.remove();
-                    }, 3000);
-                    
-                    console.log('Daily shutdown saved:', shutdownData);
-                }
-                
-                // Remove buttons
-                if (e.target.closest('button') && e.target.textContent.includes('Remove')) {
-                    e.preventDefault();
-                    e.target.parentElement.remove();
-                    console.log('Item removed');
-                }
             });
-            
-            // Initialize everything
-            updateAllDateDisplays(0);
-            makeCalendarWork();
-            addCalendarItemFunctionality();
-            
-            // Add "View Saved Data" button immediately
-            addViewDataButton();
-            
-            // Function to add view data button
-            function addViewDataButton() {
-                // Only add button if it doesn't exist
-                const existingBtn = document.querySelector('.view-data-btn');
-                if (existingBtn) return; // Don't remove if it already exists
-                
-                // Find calendar sidebar and add button at the bottom
-                const calendarSidebar = document.querySelector('.calendar-sidebar');
-                if (calendarSidebar) {
-                    const viewDataBtn = document.createElement('button');
-                    viewDataBtn.className = 'view-data-btn';
-                    viewDataBtn.textContent = '📊 View Saved Data';
-                    viewDataBtn.style.cssText = `
-                        background: #6366F1;
-                        color: white;
-                        border: none;
-                        border-radius: 6px;
-                        padding: 10px 16px;
-                        cursor: pointer;
-                        font-size: 0.85rem;
-                        transition: all 0.3s ease;
-                        width: 100%;
-                        margin: 20px auto;
-                        display: block;
-                        text-align: center;
-                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                        position: sticky;
-                        bottom: 20px;
-                    `;
-                    viewDataBtn.onmouseover = () => {
-                        viewDataBtn.style.background = '#4F46E5';
-                        viewDataBtn.style.transform = 'translateY(-2px)';
-                    };
-                    viewDataBtn.onmouseout = () => {
-                        viewDataBtn.style.background = '#6366F1';
-                        viewDataBtn.style.transform = 'translateY(0)';
-                    };
-                    viewDataBtn.onclick = showSavedData;
-                    
-                    // Add button at the bottom of the sidebar
-                    calendarSidebar.appendChild(viewDataBtn);
-                }
-            }
-            
-            // Also add button when navigation changes, but only if it doesn't exist
-            document.addEventListener('click', function(e) {
-                if (e.target.closest('.nav-item')) {
-                    setTimeout(() => {
-                        if (!document.querySelector('.view-data-btn')) {
-                            addViewDataButton();
-                        }
-                    }, 500);
-                }
-            });
-            
-            // Keep updating to ensure everything works
-            setInterval(() => {
-                updateAllDateDisplays(currentDayOffset);
-                makeCalendarWork();
-                addCalendarItemFunctionality();
-                addViewDataButton(); // Ensure button always exists
-            }, 1000);
-            
-            // Function to show all saved data
-            function showSavedData() {
-                const highlights = localStorage.getItem('daily-highlights');
-                const weeklyPlan = localStorage.getItem('weekly-plan');
-                const weeklyReview = localStorage.getItem('weekly-review');
-                const dailyShutdown = localStorage.getItem('daily-shutdown');
-                
-                let dataHtml = `
-                    <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 24px; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); z-index: 10000; max-width: 600px; max-height: 80vh; overflow-y: auto;">
-                        <h2 style="margin-top: 0; color: #1F2937;">📊 Saved Data</h2>
-                        <button onclick="this.parentElement.remove()" style="position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 24px; cursor: pointer;">×</button>
-                        
-                        <div style="margin-bottom: 20px;">
-                            <h3 style="color: #059669;">🌟 Daily Highlights</h3>
-                            <pre style="background: #F3F4F6; padding: 12px; border-radius: 6px; white-space: pre-wrap;">${highlights ? JSON.stringify(JSON.parse(highlights), null, 2) : 'No data saved'}</pre>
-                        </div>
-                        
-                        <div style="margin-bottom: 20px;">
-                            <h3 style="color: #2563EB;">📋 Weekly Plan</h3>
-                            <pre style="background: #F3F4F6; padding: 12px; border-radius: 6px; white-space: pre-wrap;">${weeklyPlan ? JSON.stringify(JSON.parse(weeklyPlan), null, 2) : 'No data saved'}</pre>
-                        </div>
-                        
-                        <div style="margin-bottom: 20px;">
-                            <h3 style="color: #7C3AED;">📊 Weekly Review</h3>
-                            <pre style="background: #F3F4F6; padding: 12px; border-radius: 6px; white-space: pre-wrap;">${weeklyReview ? JSON.stringify(JSON.parse(weeklyReview), null, 2) : 'No data saved'}</pre>
-                        </div>
-                        
-                        <div style="margin-bottom: 20px;">
-                            <h3 style="color: #D97706;">🎯 Daily Shutdown</h3>
-                            <pre style="background: #F3F4F6; padding: 12px; border-radius: 6px; white-space: pre-wrap;">${dailyShutdown ? JSON.stringify(JSON.parse(dailyShutdown), null, 2) : 'No data saved'}</pre>
-                        </div>
-                        
-                        <div style="margin-top: 20px;">
-                            <button onclick="clearAllData()" style="background: #EF4444; color: white; border: none; border-radius: 6px; padding: 8px 16px; cursor: pointer; margin-right: 8px;">Clear All Data</button>
-                            <button onclick="this.parentElement.remove()" style="background: #6B7280; color: white; border: none; border-radius: 6px; padding: 8px 16px; cursor: pointer;">Close</button>
-                        </div>
-                    </div>
-                `;
-                
-                const modal = document.createElement('div');
-                modal.innerHTML = dataHtml;
-                document.body.appendChild(modal);
-            }
-            
-            // Function to clear all saved data
-            window.clearAllData = function() {
-                if (confirm('Are you sure you want to clear all saved data? This cannot be undone.')) {
-                    localStorage.removeItem('daily-highlights');
-                    localStorage.removeItem('weekly-plan');
-                    localStorage.removeItem('weekly-review');
-                    localStorage.removeItem('daily-shutdown');
-                    alert('All saved data has been cleared!');
-                    document.querySelector('[style*="position: fixed"]').remove();
-                }
-            }
         });
     </script>
 </body>
