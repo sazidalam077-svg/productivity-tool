@@ -1065,7 +1065,28 @@ document.addEventListener('DOMContentLoaded', () => {
     app.updateTime();
 });
 
-// Supporting functions for new features
+// Simple, working calendar fix
+document.addEventListener('DOMContentLoaded', function() {
+    // Calendar items click handler
+    const scheduledItems = document.querySelectorAll('.scheduled-item');
+    scheduledItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const checkIcon = this.querySelector('.fa-check');
+            if (checkIcon) {
+                const isCompleted = checkIcon.style.opacity === '1';
+                checkIcon.style.opacity = isCompleted ? '0' : '1';
+                
+                if (isCompleted) {
+                    this.style.background = 'linear-gradient(135deg, #FEF3C7, #FDE68A)';
+                    alert('Morning routine marked as incomplete');
+                } else {
+                    this.style.background = 'linear-gradient(135deg, #D1FAE5, #A7F3D0)';
+                    alert('Morning routine completed! Great start to the day! 🌅');
+                }
+            }
+        });
+    });
+});
 
 function addWeeklyGoal() {
     const goalsList = document.getElementById('weekly-goals');
