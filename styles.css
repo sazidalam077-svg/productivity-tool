@@ -21,22 +21,30 @@
 
 /* Productivity Tools Logo Box */
 .logo {
-    background: #4F46E5;
-    color: white;
-    padding: 15px 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    text-align: center;
+    background: #4F46E5 !important;
+    color: white !important;
+    padding: 15px 20px !important;
+    border-radius: 8px !important;
+    margin-bottom: 20px !important;
+    text-align: center !important;
 }
 
 .logo i {
-    font-size: 1.5rem;
-    margin-right: 10px;
+    font-size: 1.5rem !important;
+    margin-right: 10px !important;
+    color: white !important;
 }
 
 .logo span {
-    font-size: 1.2rem;
-    font-weight: 600;
+    font-size: 1.2rem !important;
+    font-weight: 600 !important;
+    color: white !important;
+}
+
+.logo h2 {
+    color: white !important;
+    font-size: 1.2rem !important;
+    font-weight: 600 !important;
 }
 
 * {
