@@ -738,6 +738,148 @@
                     return;
                 }
                 
+                // Save Weekly Plan
+                if (e.target.closest('button') && e.target.textContent.includes('Save Weekly Plan')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const goals = [];
+                    
+                    document.querySelectorAll('#weekly-goals .goal-item').forEach(item => {
+                        const checkbox = item.querySelector('input[type="checkbox"]');
+                        const text = item.querySelector('input[type="text"]');
+                        const priority = item.querySelector('select');
+                        
+                        if (text && text.value.trim()) {
+                            goals.push({
+                                text: text.value.trim(),
+                                priority: priority ? priority.value : 'Medium',
+                                completed: checkbox ? checkbox.checked : false
+                            });
+                        }
+                    });
+                    
+                    const weeklyPlanData = {
+                        date: new Date().toISOString(),
+                        goals: goals
+                    };
+                    
+                    localStorage.setItem('weekly-plan', JSON.stringify(weeklyPlanData));
+                    
+                    const successMsg = document.createElement('div');
+                    successMsg.textContent = 'Weekly plan saved successfully! 📋';
+                    successMsg.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: #3B82F6;
+                        color: white;
+                        padding: 12px 20px;
+                        border-radius: 8px;
+                        z-index: 1000;
+                        animation: slideIn 0.3s ease;
+                    `;
+                    document.body.appendChild(successMsg);
+                    
+                    setTimeout(() => {
+                        successMsg.remove();
+                    }, 3000);
+                    
+                    console.log('Weekly plan saved:', weeklyPlanData);
+                    return;
+                }
+                
+                // Save Weekly Review
+                if (e.target.closest('button') && e.target.textContent.includes('Save Weekly Review')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const achievements = [];
+                    const lessons = [];
+                    const improvements = [];
+                    
+                    document.querySelectorAll('#achievements-list input').forEach(input => {
+                        if (input.value.trim()) achievements.push(input.value.trim());
+                    });
+                    
+                    document.querySelectorAll('#lessons-list input').forEach(input => {
+                        if (input.value.trim()) lessons.push(input.value.trim());
+                    });
+                    
+                    document.querySelectorAll('#improvements-list input').forEach(input => {
+                        if (input.value.trim()) improvements.push(input.value.trim());
+                    });
+                    
+                    const weeklyReviewData = {
+                        date: new Date().toISOString(),
+                        achievements: achievements,
+                        lessons: lessons,
+                        improvements: improvements
+                    };
+                    
+                    localStorage.setItem('weekly-review', JSON.stringify(weeklyReviewData));
+                    
+                    const successMsg = document.createElement('div');
+                    successMsg.textContent = 'Weekly review saved successfully! 📊';
+                    successMsg.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: #8B5CF6;
+                        color: white;
+                        padding: 12px 20px;
+                        border-radius: 8px;
+                        z-index: 1000;
+                        animation: slideIn 0.3s ease;
+                    `;
+                    document.body.appendChild(successMsg);
+                    
+                    setTimeout(() => {
+                        successMsg.remove();
+                    }, 3000);
+                    
+                    console.log('Weekly review saved:', weeklyReviewData);
+                    return;
+                }
+                
+                // Complete Daily Shutdown
+                if (e.target.closest('button') && e.target.textContent.includes('Complete Daily Shutdown')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const accomplishments = document.getElementById('accomplishments')?.value || '';
+                    const lessons = document.getElementById('lessons')?.value || '';
+                    const priorities = document.getElementById('priorities')?.value || '';
+                    
+                    const shutdownData = {
+                        date: new Date().toISOString(),
+                        accomplishments: accomplishments,
+                        lessons: lessons,
+                        priorities: priorities
+                    };
+                    
+                    localStorage.setItem('daily-shutdown', JSON.stringify(shutdownData));
+                    
+                    const successMsg = document.createElement('div');
+                    successMsg.textContent = 'Daily shutdown completed! Great job today! 🎉';
+                    successMsg.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: #F59E0B;
+                        color: white;
+                        padding: 12px 20px;
+                        border-radius: 8px;
+                        z-index: 1000;
+                        animation: slideIn 0.3s ease;
+                    `;
+                    document.body.appendChild(successMsg);
+                    
+                    setTimeout(() => {
+                        successMsg.remove();
+                    }, 3000);
+                    
+                    console.log('Daily shutdown saved:', shutdownData);
+                    return;
+                }
+                
                 // Remove buttons
                 if (e.target.closest('button') && e.target.textContent.includes('Remove')) {
                     e.preventDefault();
