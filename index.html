@@ -280,6 +280,149 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Complete fix loaded');
             
+            // Focus Timer Variables and Functions
+            let focusTimer = null;
+            let focusTimeLeft = 25 * 60; // 25 minutes in seconds
+            let sessionDuration = 25; // minutes
+            let breakDuration = 5; // minutes
+            let isFocusSession = true;
+            let isTimerRunning = false;
+            
+            function startFocusTimer() {
+                if (!isTimerRunning) {
+                    isTimerRunning = true;
+                    const startBtn = document.querySelector('.focus-toggle-btn');
+                    const playBtns = document.querySelectorAll('.timer-btn .fa-play');
+                    
+                    if (startBtn) {
+                        startBtn.innerHTML = '<i class="fas fa-pause"></i> Pause Focus Session';
+                    }
+                    playBtns.forEach(btn => {
+                        btn.className = 'fas fa-pause';
+                    });
+                    
+                    focusTimer = setInterval(() => {
+                        if (focusTimeLeft > 0) {
+                            focusTimeLeft--;
+                            updateTimerDisplay();
+                        } else {
+                            // Timer finished
+                            clearInterval(focusTimer);
+                            isTimerRunning = false;
+                            handleTimerComplete();
+                        }
+                    }, 1000);
+                    
+                    console.log('Focus timer started');
+                }
+            }
+            
+            function pauseFocusTimer() {
+                if (isTimerRunning) {
+                    clearInterval(focusTimer);
+                    isTimerRunning = false;
+                    
+                    const startBtn = document.querySelector('.focus-toggle-btn');
+                    const pauseBtns = document.querySelectorAll('.timer-btn .fa-pause');
+                    
+                    if (startBtn) {
+                        startBtn.innerHTML = '<i class="fas fa-play"></i> Start Focus Session';
+                    }
+                    pauseBtns.forEach(btn => {
+                        btn.className = 'fas fa-play';
+                    });
+                    
+                    console.log('Focus timer paused');
+                }
+            }
+            
+            function resetFocusTimer() {
+                clearInterval(focusTimer);
+                isTimerRunning = false;
+                isFocusSession = true;
+                focusTimeLeft = sessionDuration * 60;
+                updateTimerDisplay();
+                
+                const startBtn = document.querySelector('.focus-toggle-btn');
+                const pauseBtns = document.querySelectorAll('.timer-btn .fa-pause');
+                
+                if (startBtn) {
+                    startBtn.innerHTML = '<i class="fas fa-play"></i> Start Focus Session';
+                }
+                pauseBtns.forEach(btn => {
+                    btn.className = 'fas fa-play';
+                });
+                
+                console.log('Focus timer reset');
+            }
+            
+            function updateTimerDisplay() {
+                const timerDisplay = document.querySelector('.timer-display');
+                if (timerDisplay) {
+                    const minutes = Math.floor(focusTimeLeft / 60);
+                    const seconds = focusTimeLeft % 60;
+                    timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+            }
+            
+            function updateSessionDuration(duration) {
+                const minutes = parseInt(duration);
+                if (!isNaN(minutes)) {
+                    sessionDuration = minutes;
+                    if (isFocusSession && !isTimerRunning) {
+                        focusTimeLeft = sessionDuration * 60;
+                        updateTimerDisplay();
+                    }
+                    console.log('Session duration updated to:', minutes, 'minutes');
+                }
+            }
+            
+            function updateBreakDuration(duration) {
+                const minutes = parseInt(duration);
+                if (!isNaN(minutes)) {
+                    breakDuration = minutes;
+                    if (!isFocusSession && !isTimerRunning) {
+                        focusTimeLeft = breakDuration * 60;
+                        updateTimerDisplay();
+                    }
+                    console.log('Break duration updated to:', minutes, 'minutes');
+                }
+            }
+            
+            function handleTimerComplete() {
+                const message = isFocusSession ? 
+                    'Focus session complete! Time for a break!' : 
+                    'Break complete! Ready for another focus session?';
+                
+                const notification = document.createElement('div');
+                notification.textContent = message;
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: #10B981;
+                    color: white;
+                    padding: 20px 30px;
+                    border-radius: 12px;
+                    z-index: 10000;
+                    font-size: 1.1rem;
+                    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+                `;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.remove();
+                }, 5000);
+                
+                // Switch between focus and break
+                isFocusSession = !isFocusSession;
+                focusTimeLeft = isFocusSession ? sessionDuration * 60 : breakDuration * 60;
+                updateTimerDisplay();
+                
+                console.log('Timer completed, switching to:', isFocusSession ? 'focus' : 'break');
+            }
+            
             let currentDayOffset = 0;
             
             // Update ALL date displays
@@ -877,6 +1020,49 @@
                     }, 3000);
                     
                     console.log('Daily shutdown saved:', shutdownData);
+                    return;
+                }
+                
+                // Focus mode functionality
+                if (e.target.closest('button') && (
+                    e.target.textContent.includes('Start Focus Session') || 
+                    e.target.textContent.includes('Pause Focus Session') ||
+                    e.target.closest('.focus-toggle-btn') || 
+                    e.target.closest('.timer-btn')
+                )) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const btn = e.target.closest('button');
+                    if (btn.textContent.includes('Start Focus Session') || btn.closest('.focus-toggle-btn')) {
+                        startFocusTimer();
+                    } else if (btn.textContent.includes('Pause Focus Session')) {
+                        pauseFocusTimer();
+                    } else if (btn.closest('.timer-btn')) {
+                        const icon = btn.querySelector('i');
+                        if (icon && icon.classList.contains('fa-play')) {
+                            startFocusTimer();
+                        } else if (icon && icon.classList.contains('fa-pause')) {
+                            pauseFocusTimer();
+                        } else if (icon && icon.classList.contains('fa-redo')) {
+                            resetFocusTimer();
+                        }
+                    }
+                    return;
+                }
+                
+                // Duration change functionality
+                if (e.target.closest('select') && e.target.closest('.focus-settings')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const select = e.target;
+                    const label = select.previousElementSibling;
+                    if (label && label.textContent.includes('Session Duration')) {
+                        updateSessionDuration(select.value);
+                    } else if (label && label.textContent.includes('Break Duration')) {
+                        updateBreakDuration(select.value);
+                    }
                     return;
                 }
                 
