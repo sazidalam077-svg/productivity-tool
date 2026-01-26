@@ -969,10 +969,89 @@ class ProductivityApp {
 
 // Initialize the app when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    new ProductivityApp();
+    const app = new ProductivityApp();
+    
+    // Initialize date display
+    updateDateDisplay();
+    
+    // Update time every minute
+    setInterval(updateTime, 60000);
+    updateTime();
 });
 
+// Date navigation functionality
+let currentDate = new Date();
+
+function updateDateDisplay() {
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const dateString = currentDate.toLocaleDateString('en-US', options);
+    
+    // Update all date displays
+    const dateElements = document.querySelectorAll('.current-date');
+    dateElements.forEach(element => {
+        element.textContent = dateString;
+    });
+}
+
+function navigatePreviousDay() {
+    currentDate.setDate(currentDate.getDate() - 1);
+    updateDateDisplay();
+    showNotification('Navigated to previous day');
+}
+
+function navigateNextDay() {
+    currentDate.setDate(currentDate.getDate() + 1);
+    updateDateDisplay();
+    showNotification('Navigated to next day');
+}
+
+function updateTime() {
+    const timeElements = document.querySelectorAll('.current-time');
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('en-US', { 
+        hour: 'numeric', 
+        minute: '2-digit',
+        hour12: true 
+    });
+    
+    timeElements.forEach(element => {
+        element.textContent = timeString;
+    });
+}
+
 // Supporting functions for new features
+function showNotification(message) {
+    console.log('Notification:', message);
+    
+    // Remove existing notifications
+    const existing = document.querySelectorAll('.notification');
+    existing.forEach(n => n.remove());
+    
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--primary-color);
+        color: white;
+        padding: 12px 20px;
+        border-radius: var(--radius);
+        z-index: 1000;
+        animation: slideIn 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    }, 3000);
+}
+
 function toggleRoutineItem(element) {
     const checkIcon = element.querySelector('.fa-check');
     if (checkIcon) {
