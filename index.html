@@ -437,6 +437,157 @@
             // Initialize dark mode on load
             initDarkMode();
             
+            // View Saved Data Function
+            function showSavedData() {
+                const savedData = {
+                    'Daily Highlights': localStorage.getItem('daily-highlights'),
+                    'Weekly Plan': localStorage.getItem('weekly-plan'),
+                    'Weekly Review': localStorage.getItem('weekly-review'),
+                    'Daily Shutdown': localStorage.getItem('daily-shutdown')
+                };
+                
+                let modalContent = '<div class="saved-data-modal"><h2>📊 Saved Data</h2>';
+                
+                for (const [section, data] of Object.entries(savedData)) {
+                    if (data) {
+                        try {
+                            const parsedData = JSON.parse(data);
+                            modalContent += `
+                                <div class="data-section">
+                                    <h3>${section}</h3>
+                                    <div class="data-content">
+                                        ${formatSavedData(parsedData, section)}
+                                    </div>
+                                </div>
+                            `;
+                        } catch (e) {
+                            modalContent += `
+                                <div class="data-section">
+                                    <h3>${section}</h3>
+                                    <div class="data-content">
+                                        <pre>${data}</pre>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+                }
+                
+                if (!Object.values(savedData).some(data => data)) {
+                    modalContent += '<p>No saved data found. Start adding data to see it here!</p>';
+                }
+                
+                modalContent += '</div>';
+                
+                // Create modal
+                const modal = document.createElement('div');
+                modal.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.5);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 10000;
+                `;
+                
+                modal.innerHTML = `
+                    <div style="background: var(--surface); padding: 30px; border-radius: 12px; max-width: 600px; max-height: 80vh; overflow-y: auto; position: relative;">
+                        ${modalContent}
+                        <button onclick="this.closest('div[style*=fixed]').remove()" style="position: absolute; top: 15px; right: 15px; background: var(--accent-color); color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center;">×</button>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+                
+                // Close modal when clicking outside
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.remove();
+                    }
+                });
+                
+                console.log('View Saved Data modal opened');
+            }
+            
+            function formatSavedData(data, section) {
+                if (Array.isArray(data)) {
+                    return data.map((item, index) => 
+                        typeof item === 'object' ? 
+                            `<div style="margin-bottom: 10px; padding: 10px; background: var(--background); border-radius: 6px;">
+                                <strong>Item ${index + 1}:</strong><br>
+                                ${Object.entries(item).map(([key, value]) => 
+                                    `${key}: ${value || 'N/A'}`
+                                ).join('<br>')}
+                            </div>` :
+                            `<div style="margin-bottom: 5px; padding: 8px; background: var(--background); border-radius: 4px;">${index + 1}. ${item || 'N/A'}</div>`
+                    ).join('');
+                } else if (typeof data === 'object') {
+                    return Object.entries(data).map(([key, value]) => {
+                        if (Array.isArray(value)) {
+                            return `<div style="margin-bottom: 15px;">
+                                <strong>${key}:</strong>
+                                <div style="margin-left: 20px; margin-top: 5px;">
+                                    ${value.map((item, i) => `<div style="padding: 5px; background: var(--background); border-radius: 4px; margin-bottom: 3px;">${i + 1}. ${item || 'N/A'}</div>`).join('')}
+                                </div>
+                            </div>`;
+                        } else {
+                            return `<div style="margin-bottom: 10px;"><strong>${key}:</strong> ${value || 'N/A'}</div>`;
+                        }
+                    }).join('');
+                } else {
+                    return `<div style="padding: 10px; background: var(--background); border-radius: 6px;">${data}</div>`;
+                }
+            }
+            
+            // Add View Saved Data button
+            function addViewDataButton() {
+                // Remove existing button if present
+                const existingBtn = document.querySelector('.view-data-btn');
+                if (existingBtn) {
+                    existingBtn.remove();
+                }
+                
+                // Create new button
+                const viewDataBtn = document.createElement('div');
+                viewDataBtn.className = 'view-data-btn';
+                viewDataBtn.innerHTML = '📊 View Saved Data';
+                viewDataBtn.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    background: var(--primary-color);
+                    color: white;
+                    padding: 12px 20px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-size: 14px;
+                    font-weight: 500;
+                    box-shadow: var(--shadow-lg);
+                    transition: var(--transition);
+                    z-index: 1000;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                `;
+                
+                viewDataBtn.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                    this.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)';
+                });
+                
+                viewDataBtn.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = 'var(--shadow-lg)';
+                });
+                
+                document.body.appendChild(viewDataBtn);
+                console.log('View Saved Data button added');
+            }
+            
             // SIMPLE DIRECT EVENT HANDLER
             document.addEventListener('click', function(e) {
                 // Dark Mode Toggle
@@ -692,7 +843,18 @@
                     }
                     return;
                 }
+                
+                // View Saved Data button
+                if (e.target.closest('.view-data-btn')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showSavedData();
+                    return;
+                }
             });
+            
+            // Add View Saved Data button immediately
+            addViewDataButton();
             
             let currentDayOffset = 0;
             
