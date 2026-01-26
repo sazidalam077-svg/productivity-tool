@@ -446,70 +446,129 @@
             // Add Schedule Item Function
             window.addScheduleItem = function() {
                 const container = document.createElement('div');
+                container.className = 'add-item-form';
                 container.style.cssText = `
-                    margin-top: 10px;
-                    padding: 16px;
-                    background: var(--background);
-                    border-radius: 8px;
-                    border: 1px solid var(--border-color);
+                    margin-top: 15px;
+                    padding: 20px;
+                    background: var(--surface);
+                    border: 2px solid var(--primary-color);
+                    border-radius: 12px;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
                 `;
                 
                 const timeInput = document.createElement('input');
                 timeInput.type = 'time';
-                timeInput.placeholder = 'Time';
+                timeInput.placeholder = 'Select time';
                 timeInput.style.cssText = `
                     width: 100%;
-                    padding: 10px;
-                    border: 1px solid var(--border-color);
-                    border-radius: 6px;
-                    margin-bottom: 10px;
-                    background: var(--surface);
+                    padding: 12px 16px;
+                    border: 2px solid var(--border-color);
+                    border-radius: 8px;
+                    margin-bottom: 15px;
+                    background: var(--background);
                     color: var(--text-primary);
                     font-size: 14px;
+                    font-weight: 500;
+                    transition: all 0.3s ease;
+                    box-sizing: border-box;
                 `;
+                timeInput.addEventListener('focus', function() {
+                    this.style.borderColor = 'var(--primary-color)';
+                    this.style.boxShadow = '0 0 0 3px rgba(79, 70, 229, 0.1)';
+                });
+                timeInput.addEventListener('blur', function() {
+                    this.style.borderColor = 'var(--border-color)';
+                    this.style.boxShadow = 'none';
+                });
                 
                 const descInput = document.createElement('input');
                 descInput.type = 'text';
-                descInput.placeholder = 'Schedule item description...';
+                descInput.placeholder = 'What do you need to do?';
                 descInput.style.cssText = `
                     width: 100%;
-                    padding: 10px;
-                    border: 1px solid var(--border-color);
-                    border-radius: 6px;
-                    margin-bottom: 10px;
-                    background: var(--surface);
+                    padding: 12px 16px;
+                    border: 2px solid var(--border-color);
+                    border-radius: 8px;
+                    margin-bottom: 15px;
+                    background: var(--background);
                     color: var(--text-primary);
                     font-size: 14px;
+                    font-weight: 500;
+                    transition: all 0.3s ease;
+                    box-sizing: border-box;
+                `;
+                descInput.addEventListener('focus', function() {
+                    this.style.borderColor = 'var(--primary-color)';
+                    this.style.boxShadow = '0 0 0 3px rgba(79, 70, 229, 0.1)';
+                });
+                descInput.addEventListener('blur', function() {
+                    this.style.borderColor = 'var(--border-color)';
+                    this.style.boxShadow = 'none';
+                });
+                
+                const buttonContainer = document.createElement('div');
+                buttonContainer.style.cssText = `
+                    display: flex;
+                    gap: 10px;
+                    justify-content: flex-end;
                 `;
                 
                 const saveBtn = document.createElement('button');
-                saveBtn.textContent = 'Save';
+                saveBtn.innerHTML = '<i class="fas fa-check"></i> Save';
                 saveBtn.style.cssText = `
-                    background: var(--primary-color);
+                    background: linear-gradient(135deg, var(--primary-color), #4338ca);
                     color: white;
                     border: none;
-                    border-radius: 6px;
-                    padding: 8px 16px;
-                    margin-right: 8px;
+                    border-radius: 8px;
+                    padding: 10px 20px;
                     cursor: pointer;
-                    font-weight: 500;
+                    font-weight: 600;
+                    font-size: 14px;
+                    transition: all 0.3s ease;
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
                 `;
+                saveBtn.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                    this.style.boxShadow = '0 4px 12px rgba(79, 70, 229, 0.3)';
+                });
+                saveBtn.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = 'none';
+                });
                 
                 const cancelBtn = document.createElement('button');
-                cancelBtn.textContent = 'Cancel';
+                cancelBtn.innerHTML = '<i class="fas fa-times"></i> Cancel';
                 cancelBtn.style.cssText = `
-                    background: var(--surface);
+                    background: var(--background);
                     color: var(--text-primary);
-                    border: 1px solid var(--border-color);
-                    border-radius: 6px;
-                    padding: 8px 16px;
+                    border: 2px solid var(--border-color);
+                    border-radius: 8px;
+                    padding: 10px 20px;
                     cursor: pointer;
+                    font-weight: 600;
+                    font-size: 14px;
+                    transition: all 0.3s ease;
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
                 `;
+                cancelBtn.addEventListener('mouseenter', function() {
+                    this.style.borderColor = 'var(--accent-color)';
+                    this.style.color = 'var(--accent-color)';
+                });
+                cancelBtn.addEventListener('mouseleave', function() {
+                    this.style.borderColor = 'var(--border-color)';
+                    this.style.color = 'var(--text-primary)';
+                });
+                
+                buttonContainer.appendChild(saveBtn);
+                buttonContainer.appendChild(cancelBtn);
                 
                 container.appendChild(timeInput);
                 container.appendChild(descInput);
-                container.appendChild(saveBtn);
-                container.appendChild(cancelBtn);
+                container.appendChild(buttonContainer);
                 
                 const clickedBtn = event.target;
                 clickedBtn.parentNode.insertBefore(container, clickedBtn.nextSibling);
@@ -519,7 +578,6 @@
                     const time = timeInput.value.trim();
                     const desc = descInput.value.trim();
                     if (time && desc) {
-                        // Get existing schedule items
                         const scheduleItems = JSON.parse(localStorage.getItem('daily-schedule') || '[]');
                         scheduleItems.push({
                             time: time,
@@ -529,19 +587,17 @@
                         localStorage.setItem('daily-schedule', JSON.stringify(scheduleItems));
                         
                         const successMsg = document.createElement('div');
-                        successMsg.textContent = '✅ Schedule item added successfully!';
+                        successMsg.innerHTML = '<i class="fas fa-check-circle"></i> Schedule item added successfully!';
                         successMsg.style.cssText = `
                             color: #10B981;
-                            font-weight: 500;
-                            margin-top: 8px;
+                            font-weight: 600;
+                            margin-top: 15px;
                             font-size: 14px;
+                            display: flex;
+                            align-items: center;
+                            gap: 8px;
                         `;
                         container.appendChild(successMsg);
-                        
-                        timeInput.remove();
-                        descInput.remove();
-                        saveBtn.remove();
-                        cancelBtn.remove();
                         
                         setTimeout(() => {
                             container.remove();
@@ -557,74 +613,134 @@
             // Add Task Item Function
             window.addTaskItem = function() {
                 const container = document.createElement('div');
+                container.className = 'add-item-form';
                 container.style.cssText = `
-                    margin-top: 10px;
-                    padding: 16px;
-                    background: var(--background);
-                    border-radius: 8px;
-                    border: 1px solid var(--border-color);
+                    margin-top: 15px;
+                    padding: 20px;
+                    background: var(--surface);
+                    border: 2px solid var(--primary-color);
+                    border-radius: 12px;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
                 `;
                 
                 const taskInput = document.createElement('input');
                 taskInput.type = 'text';
-                taskInput.placeholder = 'Task description...';
+                taskInput.placeholder = 'What needs to be done?';
                 taskInput.style.cssText = `
                     width: 100%;
-                    padding: 10px;
-                    border: 1px solid var(--border-color);
-                    border-radius: 6px;
-                    margin-bottom: 10px;
-                    background: var(--surface);
+                    padding: 12px 16px;
+                    border: 2px solid var(--border-color);
+                    border-radius: 8px;
+                    margin-bottom: 15px;
+                    background: var(--background);
                     color: var(--text-primary);
                     font-size: 14px;
+                    font-weight: 500;
+                    transition: all 0.3s ease;
+                    box-sizing: border-box;
                 `;
+                taskInput.addEventListener('focus', function() {
+                    this.style.borderColor = 'var(--primary-color)';
+                    this.style.boxShadow = '0 0 0 3px rgba(79, 70, 229, 0.1)';
+                });
+                taskInput.addEventListener('blur', function() {
+                    this.style.borderColor = 'var(--border-color)';
+                    this.style.boxShadow = 'none';
+                });
                 
                 const prioritySelect = document.createElement('select');
                 prioritySelect.style.cssText = `
                     width: 100%;
-                    padding: 10px;
-                    border: 1px solid var(--border-color);
-                    border-radius: 6px;
-                    margin-bottom: 10px;
-                    background: var(--surface);
+                    padding: 12px 16px;
+                    border: 2px solid var(--border-color);
+                    border-radius: 8px;
+                    margin-bottom: 15px;
+                    background: var(--background);
                     color: var(--text-primary);
                     font-size: 14px;
+                    font-weight: 500;
+                    transition: all 0.3s ease;
+                    cursor: pointer;
+                    box-sizing: border-box;
                 `;
+                prioritySelect.addEventListener('focus', function() {
+                    this.style.borderColor = 'var(--primary-color)';
+                    this.style.boxShadow = '0 0 0 3px rgba(79, 70, 229, 0.1)';
+                });
+                prioritySelect.addEventListener('blur', function() {
+                    this.style.borderColor = 'var(--border-color)';
+                    this.style.boxShadow = 'none';
+                });
                 prioritySelect.innerHTML = `
-                    <option value="">Select Priority</option>
-                    <option value="high">High Priority</option>
-                    <option value="medium">Medium Priority</option>
-                    <option value="low">Low Priority</option>
+                    <option value="">Select priority level</option>
+                    <option value="high">🔴 High Priority</option>
+                    <option value="medium">🟡 Medium Priority</option>
+                    <option value="low">🟢 Low Priority</option>
+                `;
+                
+                const buttonContainer = document.createElement('div');
+                buttonContainer.style.cssText = `
+                    display: flex;
+                    gap: 10px;
+                    justify-content: flex-end;
                 `;
                 
                 const saveBtn = document.createElement('button');
-                saveBtn.textContent = 'Save';
+                saveBtn.innerHTML = '<i class="fas fa-check"></i> Save';
                 saveBtn.style.cssText = `
-                    background: var(--primary-color);
+                    background: linear-gradient(135deg, var(--primary-color), #4338ca);
                     color: white;
                     border: none;
-                    border-radius: 6px;
-                    padding: 8px 16px;
-                    margin-right: 8px;
+                    border-radius: 8px;
+                    padding: 10px 20px;
                     cursor: pointer;
-                    font-weight: 500;
+                    font-weight: 600;
+                    font-size: 14px;
+                    transition: all 0.3s ease;
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
                 `;
+                saveBtn.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                    this.style.boxShadow = '0 4px 12px rgba(79, 70, 229, 0.3)';
+                });
+                saveBtn.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = 'none';
+                });
                 
                 const cancelBtn = document.createElement('button');
-                cancelBtn.textContent = 'Cancel';
+                cancelBtn.innerHTML = '<i class="fas fa-times"></i> Cancel';
                 cancelBtn.style.cssText = `
-                    background: var(--surface);
+                    background: var(--background);
                     color: var(--text-primary);
-                    border: 1px solid var(--border-color);
-                    border-radius: 6px;
-                    padding: 8px 16px;
+                    border: 2px solid var(--border-color);
+                    border-radius: 8px;
+                    padding: 10px 20px;
                     cursor: pointer;
+                    font-weight: 600;
+                    font-size: 14px;
+                    transition: all 0.3s ease;
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
                 `;
+                cancelBtn.addEventListener('mouseenter', function() {
+                    this.style.borderColor = 'var(--accent-color)';
+                    this.style.color = 'var(--accent-color)';
+                });
+                cancelBtn.addEventListener('mouseleave', function() {
+                    this.style.borderColor = 'var(--border-color)';
+                    this.style.color = 'var(--text-primary)';
+                });
+                
+                buttonContainer.appendChild(saveBtn);
+                buttonContainer.appendChild(cancelBtn);
                 
                 container.appendChild(taskInput);
                 container.appendChild(prioritySelect);
-                container.appendChild(saveBtn);
-                container.appendChild(cancelBtn);
+                container.appendChild(buttonContainer);
                 
                 const clickedBtn = event.target;
                 clickedBtn.parentNode.insertBefore(container, clickedBtn.nextSibling);
@@ -634,7 +750,6 @@
                     const task = taskInput.value.trim();
                     const priority = prioritySelect.value;
                     if (task) {
-                        // Get existing tasks
                         const tasks = JSON.parse(localStorage.getItem('daily-tasks') || '[]');
                         tasks.push({
                             task: task,
@@ -645,19 +760,17 @@
                         localStorage.setItem('daily-tasks', JSON.stringify(tasks));
                         
                         const successMsg = document.createElement('div');
-                        successMsg.textContent = '✅ Task added successfully!';
+                        successMsg.innerHTML = '<i class="fas fa-check-circle"></i> Task added successfully!';
                         successMsg.style.cssText = `
                             color: #10B981;
-                            font-weight: 500;
-                            margin-top: 8px;
+                            font-weight: 600;
+                            margin-top: 15px;
                             font-size: 14px;
+                            display: flex;
+                            align-items: center;
+                            gap: 8px;
                         `;
                         container.appendChild(successMsg);
-                        
-                        taskInput.remove();
-                        prioritySelect.remove();
-                        saveBtn.remove();
-                        cancelBtn.remove();
                         
                         setTimeout(() => {
                             container.remove();
