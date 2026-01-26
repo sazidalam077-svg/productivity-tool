@@ -851,6 +851,85 @@
                     showSavedData();
                     return;
                 }
+                
+                // Save Daily Highlights button
+                if (e.target.closest('button') && e.target.textContent.includes('Save Daily Highlights')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const wins = Array.from(document.querySelectorAll('.win-input')).map(input => input.value).filter(v => v);
+                    const others = Array.from(document.querySelectorAll('.other-input')).map(input => input.value).filter(v => v);
+                    
+                    const highlightsData = {
+                        date: new Date().toISOString(),
+                        wins: wins,
+                        others: others
+                    };
+                    
+                    localStorage.setItem('daily-highlights', JSON.stringify(highlightsData));
+                    
+                    const successMsg = document.createElement('div');
+                    successMsg.textContent = 'Daily highlights saved successfully! ⭐';
+                    successMsg.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: #F59E0B;
+                        color: white;
+                        padding: 12px 20px;
+                        border-radius: 8px;
+                        z-index: 1000;
+                        animation: slideIn 0.3s ease;
+                    `;
+                    document.body.appendChild(successMsg);
+                    
+                    setTimeout(() => {
+                        successMsg.remove();
+                    }, 3000);
+                    
+                    console.log('Daily highlights saved:', highlightsData);
+                    return;
+                }
+                
+                // Save Daily Shutdown button
+                if (e.target.closest('button') && e.target.textContent.includes('Complete Daily Shutdown')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const accomplishments = document.getElementById('accomplishments')?.value || '';
+                    const lessons = document.getElementById('lessons')?.value || '';
+                    const priorities = document.getElementById('priorities')?.value || '';
+                    
+                    const shutdownData = {
+                        date: new Date().toISOString(),
+                        accomplishments: accomplishments,
+                        lessons: lessons,
+                        priorities: priorities
+                    };
+                    
+                    localStorage.setItem('daily-shutdown', JSON.stringify(shutdownData));
+                    
+                    const successMsg = document.createElement('div');
+                    successMsg.textContent = 'Daily shutdown completed! Great job today! 🎉';
+                    successMsg.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: #F59E0B;
+                        color: white;
+                        padding: 12px 20px;
+                        border-radius: 8px;
+                        z-index: 1000;
+                        animation: slideIn 0.3s ease;
+                    `;
+                    document.body.appendChild(successMsg);
+                    
+                    setTimeout(() => {
+                        successMsg.remove();
+                    }, 3000);
+                    
+                    console.log('Daily shutdown saved:', shutdownData);
+                    return;
+                }
             });
             
             // Add View Saved Data button immediately
