@@ -686,21 +686,6 @@
                     return;
                 }
                 
-                // Remove buttons
-                if (e.target.closest('button') && e.target.textContent.includes('Remove')) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    e.target.parentElement.remove();
-                    console.log('Item removed');
-                    return;
-                }
-            }
-            
-            // Add the single event listener
-            document.addEventListener('click', handleButtonClicks);
-            
-            // SAVE BUTTONS FUNCTIONALITY
-            document.addEventListener('click', function(e) {
                 // Save Highlights
                 if (e.target.closest('button') && e.target.textContent.includes('Save Highlights')) {
                     e.preventDefault();
@@ -731,7 +716,7 @@
                     localStorage.setItem('daily-highlights', JSON.stringify(highlightsData));
                     
                     const successMsg = document.createElement('div');
-                    successMsg.textContent = 'Highlights saved successfully! �';
+                    successMsg.textContent = 'Highlights saved successfully! 🌟';
                     successMsg.style.cssText = `
                         position: fixed;
                         top: 20px;
@@ -750,8 +735,143 @@
                     }, 3000);
                     
                     console.log('Highlights saved:', highlightsData);
+                    return;
+                }
+                
+                // Remove buttons
+                if (e.target.closest('button') && e.target.textContent.includes('Remove')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.target.parentElement.remove();
+                    console.log('Item removed');
+                    return;
+                }
+            }
+            
+            // Add the single event listener
+            document.addEventListener('click', handleButtonClicks);
+            
+            // Add View Saved Data button immediately
+            addViewDataButton();
+            
+            // Function to add view data button
+            function addViewDataButton() {
+                // Only add button if it doesn't exist
+                const existingBtn = document.querySelector('.view-data-btn');
+                if (existingBtn) return; // Don't remove if it already exists
+                
+                // Find calendar sidebar and add button at the bottom
+                const calendarSidebar = document.querySelector('.calendar-sidebar');
+                if (calendarSidebar) {
+                    const viewDataBtn = document.createElement('button');
+                    viewDataBtn.className = 'view-data-btn';
+                    viewDataBtn.textContent = '📊 View Saved Data';
+                    viewDataBtn.style.cssText = `
+                        background: #6366F1;
+                        color: white;
+                        border: none;
+                        border-radius: 6px;
+                        padding: 10px 16px;
+                        cursor: pointer;
+                        font-size: 0.85rem;
+                        transition: all 0.3s ease;
+                        width: 100%;
+                        margin: 20px auto;
+                        display: block;
+                        text-align: center;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                        position: sticky;
+                        bottom: 20px;
+                    `;
+                    viewDataBtn.onmouseover = () => {
+                        viewDataBtn.style.background = '#4F46E5';
+                        viewDataBtn.style.transform = 'translateY(-2px)';
+                    };
+                    viewDataBtn.onmouseout = () => {
+                        viewDataBtn.style.background = '#6366F1';
+                        viewDataBtn.style.transform = 'translateY(0)';
+                    };
+                    viewDataBtn.onclick = showSavedData;
+                    
+                    // Add button at the bottom of the sidebar
+                    calendarSidebar.appendChild(viewDataBtn);
+                }
+            }
+            
+            // Function to show all saved data
+            function showSavedData() {
+                const highlights = localStorage.getItem('daily-highlights');
+                const weeklyPlan = localStorage.getItem('weekly-plan');
+                const weeklyReview = localStorage.getItem('weekly-review');
+                const dailyShutdown = localStorage.getItem('daily-shutdown');
+                
+                let dataHtml = `
+                    <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 24px; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); z-index: 10000; max-width: 600px; max-height: 80vh; overflow-y: auto;">
+                        <h2 style="margin-top: 0; color: #1F2937;">📊 Saved Data</h2>
+                        <button onclick="this.parentElement.remove()" style="position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 24px; cursor: pointer;">×</button>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <h3 style="color: #059669;">🌟 Daily Highlights</h3>
+                            <pre style="background: #F3F4F6; padding: 12px; border-radius: 6px; white-space: pre-wrap;">${highlights ? JSON.stringify(JSON.parse(highlights), null, 2) : 'No data saved'}</pre>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <h3 style="color: #2563EB;">📋 Weekly Plan</h3>
+                            <pre style="background: #F3F4F6; padding: 12px; border-radius: 6px; white-space: pre-wrap;">${weeklyPlan ? JSON.stringify(JSON.parse(weeklyPlan), null, 2) : 'No data saved'}</pre>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <h3 style="color: #7C3AED;">📊 Weekly Review</h3>
+                            <pre style="background: #F3F4F6; padding: 12px; border-radius: 6px; white-space: pre-wrap;">${weeklyReview ? JSON.stringify(JSON.parse(weeklyReview), null, 2) : 'No data saved'}</pre>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <h3 style="color: #D97706;">🎯 Daily Shutdown</h3>
+                            <pre style="background: #F3F4F6; padding: 12px; border-radius: 6px; white-space: pre-wrap;">${dailyShutdown ? JSON.stringify(JSON.parse(dailyShutdown), null, 2) : 'No data saved'}</pre>
+                        </div>
+                        
+                        <div style="margin-top: 20px;">
+                            <button onclick="clearAllData()" style="background: #EF4444; color: white; border: none; border-radius: 6px; padding: 8px 16px; cursor: pointer; margin-right: 8px;">Clear All Data</button>
+                            <button onclick="this.parentElement.remove()" style="background: #6B7280; color: white; border: none; border-radius: 6px; padding: 8px 16px; cursor: pointer;">Close</button>
+                        </div>
+                    </div>
+                `;
+                
+                const modal = document.createElement('div');
+                modal.innerHTML = dataHtml;
+                document.body.appendChild(modal);
+            }
+            
+            // Function to clear all saved data
+            window.clearAllData = function() {
+                if (confirm('Are you sure you want to clear all saved data? This cannot be undone.')) {
+                    localStorage.removeItem('daily-highlights');
+                    localStorage.removeItem('weekly-plan');
+                    localStorage.removeItem('weekly-review');
+                    localStorage.removeItem('daily-shutdown');
+                    alert('All saved data has been cleared!');
+                    document.querySelector('[style*="position: fixed"]').remove();
+                }
+            }
+            
+            // Also add button when navigation changes, but only if it doesn't exist
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.nav-item')) {
+                    setTimeout(() => {
+                        if (!document.querySelector('.view-data-btn')) {
+                            addViewDataButton();
+                        }
+                    }, 500);
                 }
             });
+            
+            // Keep updating to ensure everything works
+            setInterval(() => {
+                updateAllDateDisplays(currentDayOffset);
+                makeCalendarWork();
+                addCalendarItemFunctionality();
+                addViewDataButton(); // Ensure button always exists
+            }, 1000);
         });
     </script>
 </body>
