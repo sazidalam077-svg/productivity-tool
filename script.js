@@ -46,6 +46,13 @@ class ProductivityApp {
             });
         });
 
+        // Scheduled items (routine tasks)
+        document.querySelectorAll('.scheduled-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                toggleRoutineItem(item);
+            });
+        });
+
         // Add task functionality
         this.setupAddTaskButtons();
     }
@@ -925,6 +932,39 @@ class ProductivityApp {
         // Show task details modal or expand task
         console.log('Task details clicked:', taskItem);
     }
+
+    attachEventListeners() {
+        // Task items
+        const taskItems = document.querySelectorAll('.task-item');
+        taskItems.forEach(item => {
+            item.addEventListener('click', function() {
+                this.classList.toggle('completed');
+                const isCompleted = this.classList.contains('completed');
+                showNotification(isCompleted ? 'Task completed!' : 'Task marked as incomplete');
+            });
+        });
+
+        // Date navigation buttons
+        const navBtns = document.querySelectorAll('.nav-btn');
+        navBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const isNext = this.querySelector('.fa-chevron-right');
+                if (isNext) {
+                    navigateNextDay();
+                } else {
+                    navigatePreviousDay();
+                }
+            });
+        });
+
+        // Scheduled items (routine tasks)
+        const scheduledItems = document.querySelectorAll('.scheduled-item');
+        scheduledItems.forEach(item => {
+            item.addEventListener('click', function() {
+                toggleRoutineItem(this);
+            });
+        });
+    }
 }
 
 // Initialize the app when DOM is loaded
@@ -932,8 +972,23 @@ document.addEventListener('DOMContentLoaded', () => {
     new ProductivityApp();
 });
 
-// Add some additional CSS for new components
 // Supporting functions for new features
+function toggleRoutineItem(element) {
+    const checkIcon = element.querySelector('.fa-check');
+    if (checkIcon) {
+        const isCompleted = checkIcon.style.opacity === '1';
+        checkIcon.style.opacity = isCompleted ? '0' : '1';
+        
+        if (isCompleted) {
+            element.style.background = 'linear-gradient(135deg, #FEF3C7, #FDE68A)';
+            showNotification('Morning routine marked as incomplete');
+        } else {
+            element.style.background = 'linear-gradient(135deg, #D1FAE5, #A7F3D0)';
+            showNotification('Morning routine completed! Great start to the day! 🌅');
+        }
+    }
+}
+
 function addHighlight(type) {
     const listId = type + '-list';
     const list = document.getElementById(listId);
