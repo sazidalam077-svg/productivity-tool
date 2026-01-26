@@ -590,11 +590,8 @@
             
             // SIMPLE DIRECT EVENT HANDLER
             document.addEventListener('click', function(e) {
-                console.log('Click detected on:', e.target);
-                
                 // Dark Mode Toggle
                 if (e.target.closest('#darkModeToggle')) {
-                    alert('Dark mode button clicked!');
                     e.preventDefault();
                     e.stopPropagation();
                     toggleDarkMode();
@@ -603,7 +600,6 @@
                 
                 // Focus Toggle Button (Start Focus Session)
                 if (e.target.closest('.focus-toggle-btn')) {
-                    alert('Focus toggle button clicked!');
                     e.preventDefault();
                     e.stopPropagation();
                     console.log('Focus toggle button clicked');
@@ -619,13 +615,6 @@
                         btn.innerHTML = '<i class="fas fa-pause"></i> Pause Focus Session';
                     }
                     return;
-                }
-                
-                // Test: Any button click
-                if (e.target.closest('button')) {
-                    const btn = e.target.closest('button');
-                    alert('Button clicked: ' + btn.textContent);
-                    console.log('Button clicked:', btn.textContent);
                 }
                 
                 // Timer Control Buttons
