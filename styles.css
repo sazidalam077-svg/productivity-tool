@@ -1,17 +1,22 @@
 /* Productivity Tools Header Box */
 .productivity-header {
-    background: #4F46E5;
-    color: white;
-    padding: 15px 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    text-align: center;
+    background: #4F46E5 !important;
+    color: white !important;
+    padding: 15px 20px !important;
+    border-radius: 8px !important;
+    margin-bottom: 20px !important;
+    text-align: center !important;
 }
 
 .productivity-header h1 {
-    margin: 0;
-    font-size: 24px;
-    font-weight: 600;
+    margin: 0 !important;
+    font-size: 24px !important;
+    font-weight: 600 !important;
+    color: white !important;
+}
+
+.content-header .productivity-header h1 {
+    color: white !important;
 }
 
 * {
