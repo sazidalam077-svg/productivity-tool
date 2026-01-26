@@ -162,56 +162,116 @@ class ProductivityApp {
             </div>
             
             <div class="dashboard-grid">
-                <div class="dashboard-card">
-                    <h3>Today's Progress</h3>
+                <div class="dashboard-card today-progress-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Today's Progress</h3>
+                    </div>
                     <div class="progress-stats">
-                        <div class="stat">
-                            <span class="stat-number">8</span>
-                            <span class="stat-label">Tasks Completed</span>
+                        <div class="stat completed-stat">
+                            <div class="stat-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-content">
+                                <span class="stat-number">8</span>
+                                <span class="stat-label">Tasks Completed</span>
+                            </div>
                         </div>
-                        <div class="stat">
-                            <span class="stat-number">3</span>
-                            <span class="stat-label">In Progress</span>
+                        <div class="stat progress-stat">
+                            <div class="stat-icon">
+                                <i class="fas fa-spinner"></i>
+                            </div>
+                            <div class="stat-content">
+                                <span class="stat-number">3</span>
+                                <span class="stat-label">In Progress</span>
+                            </div>
                         </div>
-                        <div class="stat">
-                            <span class="stat-number">12</span>
-                            <span class="stat-label">Total Tasks</span>
+                        <div class="stat total-stat">
+                            <div class="stat-icon">
+                                <i class="fas fa-list-check"></i>
+                            </div>
+                            <div class="stat-content">
+                                <span class="stat-number">12</span>
+                                <span class="stat-label">Total Tasks</span>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="dashboard-card">
-                    <h3>Weekly Overview</h3>
+                <div class="dashboard-card weekly-overview-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-calendar-week"></i>
+                        </div>
+                        <h3>Weekly Overview</h3>
+                    </div>
                     <div class="week-stats">
-                        <div class="stat">
-                            <span class="stat-number">24</span>
-                            <span class="stat-label">Tasks This Week</span>
+                        <div class="stat week-tasks-stat">
+                            <div class="stat-icon">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                            <div class="stat-content">
+                                <span class="stat-number">24</span>
+                                <span class="stat-label">Tasks This Week</span>
+                            </div>
                         </div>
-                        <div class="stat">
-                            <span class="stat-number">18</span>
-                            <span class="stat-label">Completed</span>
+                        <div class="stat completed-stat">
+                            <div class="stat-icon">
+                                <i class="fas fa-check-double"></i>
+                            </div>
+                            <div class="stat-content">
+                                <span class="stat-number">18</span>
+                                <span class="stat-label">Completed</span>
+                            </div>
                         </div>
-                        <div class="stat">
-                            <span class="stat-number">75%</span>
-                            <span class="stat-label">Completion Rate</span>
+                        <div class="stat rate-stat">
+                            <div class="stat-icon">
+                                <i class="fas fa-percentage"></i>
+                            </div>
+                            <div class="stat-content">
+                                <span class="stat-number">75%</span>
+                                <span class="stat-label">Completion Rate</span>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="dashboard-card">
-                    <h3>Focus Time</h3>
+                <div class="dashboard-card focus-time-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <h3>Focus Time</h3>
+                    </div>
                     <div class="focus-stats">
-                        <div class="stat">
-                            <span class="stat-number">4.5h</span>
-                            <span class="stat-label">Today</span>
+                        <div class="stat today-stat">
+                            <div class="stat-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-content">
+                                <span class="stat-number">4.5h</span>
+                                <span class="stat-label">Today</span>
+                            </div>
                         </div>
-                        <div class="stat">
-                            <span class="stat-number">22h</span>
-                            <span class="stat-label">This Week</span>
+                        <div class="stat week-stat">
+                            <div class="stat-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="stat-content">
+                                <span class="stat-number">22h</span>
+                                <span class="stat-label">This Week</span>
+                            </div>
                         </div>
-                        <div class="stat">
-                            <span class="stat-number">92%</span>
-                            <span class="stat-label">Goal Progress</span>
+                        <div class="stat goal-stat">
+                            <div class="stat-icon">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <div class="stat-content">
+                                <span class="stat-number">92%</span>
+                                <span class="stat-label">Goal Progress</span>
+                            </div>
                         </div>
                     </div>
                 </div>

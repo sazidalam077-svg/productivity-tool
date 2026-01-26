@@ -63,6 +63,180 @@
     gap: 10px !important;
 }
 
+/* Enhanced Dashboard Cards */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.dashboard-card {
+    background: var(--surface);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.dashboard-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 12px;
+}
+
+.card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: white;
+}
+
+.today-progress-card .card-icon {
+    background: linear-gradient(135deg, #10B981, #059669);
+}
+
+.weekly-overview-card .card-icon {
+    background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+}
+
+.focus-time-card .card-icon {
+    background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+}
+
+.dashboard-card h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.progress-stats, .week-stats, .focus-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.stat {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    border-radius: 12px;
+    background: var(--background);
+    transition: all 0.2s ease;
+}
+
+.stat:hover {
+    background: var(--hover-bg);
+}
+
+.stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: white;
+}
+
+.completed-stat .stat-icon {
+    background: linear-gradient(135deg, #10B981, #059669);
+}
+
+.progress-stat .stat-icon {
+    background: linear-gradient(135deg, #F59E0B, #D97706);
+}
+
+.total-stat .stat-icon {
+    background: linear-gradient(135deg, #6B7280, #4B5563);
+}
+
+.week-tasks-stat .stat-icon {
+    background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+}
+
+.rate-stat .stat-icon {
+    background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+}
+
+.today-stat .stat-icon {
+    background: linear-gradient(135deg, #EF4444, #DC2626);
+}
+
+.goal-stat .stat-icon {
+    background: linear-gradient(135deg, #F59E0B, #D97706);
+}
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-number {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .dashboard-card {
+        padding: 20px;
+    }
+    
+    .card-header {
+        margin-bottom: 16px;
+    }
+    
+    .card-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+    
+    .stat {
+        padding: 12px;
+        gap: 12px;
+    }
+    
+    .stat-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+    
+    .stat-number {
+        font-size: 1.25rem;
+    }
+}
+
 * {
     margin: 0;
     padding: 0;
