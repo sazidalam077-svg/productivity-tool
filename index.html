@@ -888,9 +888,9 @@
             
             // Function to add view data button
             function addViewDataButton() {
-                // Remove existing button to avoid duplicates
+                // Only add button if it doesn't exist
                 const existingBtn = document.querySelector('.view-data-btn');
-                if (existingBtn) existingBtn.remove();
+                if (existingBtn) return; // Don't remove if it already exists
                 
                 // Find calendar sidebar and add button in the middle
                 const calendarSidebar = document.querySelector('.calendar-sidebar');
@@ -934,11 +934,13 @@
                 }
             }
             
-            // Also add button when navigation changes
+            // Also add button when navigation changes, but only if it doesn't exist
             document.addEventListener('click', function(e) {
                 if (e.target.closest('.nav-item')) {
                     setTimeout(() => {
-                        addViewDataButton();
+                        if (!document.querySelector('.view-data-btn')) {
+                            addViewDataButton();
+                        }
                     }, 500);
                 }
             });
