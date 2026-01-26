@@ -156,7 +156,7 @@ class ProductivityApp {
                 <h1>Welcome Back!</h1>
                 <div class="date-navigation">
                     <button class="nav-btn"><i class="fas fa-chevron-left"></i></button>
-                    <span class="current-date">Today, ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                    <span class="current-date">Loading...</span>
                     <button class="nav-btn"><i class="fas fa-chevron-right"></i></button>
                 </div>
             </div>
@@ -174,31 +174,55 @@ class ProductivityApp {
                             <span class="stat-label">In Progress</span>
                         </div>
                         <div class="stat">
-                            <span class="stat-number">2</span>
-                            <span class="stat-label">Upcoming</span>
+                            <span class="stat-number">12</span>
+                            <span class="stat-label">Total Tasks</span>
                         </div>
                     </div>
                 </div>
                 
                 <div class="dashboard-card">
                     <h3>Weekly Overview</h3>
-                    <div class="week-progress">
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 65%"></div>
+                    <div class="week-stats">
+                        <div class="stat">
+                            <span class="stat-number">24</span>
+                            <span class="stat-label">Tasks This Week</span>
                         </div>
-                        <span>65% Complete</span>
+                        <div class="stat">
+                            <span class="stat-number">18</span>
+                            <span class="stat-label">Completed</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">75%</span>
+                            <span class="stat-label">Completion Rate</span>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="dashboard-card">
                     <h3>Focus Time</h3>
                     <div class="focus-stats">
-                        <span class="focus-time">4h 32m</span>
-                        <span class="focus-label">Total focus time today</span>
+                        <div class="stat">
+                            <span class="stat-number">4.5h</span>
+                            <span class="stat-label">Today</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">22h</span>
+                            <span class="stat-label">This Week</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">92%</span>
+                            <span class="stat-label">Goal Progress</span>
+                        </div>
                     </div>
                 </div>
             </div>
         `;
+        
+        // Re-attach event listeners
+        setTimeout(() => {
+            this.attachEventListeners();
+            updateDateDisplay();
+        }, 10);
     }
 
     showFocusView() {
