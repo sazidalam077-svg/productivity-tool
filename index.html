@@ -445,6 +445,12 @@
 
             // Add Schedule Item Function
             window.addScheduleItem = function() {
+                // Remove any existing form first
+                const existingForm = document.querySelector('.add-item-form');
+                if (existingForm) {
+                    existingForm.remove();
+                }
+                
                 const container = document.createElement('div');
                 container.className = 'add-item-form';
                 container.style.cssText = `
@@ -454,6 +460,23 @@
                     border: 2px solid var(--primary-color);
                     border-radius: 12px;
                     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                    position: relative;
+                    z-index: 1000;
+                    max-width: 500px;
+                    margin-left: auto;
+                    margin-right: auto;
+                `;
+                
+                const formHeader = document.createElement('div');
+                formHeader.innerHTML = '<i class="fas fa-clock"></i> Add Schedule Item';
+                formHeader.style.cssText = `
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: var(--primary-color);
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
                 `;
                 
                 const timeInput = document.createElement('input');
@@ -566,12 +589,20 @@
                 buttonContainer.appendChild(saveBtn);
                 buttonContainer.appendChild(cancelBtn);
                 
+                container.appendChild(formHeader);
                 container.appendChild(timeInput);
                 container.appendChild(descInput);
                 container.appendChild(buttonContainer);
                 
+                // Find the parent section and insert the form
                 const clickedBtn = event.target;
-                clickedBtn.parentNode.insertBefore(container, clickedBtn.nextSibling);
+                const parentSection = clickedBtn.closest('.schedule-section, .task-section, .card, div');
+                if (parentSection) {
+                    parentSection.appendChild(container);
+                } else {
+                    clickedBtn.parentNode.appendChild(container);
+                }
+                
                 timeInput.focus();
                 
                 saveBtn.addEventListener('click', function() {
@@ -612,6 +643,12 @@
 
             // Add Task Item Function
             window.addTaskItem = function() {
+                // Remove any existing form first
+                const existingForm = document.querySelector('.add-item-form');
+                if (existingForm) {
+                    existingForm.remove();
+                }
+                
                 const container = document.createElement('div');
                 container.className = 'add-item-form';
                 container.style.cssText = `
@@ -621,6 +658,23 @@
                     border: 2px solid var(--primary-color);
                     border-radius: 12px;
                     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                    position: relative;
+                    z-index: 1000;
+                    max-width: 500px;
+                    margin-left: auto;
+                    margin-right: auto;
+                `;
+                
+                const formHeader = document.createElement('div');
+                formHeader.innerHTML = '<i class="fas fa-tasks"></i> Add Task';
+                formHeader.style.cssText = `
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: var(--primary-color);
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
                 `;
                 
                 const taskInput = document.createElement('input');
@@ -738,12 +792,20 @@
                 buttonContainer.appendChild(saveBtn);
                 buttonContainer.appendChild(cancelBtn);
                 
+                container.appendChild(formHeader);
                 container.appendChild(taskInput);
                 container.appendChild(prioritySelect);
                 container.appendChild(buttonContainer);
                 
+                // Find the parent section and insert the form
                 const clickedBtn = event.target;
-                clickedBtn.parentNode.insertBefore(container, clickedBtn.nextSibling);
+                const parentSection = clickedBtn.closest('.task-section, .schedule-section, .card, div');
+                if (parentSection) {
+                    parentSection.appendChild(container);
+                } else {
+                    clickedBtn.parentNode.appendChild(container);
+                }
+                
                 taskInput.focus();
                 
                 saveBtn.addEventListener('click', function() {
