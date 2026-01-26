@@ -892,7 +892,7 @@
                 const existingBtn = document.querySelector('.view-data-btn');
                 if (existingBtn) return; // Don't remove if it already exists
                 
-                // Find calendar sidebar and add button in the middle
+                // Find calendar sidebar and add button at the bottom
                 const calendarSidebar = document.querySelector('.calendar-sidebar');
                 if (calendarSidebar) {
                     const viewDataBtn = document.createElement('button');
@@ -912,6 +912,8 @@
                         display: block;
                         text-align: center;
                         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                        position: sticky;
+                        bottom: 20px;
                     `;
                     viewDataBtn.onmouseover = () => {
                         viewDataBtn.style.background = '#4F46E5';
@@ -923,14 +925,8 @@
                     };
                     viewDataBtn.onclick = showSavedData;
                     
-                    // Find calendar header and insert button after it
-                    const calendarHeader = calendarSidebar.querySelector('.calendar-header');
-                    if (calendarHeader) {
-                        calendarHeader.insertAdjacentElement('after', viewDataBtn);
-                    } else {
-                        // If no header, add to the top of sidebar
-                        calendarSidebar.insertBefore(viewDataBtn, calendarSidebar.firstChild);
-                    }
+                    // Add button at the bottom of the sidebar
+                    calendarSidebar.appendChild(viewDataBtn);
                 }
             }
             
