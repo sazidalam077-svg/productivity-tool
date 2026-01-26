@@ -902,7 +902,7 @@
                 const existingBtn = document.querySelector('.view-data-btn');
                 if (existingBtn) return; // Don't remove if it already exists
                 
-                // Find main content area and add button below Weekly Review section
+                // Find main content area and add button below Save Weekly Review button
                 const mainContent = document.querySelector('.main-content');
                 if (mainContent) {
                     const viewDataBtn = document.createElement('button');
@@ -932,12 +932,14 @@
                     };
                     viewDataBtn.onclick = showSavedData;
                     
-                    // Find the Weekly Review section and add button after it
-                    const weeklyReviewSection = mainContent.querySelector('h2');
-                    if (weeklyReviewSection && weeklyReviewSection.textContent.includes('Weekly Review')) {
-                        weeklyReviewSection.insertAdjacentElement('afterend', viewDataBtn);
+                    // Find the Save Weekly Review button and add button after it
+                    const saveWeeklyReviewBtn = Array.from(mainContent.querySelectorAll('button')).find(btn => 
+                        btn.textContent.includes('Save Weekly Review')
+                    );
+                    if (saveWeeklyReviewBtn) {
+                        saveWeeklyReviewBtn.insertAdjacentElement('afterend', viewDataBtn);
                     } else {
-                        // If no specific section found, add to the end of main content
+                        // If no specific button found, add to the end of main content
                         mainContent.appendChild(viewDataBtn);
                     }
                 }
