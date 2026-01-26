@@ -902,9 +902,9 @@
                 const existingBtn = document.querySelector('.view-data-btn');
                 if (existingBtn) return; // Don't remove if it already exists
                 
-                // Find calendar sidebar and add button below Weekly Review section
-                const calendarSidebar = document.querySelector('.calendar-sidebar');
-                if (calendarSidebar) {
+                // Find main content area and add button below Weekly Review section
+                const mainContent = document.querySelector('.main-content');
+                if (mainContent) {
                     const viewDataBtn = document.createElement('button');
                     viewDataBtn.className = 'view-data-btn';
                     viewDataBtn.textContent = '📊 View Saved Data';
@@ -913,13 +913,12 @@
                         color: white;
                         border: none;
                         border-radius: 6px;
-                        padding: 10px 16px;
+                        padding: 12px 20px;
                         cursor: pointer;
-                        font-size: 0.85rem;
+                        font-size: 0.9rem;
                         transition: all 0.3s ease;
-                        width: 100%;
-                        margin: 16px 0;
-                        display: block;
+                        margin: 20px 0;
+                        display: inline-block;
                         text-align: center;
                         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                     `;
@@ -934,12 +933,12 @@
                     viewDataBtn.onclick = showSavedData;
                     
                     // Find the Weekly Review section and add button after it
-                    const weeklyReviewSection = calendarSidebar.querySelector('.calendar-day');
-                    if (weeklyReviewSection) {
+                    const weeklyReviewSection = mainContent.querySelector('h2');
+                    if (weeklyReviewSection && weeklyReviewSection.textContent.includes('Weekly Review')) {
                         weeklyReviewSection.insertAdjacentElement('afterend', viewDataBtn);
                     } else {
-                        // If no specific section found, add to the end
-                        calendarSidebar.appendChild(viewDataBtn);
+                        // If no specific section found, add to the end of main content
+                        mainContent.appendChild(viewDataBtn);
                     }
                 }
             }
