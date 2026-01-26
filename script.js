@@ -728,6 +728,79 @@ class ProductivityApp {
         }, 10);
     }
 
+    saveHighlight(type) {
+        let inputId, listId, icon;
+        
+        switch(type) {
+            case 'win':
+                inputId = 'win-input';
+                listId = 'wins-list';
+                icon = '🏆';
+                break;
+            case 'insight':
+                inputId = 'insight-input';
+                listId = 'insights-list';
+                icon = '💡';
+                break;
+            case 'note':
+                inputId = 'note-input';
+                listId = 'notes-list';
+                icon = '📝';
+                break;
+        }
+        
+        const input = document.getElementById(inputId);
+        const text = input.value.trim();
+        
+        if (text) {
+            // Get existing highlights
+            const highlights = JSON.parse(localStorage.getItem('daily-highlights') || '[]');
+            
+            // Add new highlight
+            highlights.push({
+                type: type,
+                text: text,
+                date: new Date().toISOString(),
+                completed: false
+            });
+            
+            // Save to localStorage
+            localStorage.setItem('daily-highlights', JSON.stringify(highlights));
+            
+            // Create new highlight element
+            const highlightElement = document.createElement('div');
+            highlightElement.className = 'highlight-item';
+            highlightElement.style.cssText = `
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 12px;
+                border: 1px solid var(--border-color);
+                border-radius: var(--radius);
+                margin-bottom: 12px;
+                background: var(--background);
+            `;
+            highlightElement.innerHTML = `
+                <span style="font-size: 1.5rem;">${icon}</span>
+                <span style="flex: 1; color: var(--text-primary);">${text}</span>
+                <button onclick="this.parentElement.remove()" style="background: var(--accent-color); color: white; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 12px;">×</button>
+            `;
+            
+            // Add to the list
+            const list = document.getElementById(listId);
+            list.appendChild(highlightElement);
+            
+            // Clear the input
+            input.value = '';
+            
+            // Show success feedback
+            input.style.borderColor = '#10B981';
+            setTimeout(() => {
+                input.style.borderColor = 'var(--border-color)';
+            }, 1000);
+        }
+    }
+
     showWeeklyPlanningView() {
         const mainContent = document.querySelector('.main-content');
         mainContent.innerHTML = `
@@ -2042,3 +2115,77 @@ document.addEventListener('click', function(e) {
         return;
     }
 });
+
+// Make saveHighlight globally accessible for Daily Highlights buttons
+window.saveHighlight = function(type) {
+    let inputId, listId, icon;
+    
+    switch(type) {
+        case 'win':
+            inputId = 'win-input';
+            listId = 'wins-list';
+            icon = '🏆';
+            break;
+        case 'insight':
+            inputId = 'insight-input';
+            listId = 'insights-list';
+            icon = '💡';
+            break;
+        case 'note':
+            inputId = 'note-input';
+            listId = 'notes-list';
+            icon = '📝';
+            break;
+    }
+    
+    const input = document.getElementById(inputId);
+    const text = input.value.trim();
+    
+    if (text) {
+        // Get existing highlights
+        const highlights = JSON.parse(localStorage.getItem('daily-highlights') || '[]');
+        
+        // Add new highlight
+        highlights.push({
+            type: type,
+            text: text,
+            date: new Date().toISOString(),
+            completed: false
+        });
+        
+        // Save to localStorage
+        localStorage.setItem('daily-highlights', JSON.stringify(highlights));
+        
+        // Create new highlight element
+        const highlightElement = document.createElement('div');
+        highlightElement.className = 'highlight-item';
+        highlightElement.style.cssText = `
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            margin-bottom: 12px;
+            background: var(--background);
+        `;
+        highlightElement.innerHTML = `
+            <span style="font-size: 1.5rem;">${icon}</span>
+            <span style="flex: 1; color: var(--text-primary);">${text}</span>
+            <button onclick="this.parentElement.remove()" style="background: var(--accent-color); color: white; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 12px;">×</button>
+        `;
+        
+        // Add to the list
+        const list = document.getElementById(listId);
+        list.appendChild(highlightElement);
+        
+        // Clear the input
+        input.value = '';
+        
+        // Show success feedback
+        input.style.borderColor = '#10B981';
+        setTimeout(() => {
+            input.style.borderColor = 'var(--border-color)';
+        }, 1000);
+    }
+};
