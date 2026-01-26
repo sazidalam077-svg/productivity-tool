@@ -883,11 +883,22 @@
             makeCalendarWork();
             addCalendarItemFunctionality();
             
-            // Add "View Saved Data" button to home page
+            // Add "View Saved Data" button to all pages
             setTimeout(() => {
-                const homeHeader = document.querySelector('.content-header h1');
-                if (homeHeader && homeHeader.textContent.includes('Welcome Back')) {
+                addViewDataButton();
+            }, 1000);
+            
+            // Function to add view data button
+            function addViewDataButton() {
+                // Remove existing button to avoid duplicates
+                const existingBtn = document.querySelector('.view-data-btn');
+                if (existingBtn) existingBtn.remove();
+                
+                // Find content header and add button
+                const contentHeader = document.querySelector('.content-header');
+                if (contentHeader) {
                     const viewDataBtn = document.createElement('button');
+                    viewDataBtn.className = 'view-data-btn';
                     viewDataBtn.textContent = '📊 View Saved Data';
                     viewDataBtn.style.cssText = `
                         background: #6366F1;
@@ -898,17 +909,45 @@
                         margin-left: 16px;
                         cursor: pointer;
                         font-size: 0.9rem;
+                        transition: all 0.3s ease;
                     `;
+                    viewDataBtn.onmouseover = () => {
+                        viewDataBtn.style.background = '#4F46E5';
+                    };
+                    viewDataBtn.onmouseout = () => {
+                        viewDataBtn.style.background = '#6366F1';
+                    };
                     viewDataBtn.onclick = showSavedData;
-                    homeHeader.parentElement.appendChild(viewDataBtn);
+                    
+                    // Add to header (after h1 or after date navigation)
+                    const h1 = contentHeader.querySelector('h1');
+                    const dateNav = contentHeader.querySelector('.date-navigation');
+                    
+                    if (dateNav && dateNav.nextSibling) {
+                        contentHeader.insertBefore(viewDataBtn, dateNav.nextSibling);
+                    } else if (h1 && h1.nextSibling) {
+                        contentHeader.insertBefore(viewDataBtn, h1.nextSibling);
+                    } else {
+                        contentHeader.appendChild(viewDataBtn);
+                    }
                 }
-            }, 1000);
+            }
+            
+            // Also add button when navigation changes
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.nav-item')) {
+                    setTimeout(() => {
+                        addViewDataButton();
+                    }, 500);
+                }
+            });
             
             // Keep updating to ensure everything works
             setInterval(() => {
                 updateAllDateDisplays(currentDayOffset);
                 makeCalendarWork();
                 addCalendarItemFunctionality();
+                addViewDataButton(); // Ensure button always exists
             }, 1000);
             
             // Function to show all saved data
