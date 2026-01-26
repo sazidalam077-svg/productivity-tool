@@ -1989,3 +1989,79 @@ const additionalCSS = `
 const styleSheet = document.createElement('style');
 styleSheet.textContent = additionalCSS;
 document.head.appendChild(styleSheet);
+
+// View Saved Data Function
+function showSavedData() {
+    const savedData = {
+        'Daily Highlights': localStorage.getItem('daily-highlights'),
+        'Weekly Plan': localStorage.getItem('weekly-plan'),
+        'Weekly Review': localStorage.getItem('weekly-review'),
+        'Daily Shutdown': localStorage.getItem('daily-shutdown')
+    };
+    
+    let modalContent = '<div class="saved-data-modal"><h2>📊 Saved Data</h2>';
+    
+    for (const [section, data] of Object.entries(savedData)) {
+        if (data) {
+            try {
+                const parsedData = JSON.parse(data);
+                modalContent += '<div class="data-section"><h3>' + section + '</h3><div class="data-content"><pre>' + JSON.stringify(parsedData, null, 2) + '</pre></div></div>';
+            } catch (e) {
+                modalContent += '<div class="data-section"><h3>' + section + '</h3><div class="data-content"><pre>' + data + '</pre></div></div>';
+            }
+        }
+    }
+    
+    if (!Object.values(savedData).some(data => data)) {
+        modalContent += '<p>No saved data found. Start adding data to see it here!</p>';
+    }
+    
+    modalContent += '<div class="modal-actions"><button class="clear-data-btn" onclick="clearAllData()">Clear All Data</button><button class="close-modal-btn" onclick="this.closest(\'.modal-overlay\').remove()">Close</button></div></div>';
+    
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+    `;
+    modal.innerHTML = '<div style="background: var(--surface); padding: 30px; border-radius: 12px; max-width: 600px; max-height: 80vh; overflow-y: auto; position: relative; color: var(--text-primary);">' + modalContent + '</div>';
+    
+    document.body.appendChild(modal);
+    
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+}
+
+// Clear all data function
+window.clearAllData = function() {
+    if (confirm('Are you sure you want to clear all saved data? This cannot be undone.')) {
+        localStorage.removeItem('daily-highlights');
+        localStorage.removeItem('weekly-plan');
+        localStorage.removeItem('weekly-review');
+        localStorage.removeItem('daily-shutdown');
+        localStorage.removeItem('focus-time-data');
+        alert('All saved data has been cleared!');
+        document.querySelector('.modal-overlay').remove();
+    }
+};
+
+// Add View Saved Data button event listener
+document.addEventListener('click', function(e) {
+    if (e.target.closest('#view-saved-data-nav')) {
+        e.preventDefault();
+        e.stopPropagation();
+        showSavedData();
+        return;
+    }
+});
