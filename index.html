@@ -659,9 +659,8 @@
                     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
                     position: relative;
                     z-index: 1000;
-                    max-width: 500px;
-                    margin-left: auto;
-                    margin-right: auto;
+                    width: 100%;
+                    box-sizing: border-box;
                 `;
                 
                 const formHeader = document.createElement('div');
@@ -796,11 +795,11 @@
                 container.appendChild(prioritySelect);
                 container.appendChild(buttonContainer);
                 
-                // Find the parent section and insert the form
+                // Find the first task section and insert the form right after it
                 const clickedBtn = event.target;
-                const parentSection = clickedBtn.closest('.task-section, .schedule-section, .card, div');
-                if (parentSection) {
-                    parentSection.appendChild(container);
+                const firstTaskSection = document.querySelector('.task-section');
+                if (firstTaskSection) {
+                    firstTaskSection.parentNode.insertBefore(container, firstTaskSection.nextSibling);
                 } else {
                     clickedBtn.parentNode.appendChild(container);
                 }
