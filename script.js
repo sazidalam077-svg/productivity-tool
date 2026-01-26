@@ -4,6 +4,7 @@ class ProductivityApp {
         this.currentView = 'daily-planner';
         this.tasks = this.loadTasks();
         this.currentTime = new Date();
+        this.currentDate = new Date();
         this.init();
     }
 
@@ -13,6 +14,8 @@ class ProductivityApp {
         this.renderTasks();
         this.startClock();
         this.setupDragAndDrop();
+        this.updateDateDisplay();
+        this.startClock();
     }
 
     setupEventListeners() {
@@ -940,8 +943,8 @@ class ProductivityApp {
             item.addEventListener('click', function() {
                 this.classList.toggle('completed');
                 const isCompleted = this.classList.contains('completed');
-                showNotification(isCompleted ? 'Task completed!' : 'Task marked as incomplete');
-            });
+                this.showNotification(isCompleted ? 'Task completed!' : 'Task marked as incomplete');
+            }.bind(this));
         });
 
         // Date navigation buttons
@@ -950,19 +953,105 @@ class ProductivityApp {
             btn.addEventListener('click', function() {
                 const isNext = this.querySelector('.fa-chevron-right');
                 if (isNext) {
-                    navigateNextDay();
+                    this.navigateNextDay();
                 } else {
-                    navigatePreviousDay();
+                    this.navigatePreviousDay();
                 }
-            });
+            }.bind(this));
         });
 
         // Scheduled items (routine tasks)
         const scheduledItems = document.querySelectorAll('.scheduled-item');
         scheduledItems.forEach(item => {
             item.addEventListener('click', function() {
-                toggleRoutineItem(this);
-            });
+                this.toggleRoutineItem(this);
+            }.bind(this));
+        });
+    }
+
+    showNotification(message) {
+        console.log('Notification:', message);
+        
+        // Remove existing notifications
+        const existing = document.querySelectorAll('.notification');
+        existing.forEach(n => n.remove());
+        
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+        notification.textContent = message;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 20px;
+            border-radius: var(--radius);
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 3000);
+    }
+
+    toggleRoutineItem(element) {
+        const checkIcon = element.querySelector('.fa-check');
+        if (checkIcon) {
+            const isCompleted = checkIcon.style.opacity === '1';
+            checkIcon.style.opacity = isCompleted ? '0' : '1';
+            
+            if (isCompleted) {
+                element.style.background = 'linear-gradient(135deg, #FEF3C7, #FDE68A)';
+                this.showNotification('Morning routine marked as incomplete');
+            } else {
+                element.style.background = 'linear-gradient(135deg, #D1FAE5, #A7F3D0)';
+                this.showNotification('Morning routine completed! Great start to the day! 🌅');
+            }
+        }
+    }
+
+    // Date navigation functionality
+    updateDateDisplay() {
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const dateString = this.currentDate.toLocaleDateString('en-US', options);
+        
+        // Update all date displays
+        const dateElements = document.querySelectorAll('.current-date');
+        dateElements.forEach(element => {
+            element.textContent = dateString;
+        });
+    }
+
+    navigatePreviousDay() {
+        this.currentDate.setDate(this.currentDate.getDate() - 1);
+        this.updateDateDisplay();
+        this.showNotification('Navigated to previous day');
+    }
+
+    navigateNextDay() {
+        this.currentDate.setDate(this.currentDate.getDate() + 1);
+        this.updateDateDisplay();
+        this.showNotification('Navigated to next day');
+    }
+
+    updateTime() {
+        const timeElements = document.querySelectorAll('.current-time');
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('en-US', { 
+            hour: 'numeric', 
+            minute: '2-digit',
+            hour12: true 
+        });
+        
+        timeElements.forEach(element => {
+            element.textContent = timeString;
         });
     }
 }
@@ -971,145 +1060,12 @@ class ProductivityApp {
 document.addEventListener('DOMContentLoaded', () => {
     const app = new ProductivityApp();
     
-    // Initialize date display
-    updateDateDisplay();
-    
     // Update time every minute
-    setInterval(updateTime, 60000);
-    updateTime();
+    setInterval(() => app.updateTime(), 60000);
+    app.updateTime();
 });
 
-// Date navigation functionality
-let currentDate = new Date();
-
-function updateDateDisplay() {
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    const dateString = currentDate.toLocaleDateString('en-US', options);
-    
-    // Update all date displays
-    const dateElements = document.querySelectorAll('.current-date');
-    dateElements.forEach(element => {
-        element.textContent = dateString;
-    });
-}
-
-function navigatePreviousDay() {
-    currentDate.setDate(currentDate.getDate() - 1);
-    updateDateDisplay();
-    showNotification('Navigated to previous day');
-}
-
-function navigateNextDay() {
-    currentDate.setDate(currentDate.getDate() + 1);
-    updateDateDisplay();
-    showNotification('Navigated to next day');
-}
-
-function updateTime() {
-    const timeElements = document.querySelectorAll('.current-time');
-    const now = new Date();
-    const timeString = now.toLocaleTimeString('en-US', { 
-        hour: 'numeric', 
-        minute: '2-digit',
-        hour12: true 
-    });
-    
-    timeElements.forEach(element => {
-        element.textContent = timeString;
-    });
-}
-
 // Supporting functions for new features
-function showNotification(message) {
-    console.log('Notification:', message);
-    
-    // Remove existing notifications
-    const existing = document.querySelectorAll('.notification');
-    existing.forEach(n => n.remove());
-    
-    const notification = document.createElement('div');
-    notification.className = 'notification';
-    notification.textContent = message;
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: var(--primary-color);
-        color: white;
-        padding: 12px 20px;
-        border-radius: var(--radius);
-        z-index: 1000;
-        animation: slideIn 0.3s ease;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    `;
-    
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        if (notification.parentNode) {
-            notification.parentNode.removeChild(notification);
-        }
-    }, 3000);
-}
-
-function toggleRoutineItem(element) {
-    const checkIcon = element.querySelector('.fa-check');
-    if (checkIcon) {
-        const isCompleted = checkIcon.style.opacity === '1';
-        checkIcon.style.opacity = isCompleted ? '0' : '1';
-        
-        if (isCompleted) {
-            element.style.background = 'linear-gradient(135deg, #FEF3C7, #FDE68A)';
-            showNotification('Morning routine marked as incomplete');
-        } else {
-            element.style.background = 'linear-gradient(135deg, #D1FAE5, #A7F3D0)';
-            showNotification('Morning routine completed! Great start to the day! 🌅');
-        }
-    }
-}
-
-function addHighlight(type) {
-    const listId = type + '-list';
-    const list = document.getElementById(listId);
-    if (list) {
-        const newItem = document.createElement('div');
-        newItem.className = 'highlight-item';
-        newItem.style.cssText = 'display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 12px;';
-        
-        const icons = {
-            win: '🏆',
-            insight: '💡',
-            gratitude: '🙏'
-        };
-        
-        newItem.innerHTML = `
-            <span style="font-size: 1.5rem;">${icons[type]}</span>
-            <input type="text" style="flex: 1; border: none; outline: none; padding: 4px; font-size: 1rem;" placeholder="Add another ${type}...">
-        `;
-        
-        list.appendChild(newItem);
-        updateHighlightCounts();
-        showNotification(`${type.charAt(0).toUpperCase() + type.slice(1)} added!`);
-    }
-}
-
-function updateHighlightCounts() {
-    const winsCount = document.querySelectorAll('#wins-list .highlight-item').length;
-    const insightsCount = document.querySelectorAll('#insights-list .highlight-item').length;
-    const gratitudeCount = document.querySelectorAll('#gratitude-list .highlight-item').length;
-    
-    const winsElement = document.getElementById('wins-count');
-    const insightsElement = document.getElementById('insights-count');
-    const gratitudeElement = document.getElementById('gratitude-count');
-    
-    if (winsElement) winsElement.textContent = winsCount;
-    if (insightsElement) insightsElement.textContent = insightsCount;
-    if (gratitudeElement) gratitudeElement.textContent = gratitudeCount;
-}
-
-function saveHighlights() {
-    showNotification('Highlights saved successfully! 🌟');
-}
 
 function addWeeklyGoal() {
     const goalsList = document.getElementById('weekly-goals');
