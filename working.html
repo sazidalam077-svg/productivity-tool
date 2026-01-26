@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Productivity Tools - Working Version</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; display: flex; gap: 20px; }
+        .sidebar { width: 250px; background: white; padding: 20px; border-radius: 8px; }
+        .main { flex: 1; background: white; padding: 20px; border-radius: 8px; }
+        .nav-item { padding: 10px; margin: 5px 0; background: #e0e0e0; cursor: pointer; border-radius: 5px; }
+        .nav-item:hover { background: #d0d0d0; }
+        .nav-item.active { background: #4F46E5; color: white; }
+        .task { background: #f9f9f9; padding: 15px; margin: 10px 0; border-radius: 5px; cursor: pointer; }
+        .task:hover { background: #e9e9e9; }
+        .task.completed { opacity: 0.5; text-decoration: line-through; }
+        .notification { position: fixed; top: 20px; right: 20px; background: #4F46E5; color: white; padding: 15px; border-radius: 5px; }
+        h1 { color: #333; }
+        h2 { color: #4F46E5; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h2>Productivity Tools</h2>
+            <div class="nav-item active" onclick="handleNavClick(this, 'home')">🏠 Home</div>
+            <div class="nav-item" onclick="handleNavClick(this, 'focus')">🎯 Focus</div>
+            <div class="nav-item" onclick="handleNavClick(this, 'planning')">📅 Daily Planning</div>
+            <div class="nav-item" onclick="handleNavClick(this, 'tasks')">✅ Task List</div>
+            <div class="nav-item" onclick="handleNavClick(this, 'shutdown')">🔌 Daily Shutdown</div>
+            <div class="nav-item" onclick="handleNavClick(this, 'highlights')">⭐ Daily Highlights</div>
+        </div>
+        
+        <div class="main">
+            <h1>Daily Planner</h1>
+            <p><strong>Today:</strong> <span id="current-date"></span></p>
+            <p><strong>Current Time:</strong> <span id="current-time"></span></p>
+            
+            <h2>Monday Tasks</h2>
+            <div class="task" onclick="toggleTask(this)">9:00 AM - Review Q1 goals and set OKRs for Q2 #planning (1h)</div>
+            <div class="task" onclick="toggleTask(this)">10:00 AM - Team standup and project sync #product (30m)</div>
+            <div class="task" onclick="toggleTask(this)">2:00 PM - User research analysis and insights documentation #product (2h)</div>
+            
+            <h2>Tuesday Tasks</h2>
+            <div class="task" onclick="toggleTask(this)">9:00 AM - Competitive analysis and market research #growth (2h)</div>
+            <div class="task" onclick="toggleTask(this)">11:00 AM - Growth strategy brainstorming session #growth (1.5h)</div>
+            <div class="task" onclick="toggleTask(this)">3:00 PM - Review and optimize conversion funnel #growth (1h)</div>
+            
+            <h2>Wednesday Tasks (Today)</h2>
+            <div class="task" onclick="toggleTask(this)">9:00 AM - Product roadmap planning and prioritization #product (2h)</div>
+            <div class="task" onclick="toggleTask(this)">11:00 AM - Stakeholder meeting for feature approvals #product (1h)</div>
+            <div class="task" onclick="toggleTask(this)">2:00 PM - Design system review and updates #product (1.5h)</div>
+            <div class="task" onclick="toggleTask(this)">4:00 PM - Weekly team retrospective and planning #planning (1h)</div>
+        </div>
+    </div>
+
+    <script>
+        function handleNavClick(element, page) {
+            console.log('Navigation clicked:', page);
+            
+            // Remove active from all
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Add active to clicked
+            element.classList.add('active');
+            
+            // Show notification
+            showNotification('Navigated to: ' + page);
+        }
+        
+        function toggleTask(element) {
+            element.classList.toggle('completed');
+            const isCompleted = element.classList.contains('completed');
+            showNotification(isCompleted ? 'Task completed!' : 'Task reopened');
+        }
+        
+        function showNotification(message) {
+            // Remove existing notifications
+            document.querySelectorAll('.notification').forEach(n => n.remove());
+            
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+        
+        function updateDateTime() {
+            const now = new Date();
+            document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true 
+            });
+        }
+        
+        // Initialize
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+        console.log('Productivity Tools loaded successfully!');
+    </script>
+</body>
+</html>
