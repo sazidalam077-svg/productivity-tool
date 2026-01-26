@@ -396,21 +396,57 @@
             
             // SIMPLE DIRECT EVENT HANDLER
             document.addEventListener('click', function(e) {
-                // Focus Play Button
-                if (e.target.closest('.focus-play-btn')) {
+                // Focus Toggle Button (Start Focus Session)
+                if (e.target.closest('.focus-toggle-btn')) {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log('Play button clicked');
-                    startFocusTimer();
+                    console.log('Focus toggle button clicked');
+                    if (isTimerRunning) {
+                        pauseFocusTimer();
+                        // Update button text
+                        const btn = e.target.closest('.focus-toggle-btn');
+                        btn.innerHTML = '<i class="fas fa-play"></i> Start Focus Session';
+                    } else {
+                        startFocusTimer();
+                        // Update button text
+                        const btn = e.target.closest('.focus-toggle-btn');
+                        btn.innerHTML = '<i class="fas fa-pause"></i> Pause Focus Session';
+                    }
                     return;
                 }
                 
-                // Focus Pause Button
-                if (e.target.closest('.focus-pause-btn')) {
+                // Timer Control Buttons
+                if (e.target.closest('.timer-btn')) {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log('Pause button clicked');
-                    pauseFocusTimer();
+                    const btn = e.target.closest('.timer-btn');
+                    const icon = btn.querySelector('i');
+                    
+                    if (icon && icon.classList.contains('fa-play')) {
+                        console.log('Timer play button clicked');
+                        startFocusTimer();
+                        // Update main toggle button
+                        const toggleBtn = document.querySelector('.focus-toggle-btn');
+                        if (toggleBtn) {
+                            toggleBtn.innerHTML = '<i class="fas fa-pause"></i> Pause Focus Session';
+                        }
+                    } else if (icon && icon.classList.contains('fa-pause')) {
+                        console.log('Timer pause button clicked');
+                        pauseFocusTimer();
+                        // Update main toggle button
+                        const toggleBtn = document.querySelector('.focus-toggle-btn');
+                        if (toggleBtn) {
+                            toggleBtn.innerHTML = '<i class="fas fa-play"></i> Start Focus Session';
+                        }
+                    } else if (icon && icon.classList.contains('fa-redo')) {
+                        console.log('Timer reset button clicked');
+                        resetFocusTimer();
+                        // Update main toggle button
+                        const toggleBtn = document.querySelector('.focus-toggle-btn');
+                        if (toggleBtn) {
+                            toggleBtn.innerHTML = '<i class="fas fa-play"></i> Start Focus Session';
+                        }
+                    }
                     return;
                 }
                 

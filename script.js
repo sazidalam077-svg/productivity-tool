@@ -230,18 +230,18 @@ class ProductivityApp {
         mainContent.innerHTML = `
             <div class="content-header">
                 <h1>Focus Mode</h1>
+                <button class="focus-toggle-btn">
+                    <i class="fas fa-play"></i> Start Focus Session
+                </button>
             </div>
             
             <div class="focus-container">
                 <div class="focus-timer">
                     <div class="timer-display">25:00</div>
                     <div class="timer-controls">
-                        <button class="focus-play-btn">
-                            <i class="fas fa-play"></i> Play
-                        </button>
-                        <button class="focus-pause-btn">
-                            <i class="fas fa-pause"></i> Pause
-                        </button>
+                        <button class="timer-btn"><i class="fas fa-play"></i></button>
+                        <button class="timer-btn"><i class="fas fa-pause"></i></button>
+                        <button class="timer-btn"><i class="fas fa-redo"></i></button>
                     </div>
                 </div>
                 
