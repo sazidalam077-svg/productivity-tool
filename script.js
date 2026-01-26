@@ -680,21 +680,43 @@ class ProductivityApp {
             </div>
             
             <div class="highlights-container" style="max-width: 800px; margin: 0 auto;">
-                                <div style="font-size: 0.875rem; color: var(--text-secondary);">Wins</div>
-                            </div>
-                            <div style="text-align: center;">
-                                <div style="font-size: 2rem; font-weight: 700; color: var(--primary-color);" id="insights-count">0</div>
-                                <div style="font-size: 0.875rem; color: var(--text-secondary);">Insights</div>
-                            </div>
-                            <div style="text-align: center;">
-                                <div style="font-size: 2rem; font-weight: 700; color: var(--primary-color);" id="gratitude-count">0</div>
-                                <div style="font-size: 0.875rem; color: var(--text-secondary);">Gratitude</div>
-                            </div>
+                <div class="highlights-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-bottom: 24px;">
+                    <h3>🌟 Today's Wins</h3>
+                    <div id="wins-list" style="margin-top: 16px;">
+                        <div class="highlight-item" style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 12px;">
+                            <span style="font-size: 1.5rem;">🏆</span>
+                            <input type="text" id="win-input" style="flex: 1; border: none; outline: none; padding: 4px; font-size: 1rem;" placeholder="What was your biggest win today?">
                         </div>
-                        <button onclick="saveHighlights()" style="background: var(--primary-color); color: white; border: none; border-radius: var(--radius); padding: 12px 32px; cursor: pointer; font-weight: 500;">
-                            <i class="fas fa-save"></i> Save Highlights
-                        </button>
                     </div>
+                    <button onclick="saveHighlight('win')" style="background: var(--primary-color); color: white; border: none; border-radius: var(--radius); padding: 8px 16px; cursor: pointer; font-weight: 500; margin-top: 10px;">
+                        <i class="fas fa-plus"></i> Add Win
+                    </button>
+                </div>
+                
+                <div class="highlights-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-bottom: 24px;">
+                    <h3>💡 Key Insights</h3>
+                    <div id="insights-list" style="margin-top: 16px;">
+                        <div class="highlight-item" style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 12px;">
+                            <span style="font-size: 1.5rem;">💡</span>
+                            <input type="text" id="insight-input" style="flex: 1; border: none; outline: none; padding: 4px; font-size: 1rem;" placeholder="What insight did you gain today?">
+                        </div>
+                    </div>
+                    <button onclick="saveHighlight('insight')" style="background: var(--primary-color); color: white; border: none; border-radius: var(--radius); padding: 8px 16px; cursor: pointer; font-weight: 500; margin-top: 10px;">
+                        <i class="fas fa-plus"></i> Add Insight
+                    </button>
+                </div>
+                
+                <div class="highlights-card" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-bottom: 24px;">
+                    <h3>📝 Notes</h3>
+                    <div id="notes-list" style="margin-top: 16px;">
+                        <div class="highlight-item" style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 12px;">
+                            <span style="font-size: 1.5rem;">📝</span>
+                            <input type="text" id="note-input" style="flex: 1; border: none; outline: none; padding: 4px; font-size: 1rem;" placeholder="Any other notes for today?">
+                        </div>
+                    </div>
+                    <button onclick="saveHighlight('note')" style="background: var(--primary-color); color: white; border: none; border-radius: var(--radius); padding: 8px 16px; cursor: pointer; font-weight: 500; margin-top: 10px;">
+                        <i class="fas fa-plus"></i> Add Note
+                    </button>
                 </div>
             </div>
         `;
