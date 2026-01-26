@@ -1012,10 +1012,12 @@
                     return;
                 }
                 
-                // Focus mode functionality
-                if (e.target.closest('button') && e.target.closest('.focus-control-btn')) {
+                // Focus mode functionality - SIMPLE AND DIRECT
+                if (e.target.closest('.focus-control-btn')) {
                     e.preventDefault();
                     e.stopPropagation();
+                    
+                    console.log('Focus button clicked, isTimerRunning:', isTimerRunning);
                     
                     if (isTimerRunning) {
                         pauseFocusTimer();
