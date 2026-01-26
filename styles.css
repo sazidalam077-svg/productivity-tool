@@ -1,3 +1,19 @@
+/* Productivity Tools Header Box */
+.productivity-header {
+    background: #4F46E5;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.productivity-header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
 * {
     margin: 0;
     padding: 0;
