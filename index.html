@@ -883,10 +883,8 @@
             makeCalendarWork();
             addCalendarItemFunctionality();
             
-            // Add "View Saved Data" button to all pages
-            setTimeout(() => {
-                addViewDataButton();
-            }, 1000);
+            // Add "View Saved Data" button immediately
+            addViewDataButton();
             
             // Function to add view data button
             function addViewDataButton() {
@@ -906,10 +904,14 @@
                         border: none;
                         border-radius: 6px;
                         padding: 8px 16px;
-                        margin-left: 16px;
                         cursor: pointer;
                         font-size: 0.9rem;
                         transition: all 0.3s ease;
+                        margin: 0 auto;
+                        display: block;
+                        width: fit-content;
+                        margin-top: 12px;
+                        margin-bottom: 12px;
                     `;
                     viewDataBtn.onmouseover = () => {
                         viewDataBtn.style.background = '#4F46E5';
@@ -919,17 +921,8 @@
                     };
                     viewDataBtn.onclick = showSavedData;
                     
-                    // Add to header (after h1 or after date navigation)
-                    const h1 = contentHeader.querySelector('h1');
-                    const dateNav = contentHeader.querySelector('.date-navigation');
-                    
-                    if (dateNav && dateNav.nextSibling) {
-                        contentHeader.insertBefore(viewDataBtn, dateNav.nextSibling);
-                    } else if (h1 && h1.nextSibling) {
-                        contentHeader.insertBefore(viewDataBtn, h1.nextSibling);
-                    } else {
-                        contentHeader.appendChild(viewDataBtn);
-                    }
+                    // Add button in the middle of the header
+                    contentHeader.appendChild(viewDataBtn);
                 }
             }
             
