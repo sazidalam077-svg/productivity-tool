@@ -450,6 +450,22 @@
                 }
             });
             
+            // Also handle navigation clicks to update dates on page changes
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.nav-item')) {
+                    console.log('Navigation clicked, updating date displays');
+                    // Update date displays when switching pages
+                    setTimeout(() => {
+                        updateAllDateDisplays(currentDayOffset);
+                    }, 100);
+                }
+            });
+            
+            // Update dates every second to catch any missed updates
+            setInterval(() => {
+                updateAllDateDisplays(currentDayOffset);
+            }, 1000);
+            
             // Initialize with today's date
             updateAllDateDisplays(0);
             
