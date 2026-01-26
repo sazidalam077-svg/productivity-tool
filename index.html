@@ -26,14 +26,6 @@
                     <li><a href="#" class="nav-item" data-page="weekly-review"><i class="fas fa-calendar-check"></i> Weekly review</a></li>
                 </ul>
             </nav>
-            
-            <!-- Dark Mode Toggle -->
-            <div class="dark-mode-toggle">
-                <button class="theme-toggle-btn" id="darkModeToggle">
-                    <i class="fas fa-moon"></i>
-                    <span>Dark Mode</span>
-                </button>
-            </div>
         </aside>
 
         <!-- Main Content Area -->
@@ -402,51 +394,8 @@
                 console.log('Timer completed, switching to:', isFocusSession ? 'focus' : 'break');
             }
             
-            // Dark Mode Toggle Function
-            function toggleDarkMode() {
-                const body = document.body;
-                const darkModeToggle = document.getElementById('darkModeToggle');
-                const isDarkMode = body.classList.contains('dark-mode');
-                
-                if (isDarkMode) {
-                    body.classList.remove('dark-mode');
-                    darkModeToggle.innerHTML = '<i class="fas fa-moon"></i><span>Dark Mode</span>';
-                    localStorage.setItem('darkMode', 'false');
-                    console.log('Dark mode disabled');
-                } else {
-                    body.classList.add('dark-mode');
-                    darkModeToggle.innerHTML = '<i class="fas fa-sun"></i><span>Light Mode</span>';
-                    localStorage.setItem('darkMode', 'true');
-                    console.log('Dark mode enabled');
-                }
-            }
-            
-            // Check for saved dark mode preference
-            function initDarkMode() {
-                const savedDarkMode = localStorage.getItem('darkMode');
-                const darkModeToggle = document.getElementById('darkModeToggle');
-                
-                if (savedDarkMode === 'true') {
-                    document.body.classList.add('dark-mode');
-                    if (darkModeToggle) {
-                        darkModeToggle.innerHTML = '<i class="fas fa-sun"></i><span>Light Mode</span>';
-                    }
-                }
-            }
-            
-            // Initialize dark mode on load
-            initDarkMode();
-            
             // SIMPLE DIRECT EVENT HANDLER
             document.addEventListener('click', function(e) {
-                // Dark Mode Toggle
-                if (e.target.closest('#darkModeToggle')) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    toggleDarkMode();
-                    return;
-                }
-                
                 // Focus Toggle Button (Start Focus Session)
                 if (e.target.closest('.focus-toggle-btn')) {
                     e.preventDefault();
