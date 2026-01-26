@@ -298,15 +298,6 @@
                         startBtn.innerHTML = '<i class="fas fa-pause"></i> Pause Focus Session';
                     }
                     
-                    // Update timer control buttons
-                    const playBtns = document.querySelectorAll('.timer-btn');
-                    playBtns.forEach(btn => {
-                        const icon = btn.querySelector('i');
-                        if (icon && icon.classList.contains('fa-play')) {
-                            icon.className = 'fas fa-pause';
-                        }
-                    });
-                    
                     focusTimer = setInterval(() => {
                         if (focusTimeLeft > 0) {
                             focusTimeLeft--;
@@ -334,15 +325,6 @@
                         startBtn.innerHTML = '<i class="fas fa-play"></i> Start Focus Session';
                     }
                     
-                    // Update timer control buttons
-                    const pauseBtns = document.querySelectorAll('.timer-btn');
-                    pauseBtns.forEach(btn => {
-                        const icon = btn.querySelector('i');
-                        if (icon && icon.classList.contains('fa-pause')) {
-                            icon.className = 'fas fa-play';
-                        }
-                    });
-                    
                     console.log('Focus timer paused');
                 }
             }
@@ -359,15 +341,6 @@
                 if (startBtn) {
                     startBtn.innerHTML = '<i class="fas fa-play"></i> Start Focus Session';
                 }
-                
-                // Update timer control buttons
-                const pauseBtns = document.querySelectorAll('.timer-btn');
-                pauseBtns.forEach(btn => {
-                    const icon = btn.querySelector('i');
-                    if (icon && icon.classList.contains('fa-pause')) {
-                        icon.className = 'fas fa-play';
-                    }
-                });
                 
                 console.log('Focus timer reset');
             }
@@ -1052,21 +1025,17 @@
                     const btn = e.target.closest('button');
                     
                     // Check if it's the main toggle button
-                    if (btn.textContent.includes('Start Focus Session') || btn.closest('.focus-toggle-btn')) {
+                    if (btn.textContent.includes('Start Focus Session') || btn.textContent.includes('Pause Focus Session') || btn.closest('.focus-toggle-btn')) {
                         if (isTimerRunning) {
                             pauseFocusTimer();
                         } else {
                             startFocusTimer();
                         }
                     } 
-                    // Check if it's a timer control button
+                    // Check if it's the reset button
                     else if (btn.closest('.timer-btn')) {
                         const icon = btn.querySelector('i');
-                        if (icon && icon.classList.contains('fa-play')) {
-                            startFocusTimer();
-                        } else if (icon && icon.classList.contains('fa-pause')) {
-                            pauseFocusTimer();
-                        } else if (icon && icon.classList.contains('fa-redo')) {
+                        if (icon && icon.classList.contains('fa-redo')) {
                             resetFocusTimer();
                         }
                     }
