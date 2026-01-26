@@ -902,7 +902,7 @@
                 const existingBtn = document.querySelector('.view-data-btn');
                 if (existingBtn) return; // Don't remove if it already exists
                 
-                // Find calendar sidebar and add button at the bottom left
+                // Find calendar sidebar and add button below Weekly Review section
                 const calendarSidebar = document.querySelector('.calendar-sidebar');
                 if (calendarSidebar) {
                     const viewDataBtn = document.createElement('button');
@@ -918,13 +918,10 @@
                         font-size: 0.85rem;
                         transition: all 0.3s ease;
                         width: 100%;
-                        margin: 20px auto;
+                        margin: 16px 0;
                         display: block;
                         text-align: center;
                         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                        position: sticky;
-                        bottom: 20px;
-                        left: 0;
                     `;
                     viewDataBtn.onmouseover = () => {
                         viewDataBtn.style.background = '#4F46E5';
@@ -936,8 +933,14 @@
                     };
                     viewDataBtn.onclick = showSavedData;
                     
-                    // Add button at the bottom of the sidebar (left side)
-                    calendarSidebar.appendChild(viewDataBtn);
+                    // Find the Weekly Review section and add button after it
+                    const weeklyReviewSection = calendarSidebar.querySelector('.calendar-day');
+                    if (weeklyReviewSection) {
+                        weeklyReviewSection.insertAdjacentElement('afterend', viewDataBtn);
+                    } else {
+                        // If no specific section found, add to the end
+                        calendarSidebar.appendChild(viewDataBtn);
+                    }
                 }
             }
             
