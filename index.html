@@ -280,19 +280,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Complete fix loaded');
             
-            // TEST: Add simple click listener to check if any clicks work
-            document.addEventListener('click', function(e) {
-                console.log('Document clicked:', e.target);
-                if (e.target.closest('.focus-play-btn')) {
-                    console.log('FOUND PLAY BUTTON!');
-                    alert('Play button found!');
-                }
-                if (e.target.closest('.focus-pause-btn')) {
-                    console.log('FOUND PAUSE BUTTON!');
-                    alert('Pause button found!');
-                }
-            });
-            
             // Focus Timer Variables and Functions
             let focusTimer = null;
             let focusTimeLeft = 25 * 60; // 25 minutes in seconds
@@ -406,6 +393,42 @@
                 
                 console.log('Timer completed, switching to:', isFocusSession ? 'focus' : 'break');
             }
+            
+            // SIMPLE DIRECT EVENT HANDLER
+            document.addEventListener('click', function(e) {
+                // Focus Play Button
+                if (e.target.closest('.focus-play-btn')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Play button clicked');
+                    startFocusTimer();
+                    return;
+                }
+                
+                // Focus Pause Button
+                if (e.target.closest('.focus-pause-btn')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Pause button clicked');
+                    pauseFocusTimer();
+                    return;
+                }
+                
+                // Duration change functionality
+                if (e.target.closest('select') && e.target.closest('.focus-settings')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const select = e.target;
+                    const label = select.previousElementSibling;
+                    if (label && label.textContent.includes('Session Duration')) {
+                        updateSessionDuration(select.value);
+                    } else if (label && label.textContent.includes('Break Duration')) {
+                        updateBreakDuration(select.value);
+                    }
+                    return;
+                }
+            });
             
             let currentDayOffset = 0;
             
@@ -1050,9 +1073,6 @@
                     return;
                 }
             }
-            
-            // Add the single event listener
-            document.addEventListener('click', handleButtonClicks);
             
             // Add View Saved Data button immediately
             addViewDataButton();
