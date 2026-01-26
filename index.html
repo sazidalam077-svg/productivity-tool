@@ -442,6 +442,233 @@
                     container.remove();
                 });
             };
+
+            // Add Schedule Item Function
+            window.addScheduleItem = function() {
+                const container = document.createElement('div');
+                container.style.cssText = `
+                    margin-top: 10px;
+                    padding: 16px;
+                    background: var(--background);
+                    border-radius: 8px;
+                    border: 1px solid var(--border-color);
+                `;
+                
+                const timeInput = document.createElement('input');
+                timeInput.type = 'time';
+                timeInput.placeholder = 'Time';
+                timeInput.style.cssText = `
+                    width: 100%;
+                    padding: 10px;
+                    border: 1px solid var(--border-color);
+                    border-radius: 6px;
+                    margin-bottom: 10px;
+                    background: var(--surface);
+                    color: var(--text-primary);
+                    font-size: 14px;
+                `;
+                
+                const descInput = document.createElement('input');
+                descInput.type = 'text';
+                descInput.placeholder = 'Schedule item description...';
+                descInput.style.cssText = `
+                    width: 100%;
+                    padding: 10px;
+                    border: 1px solid var(--border-color);
+                    border-radius: 6px;
+                    margin-bottom: 10px;
+                    background: var(--surface);
+                    color: var(--text-primary);
+                    font-size: 14px;
+                `;
+                
+                const saveBtn = document.createElement('button');
+                saveBtn.textContent = 'Save';
+                saveBtn.style.cssText = `
+                    background: var(--primary-color);
+                    color: white;
+                    border: none;
+                    border-radius: 6px;
+                    padding: 8px 16px;
+                    margin-right: 8px;
+                    cursor: pointer;
+                    font-weight: 500;
+                `;
+                
+                const cancelBtn = document.createElement('button');
+                cancelBtn.textContent = 'Cancel';
+                cancelBtn.style.cssText = `
+                    background: var(--surface);
+                    color: var(--text-primary);
+                    border: 1px solid var(--border-color);
+                    border-radius: 6px;
+                    padding: 8px 16px;
+                    cursor: pointer;
+                `;
+                
+                container.appendChild(timeInput);
+                container.appendChild(descInput);
+                container.appendChild(saveBtn);
+                container.appendChild(cancelBtn);
+                
+                const clickedBtn = event.target;
+                clickedBtn.parentNode.insertBefore(container, clickedBtn.nextSibling);
+                timeInput.focus();
+                
+                saveBtn.addEventListener('click', function() {
+                    const time = timeInput.value.trim();
+                    const desc = descInput.value.trim();
+                    if (time && desc) {
+                        // Get existing schedule items
+                        const scheduleItems = JSON.parse(localStorage.getItem('daily-schedule') || '[]');
+                        scheduleItems.push({
+                            time: time,
+                            description: desc,
+                            date: new Date().toISOString()
+                        });
+                        localStorage.setItem('daily-schedule', JSON.stringify(scheduleItems));
+                        
+                        const successMsg = document.createElement('div');
+                        successMsg.textContent = '✅ Schedule item added successfully!';
+                        successMsg.style.cssText = `
+                            color: #10B981;
+                            font-weight: 500;
+                            margin-top: 8px;
+                            font-size: 14px;
+                        `;
+                        container.appendChild(successMsg);
+                        
+                        timeInput.remove();
+                        descInput.remove();
+                        saveBtn.remove();
+                        cancelBtn.remove();
+                        
+                        setTimeout(() => {
+                            container.remove();
+                        }, 2000);
+                    }
+                });
+                
+                cancelBtn.addEventListener('click', function() {
+                    container.remove();
+                });
+            };
+
+            // Add Task Item Function
+            window.addTaskItem = function() {
+                const container = document.createElement('div');
+                container.style.cssText = `
+                    margin-top: 10px;
+                    padding: 16px;
+                    background: var(--background);
+                    border-radius: 8px;
+                    border: 1px solid var(--border-color);
+                `;
+                
+                const taskInput = document.createElement('input');
+                taskInput.type = 'text';
+                taskInput.placeholder = 'Task description...';
+                taskInput.style.cssText = `
+                    width: 100%;
+                    padding: 10px;
+                    border: 1px solid var(--border-color);
+                    border-radius: 6px;
+                    margin-bottom: 10px;
+                    background: var(--surface);
+                    color: var(--text-primary);
+                    font-size: 14px;
+                `;
+                
+                const prioritySelect = document.createElement('select');
+                prioritySelect.style.cssText = `
+                    width: 100%;
+                    padding: 10px;
+                    border: 1px solid var(--border-color);
+                    border-radius: 6px;
+                    margin-bottom: 10px;
+                    background: var(--surface);
+                    color: var(--text-primary);
+                    font-size: 14px;
+                `;
+                prioritySelect.innerHTML = `
+                    <option value="">Select Priority</option>
+                    <option value="high">High Priority</option>
+                    <option value="medium">Medium Priority</option>
+                    <option value="low">Low Priority</option>
+                `;
+                
+                const saveBtn = document.createElement('button');
+                saveBtn.textContent = 'Save';
+                saveBtn.style.cssText = `
+                    background: var(--primary-color);
+                    color: white;
+                    border: none;
+                    border-radius: 6px;
+                    padding: 8px 16px;
+                    margin-right: 8px;
+                    cursor: pointer;
+                    font-weight: 500;
+                `;
+                
+                const cancelBtn = document.createElement('button');
+                cancelBtn.textContent = 'Cancel';
+                cancelBtn.style.cssText = `
+                    background: var(--surface);
+                    color: var(--text-primary);
+                    border: 1px solid var(--border-color);
+                    border-radius: 6px;
+                    padding: 8px 16px;
+                    cursor: pointer;
+                `;
+                
+                container.appendChild(taskInput);
+                container.appendChild(prioritySelect);
+                container.appendChild(saveBtn);
+                container.appendChild(cancelBtn);
+                
+                const clickedBtn = event.target;
+                clickedBtn.parentNode.insertBefore(container, clickedBtn.nextSibling);
+                taskInput.focus();
+                
+                saveBtn.addEventListener('click', function() {
+                    const task = taskInput.value.trim();
+                    const priority = prioritySelect.value;
+                    if (task) {
+                        // Get existing tasks
+                        const tasks = JSON.parse(localStorage.getItem('daily-tasks') || '[]');
+                        tasks.push({
+                            task: task,
+                            priority: priority || 'medium',
+                            completed: false,
+                            date: new Date().toISOString()
+                        });
+                        localStorage.setItem('daily-tasks', JSON.stringify(tasks));
+                        
+                        const successMsg = document.createElement('div');
+                        successMsg.textContent = '✅ Task added successfully!';
+                        successMsg.style.cssText = `
+                            color: #10B981;
+                            font-weight: 500;
+                            margin-top: 8px;
+                            font-size: 14px;
+                        `;
+                        container.appendChild(successMsg);
+                        
+                        taskInput.remove();
+                        prioritySelect.remove();
+                        saveBtn.remove();
+                        cancelBtn.remove();
+                        
+                        setTimeout(() => {
+                            container.remove();
+                        }, 2000);
+                    }
+                });
+                
+                cancelBtn.addEventListener('click', function() {
+                    container.remove();
+                });
+            };
             
             // Focus Timer Variables and Functions
             let focusTimer = null;
