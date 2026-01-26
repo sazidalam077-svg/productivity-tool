@@ -317,6 +317,54 @@
                 dashboardDates.forEach(element => {
                     element.textContent = dateString;
                 });
+                
+                // Update Monday, Tuesday, Wednesday day dates
+                updateDayDates(offset);
+            }
+            
+            // Update individual day dates in the calendar
+            function updateDayDates(offset) {
+                const today = new Date();
+                const currentDay = today.getDay(); // 0 = Sunday, 1 = Monday, etc.
+                
+                // Calculate dates for Monday, Tuesday, Wednesday
+                const mondayDate = new Date(today);
+                mondayDate.setDate(today.getDate() - (currentDay - 1) + offset);
+                
+                const tuesdayDate = new Date(mondayDate);
+                tuesdayDate.setDate(mondayDate.getDate() + 1);
+                
+                const wednesdayDate = new Date(mondayDate);
+                wednesdayDate.setDate(mondayDate.getDate() + 2);
+                
+                // Update the day-date spans
+                const dayDateElements = document.querySelectorAll('.day-date');
+                if (dayDateElements.length >= 3) {
+                    dayDateElements[0].textContent = mondayDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    dayDateElements[1].textContent = tuesdayDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    dayDateElements[2].textContent = wednesdayDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                }
+                
+                // Update today badge
+                const todayBadge = document.querySelector('.today-badge');
+                if (todayBadge) {
+                    // Remove today badge from all days
+                    document.querySelectorAll('.today-badge').forEach(badge => badge.remove());
+                    
+                    // Add today badge to current day
+                    const dayColumns = document.querySelectorAll('.day-column');
+                    const dayIndex = (currentDay - 1 + 7) % 7; // Adjust for Monday=0
+                    
+                    if (dayIndex >= 0 && dayIndex < 3 && dayColumns[dayIndex]) {
+                        const dayHeader = dayColumns[dayIndex].querySelector('.day-header');
+                        if (dayHeader) {
+                            const badge = document.createElement('span');
+                            badge.className = 'today-badge';
+                            badge.textContent = 'Today';
+                            dayHeader.appendChild(badge);
+                        }
+                    }
+                }
             }
             
             // Calendar functionality
