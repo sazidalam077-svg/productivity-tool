@@ -292,10 +292,10 @@
                 if (!isTimerRunning) {
                     isTimerRunning = true;
                     
-                    // Update main toggle button
-                    const startBtn = document.querySelector('.focus-toggle-btn');
-                    if (startBtn) {
-                        startBtn.innerHTML = '<i class="fas fa-pause"></i> Pause Focus Session';
+                    // Update single control button
+                    const controlBtn = document.querySelector('.focus-control-btn');
+                    if (controlBtn) {
+                        controlBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
                     }
                     
                     focusTimer = setInterval(() => {
@@ -319,10 +319,10 @@
                     clearInterval(focusTimer);
                     isTimerRunning = false;
                     
-                    // Update main toggle button
-                    const startBtn = document.querySelector('.focus-toggle-btn');
-                    if (startBtn) {
-                        startBtn.innerHTML = '<i class="fas fa-play"></i> Start Focus Session';
+                    // Update single control button
+                    const controlBtn = document.querySelector('.focus-control-btn');
+                    if (controlBtn) {
+                        controlBtn.innerHTML = '<i class="fas fa-play"></i> Start';
                     }
                     
                     console.log('Focus timer paused');
@@ -336,10 +336,10 @@
                 focusTimeLeft = sessionDuration * 60;
                 updateTimerDisplay();
                 
-                // Update main toggle button
-                const startBtn = document.querySelector('.focus-toggle-btn');
-                if (startBtn) {
-                    startBtn.innerHTML = '<i class="fas fa-play"></i> Start Focus Session';
+                // Update single control button
+                const controlBtn = document.querySelector('.focus-control-btn');
+                if (controlBtn) {
+                    controlBtn.innerHTML = '<i class="fas fa-play"></i> Start';
                 }
                 
                 console.log('Focus timer reset');
@@ -1013,31 +1013,14 @@
                 }
                 
                 // Focus mode functionality
-                if (e.target.closest('button') && (
-                    e.target.textContent.includes('Start Focus Session') || 
-                    e.target.textContent.includes('Pause Focus Session') ||
-                    e.target.closest('.focus-toggle-btn') || 
-                    e.target.closest('.timer-btn')
-                )) {
+                if (e.target.closest('button') && e.target.closest('.focus-control-btn')) {
                     e.preventDefault();
                     e.stopPropagation();
                     
-                    const btn = e.target.closest('button');
-                    
-                    // Check if it's the main toggle button
-                    if (btn.textContent.includes('Start Focus Session') || btn.textContent.includes('Pause Focus Session') || btn.closest('.focus-toggle-btn')) {
-                        if (isTimerRunning) {
-                            pauseFocusTimer();
-                        } else {
-                            startFocusTimer();
-                        }
-                    } 
-                    // Check if it's the reset button
-                    else if (btn.closest('.timer-btn')) {
-                        const icon = btn.querySelector('i');
-                        if (icon && icon.classList.contains('fa-redo')) {
-                            resetFocusTimer();
-                        }
+                    if (isTimerRunning) {
+                        pauseFocusTimer();
+                    } else {
+                        startFocusTimer();
                     }
                     return;
                 }
