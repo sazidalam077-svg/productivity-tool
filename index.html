@@ -609,12 +609,60 @@
                     const desc = descInput.value.trim();
                     if (time && desc) {
                         const scheduleItems = JSON.parse(localStorage.getItem('daily-schedule') || '[]');
-                        scheduleItems.push({
+                        const newItem = {
                             time: time,
                             description: desc,
                             date: new Date().toISOString()
-                        });
+                        };
+                        scheduleItems.push(newItem);
                         localStorage.setItem('daily-schedule', JSON.stringify(scheduleItems));
+                        
+                        // Create the schedule item element
+                        const scheduleItem = document.createElement('div');
+                        scheduleItem.className = 'scheduled-item';
+                        scheduleItem.style.cssText = `
+                            display: flex;
+                            align-items: center;
+                            gap: 12px;
+                            padding: 12px 16px;
+                            background: var(--background);
+                            border: 1px solid var(--border-color);
+                            border-radius: 8px;
+                            margin-bottom: 10px;
+                            transition: all 0.3s ease;
+                        `;
+                        scheduleItem.innerHTML = `
+                            <div style="color: var(--primary-color); font-weight: 600; min-width: 80px;">${time}</div>
+                            <div style="flex: 1; color: var(--text-primary);">${desc}</div>
+                            <div style="color: var(--text-secondary); font-size: 12px;">Just added</div>
+                        `;
+                        
+                        // Add hover effect
+                        scheduleItem.addEventListener('mouseenter', function() {
+                            this.style.borderColor = 'var(--primary-color)';
+                            this.style.boxShadow = '0 2px 8px rgba(79, 70, 229, 0.1)';
+                        });
+                        scheduleItem.addEventListener('mouseleave', function() {
+                            this.style.borderColor = 'var(--border-color)';
+                            this.style.boxShadow = 'none';
+                        });
+                        
+                        // Find the schedule items container and add the new item
+                        const scheduleContainer = document.querySelector('.schedule-items');
+                        if (scheduleContainer) {
+                            scheduleContainer.appendChild(scheduleItem);
+                        } else {
+                            // If no container exists, create one
+                            const newContainer = document.createElement('div');
+                            newContainer.className = 'schedule-items';
+                            newContainer.style.cssText = `
+                                margin-top: 15px;
+                            `;
+                            newContainer.appendChild(scheduleItem);
+                            
+                            // Add it after the form
+                            container.parentNode.insertBefore(newContainer, container.nextSibling);
+                        }
                         
                         const successMsg = document.createElement('div');
                         successMsg.innerHTML = '<i class="fas fa-check-circle"></i> Schedule item added successfully!';
@@ -628,6 +676,10 @@
                             gap: 8px;
                         `;
                         container.appendChild(successMsg);
+                        
+                        // Clear the form
+                        timeInput.value = '';
+                        descInput.value = '';
                         
                         setTimeout(() => {
                             container.remove();
@@ -811,13 +863,79 @@
                     const priority = prioritySelect.value;
                     if (task) {
                         const tasks = JSON.parse(localStorage.getItem('daily-tasks') || '[]');
-                        tasks.push({
+                        const newItem = {
                             task: task,
                             priority: priority || 'medium',
                             completed: false,
                             date: new Date().toISOString()
-                        });
+                        };
+                        tasks.push(newItem);
                         localStorage.setItem('daily-tasks', JSON.stringify(tasks));
+                        
+                        // Create the task item element
+                        const taskItem = document.createElement('div');
+                        taskItem.className = 'task-item';
+                        taskItem.style.cssText = `
+                            display: flex;
+                            align-items: center;
+                            gap: 12px;
+                            padding: 12px 16px;
+                            background: var(--background);
+                            border: 1px solid var(--border-color);
+                            border-radius: 8px;
+                            margin-bottom: 10px;
+                            transition: all 0.3s ease;
+                            cursor: pointer;
+                        `;
+                        
+                        // Priority color
+                        const priorityColors = {
+                            high: '#EF4444',
+                            medium: '#F59E0B',
+                            low: '#10B981'
+                        };
+                        const priorityColor = priorityColors[priority] || priorityColors.medium;
+                        
+                        taskItem.innerHTML = `
+                            <div style="width: 8px; height: 8px; background: ${priorityColor}; border-radius: 50%; flex-shrink: 0;"></div>
+                            <div style="flex: 1; color: var(--text-primary);">${task}</div>
+                            <div style="color: var(--text-secondary); font-size: 12px;">Just added</div>
+                        `;
+                        
+                        // Add hover effect
+                        taskItem.addEventListener('mouseenter', function() {
+                            this.style.borderColor = 'var(--primary-color)';
+                            this.style.boxShadow = '0 2px 8px rgba(79, 70, 229, 0.1)';
+                        });
+                        taskItem.addEventListener('mouseleave', function() {
+                            this.style.borderColor = 'var(--border-color)';
+                            this.style.boxShadow = 'none';
+                        });
+                        
+                        // Add click to complete functionality
+                        taskItem.addEventListener('click', function() {
+                            this.classList.toggle('completed');
+                            const isCompleted = this.classList.contains('completed');
+                            this.style.opacity = isCompleted ? '0.6' : '1';
+                            this.style.textDecoration = isCompleted ? 'line-through' : 'none';
+                        });
+                        
+                        // Find the task items container and add the new item
+                        const taskContainer = document.querySelector('.task-items');
+                        if (taskContainer) {
+                            taskContainer.appendChild(taskItem);
+                        } else {
+                            // If no container exists, create one
+                            const newContainer = document.createElement('div');
+                            newContainer.className = 'task-items';
+                            newContainer.style.cssText = `
+                                margin-top: 15px;
+                            `;
+                            newContainer.appendChild(taskItem);
+                            
+                            // Add it after the form
+                            container.parentNode.insertBefore(newContainer, container.nextSibling);
+                        }
                         
                         const successMsg = document.createElement('div');
                         successMsg.innerHTML = '<i class="fas fa-check-circle"></i> Task added successfully!';
@@ -831,6 +949,10 @@
                             gap: 8px;
                         `;
                         container.appendChild(successMsg);
+                        
+                        // Clear the form
+                        taskInput.value = '';
+                        prioritySelect.value = '';
                         
                         setTimeout(() => {
                             container.remove();
