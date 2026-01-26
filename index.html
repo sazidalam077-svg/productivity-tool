@@ -496,8 +496,26 @@
                 }
             });
             
+            // Keep updating to ensure everything works
+            setInterval(() => {
+                updateAllDateDisplays(currentDayOffset);
+                makeCalendarWork();
+                addCalendarItemFunctionality();
+                addViewDataButton(); // Ensure button always exists
+            }, 1000);
+            
+            // Add event listener only once to prevent duplicates
+            let eventListenerAttached = false;
+            
             // Handle all interactive elements
             document.addEventListener('click', function(e) {
+                if (eventListenerAttached) return; // Prevent multiple executions
+                eventListenerAttached = true;
+                
+                setTimeout(() => {
+                    eventListenerAttached = false; // Reset after processing
+                }, 100);
+                
                 // Task items
                 if (e.target.closest('.task-item')) {
                     const taskItem = e.target.closest('.task-item');
@@ -523,6 +541,7 @@
                 // Daily Planning - Add Schedule Item
                 if (e.target.closest('button') && e.target.textContent.includes('Add Schedule Item')) {
                     e.preventDefault();
+                    e.stopPropagation();
                     const scheduleList = document.getElementById('schedule-list');
                     if (scheduleList) {
                         const newItem = document.createElement('div');
@@ -541,6 +560,7 @@
                 // Daily Planning - Add Task
                 if (e.target.closest('button') && e.target.textContent.includes('Add Task')) {
                     e.preventDefault();
+                    e.stopPropagation();
                     const tasksList = document.getElementById('tasks-list');
                     if (tasksList) {
                         const newItem = document.createElement('div');
@@ -558,6 +578,7 @@
                 // Daily Highlights - Add buttons
                 if (e.target.closest('button') && e.target.textContent.includes('Add Win')) {
                     e.preventDefault();
+                    e.stopPropagation();
                     const winsList = document.getElementById('wins-list');
                     if (winsList) {
                         const newItem = document.createElement('div');
@@ -574,6 +595,7 @@
                 
                 if (e.target.closest('button') && e.target.textContent.includes('Add Insight')) {
                     e.preventDefault();
+                    e.stopPropagation();
                     const insightsList = document.getElementById('insights-list');
                     if (insightsList) {
                         const newItem = document.createElement('div');
@@ -590,6 +612,7 @@
                 
                 if (e.target.closest('button') && e.target.textContent.includes('Add Gratitude')) {
                     e.preventDefault();
+                    e.stopPropagation();
                     const gratitudeList = document.getElementById('gratitude-list');
                     if (gratitudeList) {
                         const newItem = document.createElement('div');
@@ -607,6 +630,7 @@
                 // Weekly Planning - Add Goal
                 if (e.target.closest('button') && e.target.textContent.includes('Add Goal')) {
                     e.preventDefault();
+                    e.stopPropagation();
                     const goalsList = document.getElementById('weekly-goals');
                     if (goalsList) {
                         const newItem = document.createElement('div');
@@ -629,6 +653,7 @@
                 // Weekly Review - Add buttons
                 if (e.target.closest('button') && e.target.textContent.includes('Add Achievement')) {
                     e.preventDefault();
+                    e.stopPropagation();
                     const achievementsList = document.getElementById('achievements-list');
                     if (achievementsList) {
                         const newItem = document.createElement('div');
@@ -645,6 +670,7 @@
                 
                 if (e.target.closest('button') && e.target.textContent.includes('Add Lesson')) {
                     e.preventDefault();
+                    e.stopPropagation();
                     const lessonsList = document.getElementById('lessons-list');
                     if (lessonsList) {
                         const newItem = document.createElement('div');
@@ -661,6 +687,7 @@
                 
                 if (e.target.closest('button') && e.target.textContent.includes('Add Improvement')) {
                     e.preventDefault();
+                    e.stopPropagation();
                     const improvementsList = document.getElementById('improvements-list');
                     if (improvementsList) {
                         const newItem = document.createElement('div');
