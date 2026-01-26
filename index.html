@@ -1012,18 +1012,20 @@
                     return;
                 }
                 
-                // Focus mode functionality - SIMPLE AND DIRECT
-                if (e.target.closest('.focus-control-btn')) {
+                // Focus mode functionality - PLAY AND PAUSE BUTTONS
+                if (e.target.closest('.focus-play-btn')) {
                     e.preventDefault();
                     e.stopPropagation();
-                    
-                    console.log('Focus button clicked, isTimerRunning:', isTimerRunning);
-                    
-                    if (isTimerRunning) {
-                        pauseFocusTimer();
-                    } else {
-                        startFocusTimer();
-                    }
+                    console.log('Play button clicked');
+                    startFocusTimer();
+                    return;
+                }
+                
+                if (e.target.closest('.focus-pause-btn')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Pause button clicked');
+                    pauseFocusTimer();
                     return;
                 }
                 

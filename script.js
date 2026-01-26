@@ -236,8 +236,11 @@ class ProductivityApp {
                 <div class="focus-timer">
                     <div class="timer-display">25:00</div>
                     <div class="timer-controls">
-                        <button class="focus-control-btn">
-                            <i class="fas fa-play"></i> Start
+                        <button class="focus-play-btn">
+                            <i class="fas fa-play"></i> Play
+                        </button>
+                        <button class="focus-pause-btn">
+                            <i class="fas fa-pause"></i> Pause
                         </button>
                     </div>
                 </div>
