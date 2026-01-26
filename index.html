@@ -455,27 +455,13 @@
                 container.className = 'add-item-form';
                 container.style.cssText = `
                     margin-top: 15px;
-                    padding: 20px;
-                    background: var(--surface);
-                    border: 2px solid var(--primary-color);
-                    border-radius: 12px;
-                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                    padding: 15px;
+                    background: var(--background);
+                    border-radius: 8px;
                     position: relative;
                     z-index: 1000;
                     width: 100%;
                     box-sizing: border-box;
-                `;
-                
-                const formHeader = document.createElement('div');
-                formHeader.innerHTML = '<i class="fas fa-clock"></i> Add Schedule Item';
-                formHeader.style.cssText = `
-                    font-size: 16px;
-                    font-weight: 600;
-                    color: var(--primary-color);
-                    margin-bottom: 15px;
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
                 `;
                 
                 const timeInput = document.createElement('input');
@@ -483,112 +469,67 @@
                 timeInput.placeholder = 'Select time';
                 timeInput.style.cssText = `
                     width: 100%;
-                    padding: 12px 16px;
-                    border: 2px solid var(--border-color);
-                    border-radius: 8px;
-                    margin-bottom: 15px;
-                    background: var(--background);
+                    padding: 10px 12px;
+                    border: 1px solid var(--border-color);
+                    border-radius: 6px;
+                    margin-bottom: 12px;
+                    background: var(--surface);
                     color: var(--text-primary);
                     font-size: 14px;
-                    font-weight: 500;
-                    transition: all 0.3s ease;
                     box-sizing: border-box;
                 `;
-                timeInput.addEventListener('focus', function() {
-                    this.style.borderColor = 'var(--primary-color)';
-                    this.style.boxShadow = '0 0 0 3px rgba(79, 70, 229, 0.1)';
-                });
-                timeInput.addEventListener('blur', function() {
-                    this.style.borderColor = 'var(--border-color)';
-                    this.style.boxShadow = 'none';
-                });
                 
                 const descInput = document.createElement('input');
                 descInput.type = 'text';
                 descInput.placeholder = 'What do you need to do?';
                 descInput.style.cssText = `
                     width: 100%;
-                    padding: 12px 16px;
-                    border: 2px solid var(--border-color);
-                    border-radius: 8px;
-                    margin-bottom: 15px;
-                    background: var(--background);
+                    padding: 10px 12px;
+                    border: 1px solid var(--border-color);
+                    border-radius: 6px;
+                    margin-bottom: 12px;
+                    background: var(--surface);
                     color: var(--text-primary);
                     font-size: 14px;
-                    font-weight: 500;
-                    transition: all 0.3s ease;
                     box-sizing: border-box;
                 `;
-                descInput.addEventListener('focus', function() {
-                    this.style.borderColor = 'var(--primary-color)';
-                    this.style.boxShadow = '0 0 0 3px rgba(79, 70, 229, 0.1)';
-                });
-                descInput.addEventListener('blur', function() {
-                    this.style.borderColor = 'var(--border-color)';
-                    this.style.boxShadow = 'none';
-                });
                 
                 const buttonContainer = document.createElement('div');
                 buttonContainer.style.cssText = `
                     display: flex;
-                    gap: 10px;
+                    gap: 8px;
                     justify-content: flex-end;
                 `;
                 
                 const saveBtn = document.createElement('button');
-                saveBtn.innerHTML = '<i class="fas fa-check"></i> Save';
+                saveBtn.textContent = 'Save';
                 saveBtn.style.cssText = `
-                    background: linear-gradient(135deg, var(--primary-color), #4338ca);
+                    background: var(--primary-color);
                     color: white;
                     border: none;
-                    border-radius: 8px;
-                    padding: 10px 20px;
+                    border-radius: 6px;
+                    padding: 8px 16px;
                     cursor: pointer;
-                    font-weight: 600;
+                    font-weight: 500;
                     font-size: 14px;
-                    transition: all 0.3s ease;
-                    display: flex;
-                    align-items: center;
-                    gap: 6px;
                 `;
-                saveBtn.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-2px)';
-                    this.style.boxShadow = '0 4px 12px rgba(79, 70, 229, 0.3)';
-                });
-                saveBtn.addEventListener('mouseleave', function() {
-                    this.style.transform = 'translateY(0)';
-                    this.style.boxShadow = 'none';
-                });
                 
                 const cancelBtn = document.createElement('button');
-                cancelBtn.innerHTML = '<i class="fas fa-times"></i> Cancel';
+                cancelBtn.textContent = 'Cancel';
                 cancelBtn.style.cssText = `
-                    background: var(--background);
+                    background: var(--surface);
                     color: var(--text-primary);
-                    border: 2px solid var(--border-color);
-                    border-radius: 8px;
-                    padding: 10px 20px;
+                    border: 1px solid var(--border-color);
+                    border-radius: 6px;
+                    padding: 8px 16px;
                     cursor: pointer;
-                    font-weight: 600;
+                    font-weight: 500;
                     font-size: 14px;
-                    transition: all 0.3s ease;
-                    display: flex;
-                    align-items: center;
-                    gap: 6px;
                 `;
-                cancelBtn.addEventListener('mouseenter', function() {
-                    this.style.borderColor = 'var(--accent-color)';
-                    this.style.color = 'var(--accent-color)';
-                });
-                cancelBtn.addEventListener('mouseleave', function() {
-                    this.style.borderColor = 'var(--border-color)';
-                    this.style.color = 'var(--text-primary)';
-                });
                 
                 buttonContainer.appendChild(saveBtn);
                 buttonContainer.appendChild(cancelBtn);
                 
-                container.appendChild(formHeader);
                 container.appendChild(timeInput);
                 container.appendChild(descInput);
                 container.appendChild(buttonContainer);
@@ -624,28 +565,16 @@
                             display: flex;
                             align-items: center;
                             gap: 12px;
-                            padding: 12px 16px;
-                            background: var(--background);
+                            padding: 10px 12px;
+                            background: var(--surface);
                             border: 1px solid var(--border-color);
-                            border-radius: 8px;
-                            margin-bottom: 10px;
-                            transition: all 0.3s ease;
+                            border-radius: 6px;
+                            margin-bottom: 8px;
                         `;
                         scheduleItem.innerHTML = `
                             <div style="color: var(--primary-color); font-weight: 600; min-width: 80px;">${time}</div>
                             <div style="flex: 1; color: var(--text-primary);">${desc}</div>
-                            <div style="color: var(--text-secondary); font-size: 12px;">Just added</div>
                         `;
-                        
-                        // Add hover effect
-                        scheduleItem.addEventListener('mouseenter', function() {
-                            this.style.borderColor = 'var(--primary-color)';
-                            this.style.boxShadow = '0 2px 8px rgba(79, 70, 229, 0.1)';
-                        });
-                        scheduleItem.addEventListener('mouseleave', function() {
-                            this.style.borderColor = 'var(--border-color)';
-                            this.style.boxShadow = 'none';
-                        });
                         
                         // Find the schedule items container and add the new item
                         const scheduleContainer = document.querySelector('.schedule-items');
@@ -664,26 +593,13 @@
                             container.parentNode.insertBefore(newContainer, container.nextSibling);
                         }
                         
-                        const successMsg = document.createElement('div');
-                        successMsg.innerHTML = '<i class="fas fa-check-circle"></i> Schedule item added successfully!';
-                        successMsg.style.cssText = `
-                            color: #10B981;
-                            font-weight: 600;
-                            margin-top: 15px;
-                            font-size: 14px;
-                            display: flex;
-                            align-items: center;
-                            gap: 8px;
-                        `;
-                        container.appendChild(successMsg);
-                        
                         // Clear the form
                         timeInput.value = '';
                         descInput.value = '';
                         
                         setTimeout(() => {
                             container.remove();
-                        }, 2000);
+                        }, 1000);
                     }
                 });
                 
@@ -704,27 +620,13 @@
                 container.className = 'add-item-form';
                 container.style.cssText = `
                     margin-top: 15px;
-                    padding: 20px;
-                    background: var(--surface);
-                    border: 2px solid var(--primary-color);
-                    border-radius: 12px;
-                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                    padding: 15px;
+                    background: var(--background);
+                    border-radius: 8px;
                     position: relative;
                     z-index: 1000;
                     width: 100%;
                     box-sizing: border-box;
-                `;
-                
-                const formHeader = document.createElement('div');
-                formHeader.innerHTML = '<i class="fas fa-tasks"></i> Add Task';
-                formHeader.style.cssText = `
-                    font-size: 16px;
-                    font-weight: 600;
-                    color: var(--primary-color);
-                    margin-bottom: 15px;
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
                 `;
                 
                 const taskInput = document.createElement('input');
@@ -732,49 +634,29 @@
                 taskInput.placeholder = 'What needs to be done?';
                 taskInput.style.cssText = `
                     width: 100%;
-                    padding: 12px 16px;
-                    border: 2px solid var(--border-color);
-                    border-radius: 8px;
-                    margin-bottom: 15px;
-                    background: var(--background);
+                    padding: 10px 12px;
+                    border: 1px solid var(--border-color);
+                    border-radius: 6px;
+                    margin-bottom: 12px;
+                    background: var(--surface);
                     color: var(--text-primary);
                     font-size: 14px;
-                    font-weight: 500;
-                    transition: all 0.3s ease;
                     box-sizing: border-box;
                 `;
-                taskInput.addEventListener('focus', function() {
-                    this.style.borderColor = 'var(--primary-color)';
-                    this.style.boxShadow = '0 0 0 3px rgba(79, 70, 229, 0.1)';
-                });
-                taskInput.addEventListener('blur', function() {
-                    this.style.borderColor = 'var(--border-color)';
-                    this.style.boxShadow = 'none';
-                });
                 
                 const prioritySelect = document.createElement('select');
                 prioritySelect.style.cssText = `
                     width: 100%;
-                    padding: 12px 16px;
-                    border: 2px solid var(--border-color);
-                    border-radius: 8px;
-                    margin-bottom: 15px;
-                    background: var(--background);
+                    padding: 10px 12px;
+                    border: 1px solid var(--border-color);
+                    border-radius: 6px;
+                    margin-bottom: 12px;
+                    background: var(--surface);
                     color: var(--text-primary);
                     font-size: 14px;
-                    font-weight: 500;
-                    transition: all 0.3s ease;
                     cursor: pointer;
                     box-sizing: border-box;
                 `;
-                prioritySelect.addEventListener('focus', function() {
-                    this.style.borderColor = 'var(--primary-color)';
-                    this.style.boxShadow = '0 0 0 3px rgba(79, 70, 229, 0.1)';
-                });
-                prioritySelect.addEventListener('blur', function() {
-                    this.style.borderColor = 'var(--border-color)';
-                    this.style.boxShadow = 'none';
-                });
                 prioritySelect.innerHTML = `
                     <option value="">Select priority level</option>
                     <option value="high">🔴 High Priority</option>
@@ -785,64 +667,39 @@
                 const buttonContainer = document.createElement('div');
                 buttonContainer.style.cssText = `
                     display: flex;
-                    gap: 10px;
+                    gap: 8px;
                     justify-content: flex-end;
                 `;
                 
                 const saveBtn = document.createElement('button');
-                saveBtn.innerHTML = '<i class="fas fa-check"></i> Save';
+                saveBtn.textContent = 'Save';
                 saveBtn.style.cssText = `
-                    background: linear-gradient(135deg, var(--primary-color), #4338ca);
+                    background: var(--primary-color);
                     color: white;
                     border: none;
-                    border-radius: 8px;
-                    padding: 10px 20px;
+                    border-radius: 6px;
+                    padding: 8px 16px;
                     cursor: pointer;
-                    font-weight: 600;
+                    font-weight: 500;
                     font-size: 14px;
-                    transition: all 0.3s ease;
-                    display: flex;
-                    align-items: center;
-                    gap: 6px;
                 `;
-                saveBtn.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-2px)';
-                    this.style.boxShadow = '0 4px 12px rgba(79, 70, 229, 0.3)';
-                });
-                saveBtn.addEventListener('mouseleave', function() {
-                    this.style.transform = 'translateY(0)';
-                    this.style.boxShadow = 'none';
-                });
                 
                 const cancelBtn = document.createElement('button');
-                cancelBtn.innerHTML = '<i class="fas fa-times"></i> Cancel';
+                cancelBtn.textContent = 'Cancel';
                 cancelBtn.style.cssText = `
-                    background: var(--background);
+                    background: var(--surface);
                     color: var(--text-primary);
-                    border: 2px solid var(--border-color);
-                    border-radius: 8px;
-                    padding: 10px 20px;
+                    border: 1px solid var(--border-color);
+                    border-radius: 6px;
+                    padding: 8px 16px;
                     cursor: pointer;
-                    font-weight: 600;
+                    font-weight: 500;
                     font-size: 14px;
-                    transition: all 0.3s ease;
-                    display: flex;
-                    align-items: center;
-                    gap: 6px;
                 `;
-                cancelBtn.addEventListener('mouseenter', function() {
-                    this.style.borderColor = 'var(--accent-color)';
-                    this.style.color = 'var(--accent-color)';
-                });
-                cancelBtn.addEventListener('mouseleave', function() {
-                    this.style.borderColor = 'var(--border-color)';
-                    this.style.color = 'var(--text-primary)';
-                });
                 
                 buttonContainer.appendChild(saveBtn);
                 buttonContainer.appendChild(cancelBtn);
                 
-                container.appendChild(formHeader);
                 container.appendChild(taskInput);
                 container.appendChild(prioritySelect);
                 container.appendChild(buttonContainer);
@@ -879,12 +736,11 @@
                             display: flex;
                             align-items: center;
                             gap: 12px;
-                            padding: 12px 16px;
-                            background: var(--background);
+                            padding: 10px 12px;
+                            background: var(--surface);
                             border: 1px solid var(--border-color);
-                            border-radius: 8px;
-                            margin-bottom: 10px;
-                            transition: all 0.3s ease;
+                            border-radius: 6px;
+                            margin-bottom: 8px;
                             cursor: pointer;
                         `;
                         
@@ -899,18 +755,7 @@
                         taskItem.innerHTML = `
                             <div style="width: 8px; height: 8px; background: ${priorityColor}; border-radius: 50%; flex-shrink: 0;"></div>
                             <div style="flex: 1; color: var(--text-primary);">${task}</div>
-                            <div style="color: var(--text-secondary); font-size: 12px;">Just added</div>
                         `;
-                        
-                        // Add hover effect
-                        taskItem.addEventListener('mouseenter', function() {
-                            this.style.borderColor = 'var(--primary-color)';
-                            this.style.boxShadow = '0 2px 8px rgba(79, 70, 229, 0.1)';
-                        });
-                        taskItem.addEventListener('mouseleave', function() {
-                            this.style.borderColor = 'var(--border-color)';
-                            this.style.boxShadow = 'none';
-                        });
                         
                         // Add click to complete functionality
                         taskItem.addEventListener('click', function() {
@@ -962,26 +807,13 @@
                             container.parentNode.insertBefore(newContainer, container.nextSibling);
                         }
                         
-                        const successMsg = document.createElement('div');
-                        successMsg.innerHTML = '<i class="fas fa-check-circle"></i> Task added successfully!';
-                        successMsg.style.cssText = `
-                            color: #10B981;
-                            font-weight: 600;
-                            margin-top: 15px;
-                            font-size: 14px;
-                            display: flex;
-                            align-items: center;
-                            gap: 8px;
-                        `;
-                        container.appendChild(successMsg);
-                        
                         // Clear the form
                         taskInput.value = '';
                         prioritySelect.value = '';
                         
                         setTimeout(() => {
                             container.remove();
-                        }, 2000);
+                        }, 1000);
                     }
                 });
                 
