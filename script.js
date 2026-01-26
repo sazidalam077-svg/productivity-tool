@@ -175,8 +175,13 @@ class ProductivityApp {
                                 <i class="fas fa-check-circle"></i>
                             </div>
                             <div class="stat-content">
-                                <span class="stat-number">8</span>
-                                <span class="stat-label">Tasks Completed</span>
+                                <div class="stat-header">
+                                    <span class="stat-number">8</span>
+                                    <span class="stat-label">Tasks Completed</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill completed-progress" style="width: 67%"></div>
+                                </div>
                             </div>
                         </div>
                         <div class="stat progress-stat">
@@ -184,8 +189,13 @@ class ProductivityApp {
                                 <i class="fas fa-spinner"></i>
                             </div>
                             <div class="stat-content">
-                                <span class="stat-number">3</span>
-                                <span class="stat-label">In Progress</span>
+                                <div class="stat-header">
+                                    <span class="stat-number">3</span>
+                                    <span class="stat-label">In Progress</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill progress-progress" style="width: 25%"></div>
+                                </div>
                             </div>
                         </div>
                         <div class="stat total-stat">
@@ -193,8 +203,13 @@ class ProductivityApp {
                                 <i class="fas fa-list-check"></i>
                             </div>
                             <div class="stat-content">
-                                <span class="stat-number">12</span>
-                                <span class="stat-label">Total Tasks</span>
+                                <div class="stat-header">
+                                    <span class="stat-number">12</span>
+                                    <span class="stat-label">Total Tasks</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill total-progress" style="width: 100%"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -213,8 +228,13 @@ class ProductivityApp {
                                 <i class="fas fa-tasks"></i>
                             </div>
                             <div class="stat-content">
-                                <span class="stat-number">24</span>
-                                <span class="stat-label">Tasks This Week</span>
+                                <div class="stat-header">
+                                    <span class="stat-number">24</span>
+                                    <span class="stat-label">Tasks This Week</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill week-tasks-progress" style="width: 100%"></div>
+                                </div>
                             </div>
                         </div>
                         <div class="stat completed-stat">
@@ -222,8 +242,13 @@ class ProductivityApp {
                                 <i class="fas fa-check-double"></i>
                             </div>
                             <div class="stat-content">
-                                <span class="stat-number">18</span>
-                                <span class="stat-label">Completed</span>
+                                <div class="stat-header">
+                                    <span class="stat-number">18</span>
+                                    <span class="stat-label">Completed</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill completed-progress" style="width: 75%"></div>
+                                </div>
                             </div>
                         </div>
                         <div class="stat rate-stat">
@@ -231,8 +256,13 @@ class ProductivityApp {
                                 <i class="fas fa-percentage"></i>
                             </div>
                             <div class="stat-content">
-                                <span class="stat-number">75%</span>
-                                <span class="stat-label">Completion Rate</span>
+                                <div class="stat-header">
+                                    <span class="stat-number">75%</span>
+                                    <span class="stat-label">Completion Rate</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill rate-progress" style="width: 75%"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -251,8 +281,13 @@ class ProductivityApp {
                                 <i class="fas fa-clock"></i>
                             </div>
                             <div class="stat-content">
-                                <span class="stat-number">4.5h</span>
-                                <span class="stat-label">Today</span>
+                                <div class="stat-header">
+                                    <span class="stat-number">4.5h</span>
+                                    <span class="stat-label">Today</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill today-progress" style="width: 56%"></div>
+                                </div>
                             </div>
                         </div>
                         <div class="stat week-stat">
@@ -260,8 +295,13 @@ class ProductivityApp {
                                 <i class="fas fa-calendar-alt"></i>
                             </div>
                             <div class="stat-content">
-                                <span class="stat-number">22h</span>
-                                <span class="stat-label">This Week</span>
+                                <div class="stat-header">
+                                    <span class="stat-number">22h</span>
+                                    <span class="stat-label">This Week</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill week-progress" style="width: 88%"></div>
+                                </div>
                             </div>
                         </div>
                         <div class="stat goal-stat">
@@ -269,8 +309,13 @@ class ProductivityApp {
                                 <i class="fas fa-trophy"></i>
                             </div>
                             <div class="stat-content">
-                                <span class="stat-number">92%</span>
-                                <span class="stat-label">Goal Progress</span>
+                                <div class="stat-header">
+                                    <span class="stat-number">92%</span>
+                                    <span class="stat-label">Goal Progress</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill goal-progress" style="width: 92%"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
