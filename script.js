@@ -138,6 +138,9 @@ class ProductivityApp {
             case 'daily-highlights':
                 this.showDailyHighlightsView();
                 break;
+            case 'task-history':
+                this.showTaskHistoryView();
+                break;
             case 'weekly-planning':
                 this.showWeeklyPlanningView();
                 break;
@@ -799,6 +802,335 @@ class ProductivityApp {
                 input.style.borderColor = 'var(--border-color)';
             }, 1000);
         }
+    }
+
+    showTaskHistoryView() {
+        const mainContent = document.querySelector('.main-content');
+        mainContent.innerHTML = `
+            <div class="content-header">
+                <h1>📅 Task History</h1>
+                <div class="date-navigation">
+                    <button class="nav-btn" onclick="app.changeHistoryDate(-1)"><i class="fas fa-chevron-left"></i></button>
+                    <span class="current-date" id="history-current-date">Loading...</span>
+                    <button class="nav-btn" onclick="app.changeHistoryDate(1)"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+            
+            <div class="history-container" style="max-width: 1000px; margin: 0 auto;">
+                <!-- Calendar View -->
+                <div class="history-calendar" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-bottom: 24px;">
+                    <h3>📆 Calendar View</h3>
+                    <div id="mini-calendar" style="margin-top: 16px;">
+                        <!-- Mini calendar will be generated here -->
+                    </div>
+                </div>
+                
+                <!-- Task Timeline -->
+                <div class="history-timeline" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px;">
+                    <h3>📋 Tasks for <span id="selected-date">Today</span></h3>
+                    <div id="history-tasks" style="margin-top: 16px;">
+                        <!-- Tasks will be loaded here -->
+                    </div>
+                </div>
+                
+                <!-- Statistics -->
+                <div class="history-stats" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-top: 24px;">
+                    <h3>📊 Statistics</h3>
+                    <div id="history-statistics" style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                        <!-- Statistics will be calculated here -->
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Initialize history view
+        this.initializeHistoryView();
+    }
+
+    initializeHistoryView() {
+        this.currentHistoryDate = new Date();
+        this.renderHistoryView();
+    }
+
+    changeHistoryDate(direction) {
+        this.currentHistoryDate.setDate(this.currentHistoryDate.getDate() + direction);
+        this.renderHistoryView();
+    }
+
+    renderHistoryView() {
+        // Update current date display
+        const dateDisplay = document.getElementById('history-current-date');
+        if (dateDisplay) {
+            dateDisplay.textContent = this.currentHistoryDate.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        }
+
+        // Update selected date in timeline
+        const selectedDateSpan = document.getElementById('selected-date');
+        if (selectedDateSpan) {
+            selectedDateSpan.textContent = this.currentHistoryDate.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric', 
+                year: 'numeric' 
+            });
+        }
+
+        // Render mini calendar
+        this.renderMiniCalendar();
+        
+        // Load tasks for selected date
+        this.loadTasksForDate(this.currentHistoryDate);
+        
+        // Calculate statistics
+        this.calculateHistoryStatistics();
+    }
+
+    renderMiniCalendar() {
+        const calendarContainer = document.getElementById('mini-calendar');
+        if (!calendarContainer) return;
+
+        const year = this.currentHistoryDate.getFullYear();
+        const month = this.currentHistoryDate.getMonth();
+        const today = new Date();
+        
+        // Get first day of month and number of days
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        
+        // Get task data for this month
+        const monthTasks = this.getTasksForMonth(year, month);
+        
+        let calendarHTML = `
+            <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; margin-bottom: 8px;">
+                <div style="font-weight: 600; color: var(--text-secondary); font-size: 12px;">Sun</div>
+                <div style="font-weight: 600; color: var(--text-secondary); font-size: 12px;">Mon</div>
+                <div style="font-weight: 600; color: var(--text-secondary); font-size: 12px;">Tue</div>
+                <div style="font-weight: 600; color: var(--text-secondary); font-size: 12px;">Wed</div>
+                <div style="font-weight: 600; color: var(--text-secondary); font-size: 12px;">Thu</div>
+                <div style="font-weight: 600; color: var(--text-secondary); font-size: 12px;">Fri</div>
+                <div style="font-weight: 600; color: var(--text-secondary); font-size: 12px;">Sat</div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;">
+        `;
+        
+        // Empty cells for days before month starts
+        for (let i = 0; i < firstDay; i++) {
+            calendarHTML += '<div></div>';
+        }
+        
+        // Days of the month
+        for (let day = 1; day <= daysInMonth; day++) {
+            const currentDate = new Date(year, month, day);
+            const dateStr = currentDate.toISOString().split('T')[0];
+            const dayTasks = monthTasks[dateStr] || [];
+            const hasTasks = dayTasks.length > 0;
+            const isToday = currentDate.toDateString() === today.toDateString();
+            const isSelected = currentDate.toDateString() === this.currentHistoryDate.toDateString();
+            
+            let bgColor = 'var(--background)';
+            if (isSelected) bgColor = 'var(--primary-color)';
+            else if (isToday) bgColor = '#FEF3C7';
+            else if (hasTasks) bgColor = '#D1FAE5';
+            
+            let textColor = 'var(--text-primary)';
+            if (isSelected) textColor = 'white';
+            
+            calendarHTML += `
+                <div onclick="app.selectHistoryDate(${year}, ${month}, ${day})" 
+                     style="padding: 8px; border-radius: 6px; cursor: pointer; background: ${bgColor}; color: ${textColor}; 
+                            font-weight: ${isToday || isSelected ? '600' : '400'}; font-size: 14px; position: relative;">
+                    ${day}
+                    ${hasTasks ? `<div style="position: absolute; bottom: 2px; right: 2px; width: 6px; height: 6px; background: ${isSelected ? 'white' : '#10B981'}; border-radius: 50%;"></div>` : ''}
+                </div>
+            `;
+        }
+        
+        calendarHTML += '</div>';
+        calendarContainer.innerHTML = calendarHTML;
+    }
+
+    selectHistoryDate(year, month, day) {
+        this.currentHistoryDate = new Date(year, month, day);
+        this.renderHistoryView();
+    }
+
+    getTasksForMonth(year, month) {
+        const monthTasks = {};
+        
+        // Get all task types
+        const taskTypes = ['daily-tasks', 'daily-schedule', 'daily-highlights'];
+        
+        taskTypes.forEach(type => {
+            const data = localStorage.getItem(type);
+            if (data) {
+                try {
+                    const items = JSON.parse(data);
+                    items.forEach(item => {
+                        if (item.date) {
+                            const itemDate = new Date(item.date);
+                            if (itemDate.getFullYear() === year && itemDate.getMonth() === month) {
+                                const dateStr = itemDate.toISOString().split('T')[0];
+                                if (!monthTasks[dateStr]) monthTasks[dateStr] = [];
+                                monthTasks[dateStr].push({ ...item, type });
+                            }
+                        }
+                    });
+                } catch (e) {
+                    console.error('Error parsing task data:', e);
+                }
+            }
+        });
+        
+        return monthTasks;
+    }
+
+    loadTasksForDate(date) {
+        const tasksContainer = document.getElementById('history-tasks');
+        if (!tasksContainer) return;
+
+        const dateStr = date.toISOString().split('T')[0];
+        const allTasks = [];
+        
+        // Get all task types for this date
+        const taskTypes = [
+            { key: 'daily-tasks', name: 'Tasks', icon: '📋' },
+            { key: 'daily-schedule', name: 'Schedule', icon: '📅' },
+            { key: 'daily-highlights', name: 'Highlights', icon: '🌟' }
+        ];
+
+        taskTypes.forEach(type => {
+            const data = localStorage.getItem(type.key);
+            if (data) {
+                try {
+                    const items = JSON.parse(data);
+                    const dateTasks = items.filter(item => {
+                        if (item.date) {
+                            const itemDate = new Date(item.date).toISOString().split('T')[0];
+                            return itemDate === dateStr;
+                        }
+                        return false;
+                    });
+                    
+                    dateTasks.forEach(task => {
+                        allTasks.push({ ...task, category: type.name, icon: type.icon });
+                    });
+                } catch (e) {
+                    console.error('Error parsing task data:', e);
+                }
+            }
+        });
+
+        if (allTasks.length === 0) {
+            tasksContainer.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 20px;">No tasks found for this date.</p>';
+            return;
+        }
+
+        // Sort tasks by time
+        allTasks.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        let tasksHTML = '';
+        allTasks.forEach(task => {
+            const taskTime = new Date(task.date).toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            
+            const statusBadge = task.completed ? 
+                '<span style="background: #10B981; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px;">Completed</span>' :
+                '<span style="background: #F59E0B; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px;">Pending</span>';
+
+            tasksHTML += `
+                <div style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 8px; background: var(--background);">
+                    <div style="font-size: 1.2rem;">${task.icon}</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 500; color: var(--text-primary);">${task.text || task.description || task.task}</div>
+                        <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">
+                            ${task.category} • ${taskTime}
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        ${statusBadge}
+                    </div>
+                </div>
+            `;
+        });
+
+        tasksContainer.innerHTML = tasksHTML;
+    }
+
+    calculateHistoryStatistics() {
+        const statsContainer = document.getElementById('history-statistics');
+        if (!statsContainer) return;
+
+        // Get all tasks
+        const allTasks = [];
+        const taskTypes = ['daily-tasks', 'daily-schedule', 'daily-highlights'];
+        
+        taskTypes.forEach(type => {
+            const data = localStorage.getItem(type);
+            if (data) {
+                try {
+                    const items = JSON.parse(data);
+                    allTasks.push(...items);
+                } catch (e) {
+                    console.error('Error parsing task data:', e);
+                }
+            }
+        });
+
+        // Calculate statistics
+        const totalTasks = allTasks.length;
+        const completedTasks = allTasks.filter(task => task.completed).length;
+        const pendingTasks = totalTasks - completedTasks;
+        const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
+        // Get tasks for current week
+        const weekStart = new Date();
+        weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+        weekStart.setHours(0, 0, 0, 0);
+        
+        const thisWeekTasks = allTasks.filter(task => {
+            return new Date(task.date) >= weekStart;
+        });
+
+        // Get tasks for current month
+        const monthStart = new Date(this.currentHistoryDate.getFullYear(), this.currentHistoryDate.getMonth(), 1);
+        const thisMonthTasks = allTasks.filter(task => {
+            return new Date(task.date) >= monthStart;
+        });
+
+        const statsHTML = `
+            <div style="background: var(--background); padding: 16px; border-radius: var(--radius); text-align: center;">
+                <div style="font-size: 2rem; font-weight: 700; color: var(--primary-color);">${totalTasks}</div>
+                <div style="font-size: 0.875rem; color: var(--text-secondary);">Total Tasks</div>
+            </div>
+            <div style="background: var(--background); padding: 16px; border-radius: var(--radius); text-align: center;">
+                <div style="font-size: 2rem; font-weight: 700; color: #10B981;">${completedTasks}</div>
+                <div style="font-size: 0.875rem; color: var(--text-secondary);">Completed</div>
+            </div>
+            <div style="background: var(--background); padding: 16px; border-radius: var(--radius); text-align: center;">
+                <div style="font-size: 2rem; font-weight: 700; color: #F59E0B;">${pendingTasks}</div>
+                <div style="font-size: 0.875rem; color: var(--text-secondary);">Pending</div>
+            </div>
+            <div style="background: var(--background); padding: 16px; border-radius: var(--radius); text-align: center;">
+                <div style="font-size: 2rem; font-weight: 700; color: #8B5CF6;">${completionRate}%</div>
+                <div style="font-size: 0.875rem; color: var(--text-secondary);">Completion Rate</div>
+            </div>
+            <div style="background: var(--background); padding: 16px; border-radius: var(--radius); text-align: center;">
+                <div style="font-size: 2rem; font-weight: 700; color: #3B82F6;">${thisWeekTasks.length}</div>
+                <div style="font-size: 0.875rem; color: var(--text-secondary);">This Week</div>
+            </div>
+            <div style="background: var(--background); padding: 16px; border-radius: var(--radius); text-align: center;">
+                <div style="font-size: 2rem; font-weight: 700; color: #EC4899;">${thisMonthTasks.length}</div>
+                <div style="font-size: 0.875rem; color: var(--text-secondary);">This Month</div>
+            </div>
+        `;
+
+        statsContainer.innerHTML = statsHTML;
     }
 
     showWeeklyPlanningView() {
@@ -2142,21 +2474,15 @@ window.saveHighlight = function(type) {
     const text = input.value.trim();
     
     if (text) {
-        // Get existing highlights
         const highlights = JSON.parse(localStorage.getItem('daily-highlights') || '[]');
-        
-        // Add new highlight
         highlights.push({
             type: type,
             text: text,
             date: new Date().toISOString(),
             completed: false
         });
-        
-        // Save to localStorage
         localStorage.setItem('daily-highlights', JSON.stringify(highlights));
         
-        // Create new highlight element
         const highlightElement = document.createElement('div');
         highlightElement.className = 'highlight-item';
         highlightElement.style.cssText = `
@@ -2175,17 +2501,16 @@ window.saveHighlight = function(type) {
             <button onclick="this.parentElement.remove()" style="background: var(--accent-color); color: white; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 12px;">×</button>
         `;
         
-        // Add to the list
         const list = document.getElementById(listId);
         list.appendChild(highlightElement);
         
-        // Clear the input
         input.value = '';
-        
-        // Show success feedback
         input.style.borderColor = '#10B981';
         setTimeout(() => {
             input.style.borderColor = 'var(--border-color)';
         }, 1000);
     }
 };
+
+// Make app globally accessible for onclick handlers
+window.app = new ProductivityApp();
