@@ -138,6 +138,9 @@ class ProductivityApp {
             case 'daily-highlights':
                 this.showDailyHighlightsView();
                 break;
+            case 'streaks':
+                this.showStreaksView();
+                break;
             case 'task-history':
                 this.showTaskHistoryView();
                 break;
@@ -804,15 +807,226 @@ class ProductivityApp {
         }
     }
 
+    showStreaksView() {
+        const mainContent = document.querySelector('.main-content');
+        mainContent.innerHTML = `
+            <div class="content-header">
+                <h1>🔥 Streaks</h1>
+                <div class="date-navigation">
+                    <button class="nav-btn"><i class="fas fa-chevron-left"></i></button>
+                    <span class="current-date">Your Productivity Journey</span>
+                    <button class="nav-btn"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+            
+            <div class="streaks-container">
+                <!-- Current Streak -->
+                <div class="streak-card current-streak">
+                    <div class="streak-icon">🔥</div>
+                    <div class="streak-info">
+                        <h2>Current Streak</h2>
+                        <div class="streak-number">${this.getCurrentStreak()}</div>
+                        <div class="streak-label">days in a row</div>
+                    </div>
+                </div>
+                
+                <!-- Best Streak -->
+                <div class="streak-card best-streak">
+                    <div class="streak-icon">🏆</div>
+                    <div class="streak-info">
+                        <h2>Best Streak</h2>
+                        <div class="streak-number">${this.getBestStreak()}</div>
+                        <div class="streak-label">days</div>
+                    </div>
+                </div>
+                
+                <!-- Streak Stats -->
+                <div class="streak-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">${this.getTotalActiveDays()}</div>
+                        <div class="stat-label">Total Active Days</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">${this.getStreakPercentage()}%</div>
+                        <div class="stat-label">Consistency Rate</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">${this.getLongestBreak()}</div>
+                        <div class="stat-label">Longest Break (days)</div>
+                    </div>
+                </div>
+                
+                <!-- Motivation Section -->
+                <div class="motivation-section">
+                    <h3>Keep the Fire Burning! 🔥</h3>
+                    <div class="motivation-tips">
+                        <div class="tip-card">
+                            <i class="fas fa-bullseye"></i>
+                            <h4>Daily Goals</h4>
+                            <p>Complete at least 3 tasks daily to maintain your streak</p>
+                        </div>
+                        <div class="tip-card">
+                            <i class="fas fa-star"></i>
+                            <h4>Daily Highlights</h4>
+                            <p>Log your wins and insights to track progress</p>
+                        </div>
+                        <div class="tip-card">
+                            <i class="fas fa-moon"></i>
+                            <h4>Daily Shutdown</h4>
+                            <p>End your day with reflection and planning</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Re-attach event listeners
+        setTimeout(() => {
+            this.attachEventListeners();
+            this.initializeStreaksView();
+        }, 10);
+    }
+    
+    getCurrentStreak() {
+        const streaks = JSON.parse(localStorage.getItem('streaks') || '{}');
+        const today = new Date().toDateString();
+        
+        // Check if today has activity
+        if (this.hasActivityForDate(today)) {
+            return streaks.currentStreak || 0;
+        }
+        
+        // Check yesterday to see if streak is broken
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        if (this.hasActivityForDate(yesterday.toDateString())) {
+            return streaks.currentStreak || 0;
+        }
+        
+        return 0;
+    }
+    
+    getBestStreak() {
+        const streaks = JSON.parse(localStorage.getItem('streaks') || '{}');
+        return streaks.bestStreak || 0;
+    }
+    
+    getTotalActiveDays() {
+        const activities = JSON.parse(localStorage.getItem('daily-activities') || '{}');
+        return Object.keys(activities).length;
+    }
+    
+    getStreakPercentage() {
+        const totalDays = this.getTotalActiveDays();
+        const startDate = new Date(localStorage.getItem('streak-start-date') || new Date());
+        const daysSinceStart = Math.floor((new Date() - startDate) / (1000 * 60 * 60 * 24));
+        
+        if (daysSinceStart === 0) return 0;
+        return Math.round((totalDays / daysSinceStart) * 100);
+    }
+    
+    getLongestBreak() {
+        const activities = JSON.parse(localStorage.getItem('daily-activities') || '{}');
+        const dates = Object.keys(activities).sort();
+        
+        if (dates.length < 2) return 0;
+        
+        let longestBreak = 0;
+        let currentBreak = 0;
+        
+        for (let i = 1; i < dates.length; i++) {
+            const prevDate = new Date(dates[i - 1]);
+            const currDate = new Date(dates[i]);
+            const daysDiff = Math.floor((currDate - prevDate) / (1000 * 60 * 60 * 24));
+            
+            if (daysDiff > 1) {
+                currentBreak = daysDiff - 1;
+                longestBreak = Math.max(longestBreak, currentBreak);
+            }
+        }
+        
+        return longestBreak;
+    }
+    
+    hasActivityForDate(dateString) {
+        const activities = JSON.parse(localStorage.getItem('daily-activities') || '{}');
+        return activities[dateString] && activities[dateString].count > 0;
+    }
+    
+    initializeStreaksView() {
+        // Update streaks daily
+        this.updateDailyStreak();
+    }
+    
+    updateDailyStreak() {
+        const today = new Date().toDateString();
+        const activities = JSON.parse(localStorage.getItem('daily-activities') || '{}');
+        const streaks = JSON.parse(localStorage.getItem('streaks') || '{}');
+        
+        // Check if there's activity today
+        const todayActivity = this.getTodayActivity();
+        
+        if (todayActivity.count > 0) {
+            activities[today] = todayActivity;
+            
+            // Update streak logic
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayString = yesterday.toDateString();
+            
+            if (activities[yesterdayString] && activities[yesterdayString].count > 0) {
+                streaks.currentStreak = (streaks.currentStreak || 0) + 1;
+            } else {
+                streaks.currentStreak = 1;
+            }
+            
+            // Update best streak
+            streaks.bestStreak = Math.max(streaks.bestStreak || 0, streaks.currentStreak);
+            
+            // Save streak start date if not exists
+            if (!localStorage.getItem('streak-start-date')) {
+                localStorage.setItem('streak-start-date', new Date().toISOString());
+            }
+        }
+        
+        localStorage.setItem('daily-activities', JSON.stringify(activities));
+        localStorage.setItem('streaks', JSON.stringify(streaks));
+    }
+    
+    getTodayActivity() {
+        const today = new Date().toDateString();
+        let count = 0;
+        
+        // Check tasks
+        const tasks = JSON.parse(localStorage.getItem('daily-tasks') || '[]');
+        count += tasks.length;
+        
+        // Check highlights
+        const highlights = JSON.parse(localStorage.getItem('daily-highlights') || '[]');
+        count += highlights.length;
+        
+        // Check shutdown
+        const shutdown = localStorage.getItem('daily-shutdown');
+        if (shutdown) count += 1;
+        
+        return {
+            date: today,
+            count: count,
+            tasks: tasks.length,
+            highlights: highlights.length,
+            shutdown: shutdown ? 1 : 0
+        };
+    }
+    
     showTaskHistoryView() {
         const mainContent = document.querySelector('.main-content');
         mainContent.innerHTML = `
             <div class="content-header">
                 <h1>📅 Task History</h1>
                 <div class="date-navigation">
-                    <button class="nav-btn" onclick="app.changeHistoryDate(-1)"><i class="fas fa-chevron-left"></i></button>
+                    <button class="nav-btn nav-prev" data-direction="-1"><i class="fas fa-chevron-left"></i></button>
                     <span class="current-date" id="history-current-date">Loading...</span>
-                    <button class="nav-btn" onclick="app.changeHistoryDate(1)"><i class="fas fa-chevron-right"></i></button>
+                    <button class="nav-btn nav-next" data-direction="1"><i class="fas fa-chevron-right"></i></button>
                 </div>
             </div>
             
@@ -826,39 +1040,77 @@ class ProductivityApp {
                 </div>
                 
                 <!-- Task Timeline -->
-                <div class="history-timeline" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px;">
-                    <h3>📋 Tasks for <span id="selected-date">Today</span></h3>
-                    <div id="history-tasks" style="margin-top: 16px;">
-                        <!-- Tasks will be loaded here -->
+                <div class="task-timeline" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-bottom: 24px;">
+                    <h3>📋 Task Timeline</h3>
+                    <div id="task-timeline" style="margin-top: 16px;">
+                        <!-- Task timeline will be generated here -->
                     </div>
                 </div>
                 
                 <!-- Statistics -->
-                <div class="history-stats" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-top: 24px;">
+                <div class="history-stats" style="background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px;">
                     <h3>📊 Statistics</h3>
-                    <div id="history-statistics" style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-                        <!-- Statistics will be calculated here -->
+                    <div id="history-stats" style="margin-top: 16px;">
+                        <!-- Statistics will be generated here -->
                     </div>
                 </div>
             </div>
         `;
         
         // Initialize history view
-        this.initializeHistoryView();
+        setTimeout(() => {
+            this.attachEventListeners();
+            this.initializeHistoryView();
+            this.setupHistoryEventListeners();
+        }, 10);
+    }
+    
+    initializeHistoryView() {
+        if (!this.currentHistoryDate) {
+            this.currentHistoryDate = new Date();
+        }
+        this.renderHistoryView();
     }
 
-    initializeHistoryView() {
-        this.currentHistoryDate = new Date();
-        this.renderHistoryView();
+    setupHistoryEventListeners() {
+        // Add event delegation for navigation buttons and calendar clicks
+        const historyContainer = document.querySelector('.history-container');
+        if (historyContainer) {
+            historyContainer.addEventListener('click', (e) => {
+                // Handle navigation buttons
+                if (e.target.closest('.nav-prev')) {
+                    this.changeHistoryDate(-1);
+                } else if (e.target.closest('.nav-next')) {
+                    this.changeHistoryDate(1);
+                }
+                
+                // Handle calendar navigation buttons
+                if (e.target.closest('.calendar-nav-btn')) {
+                    const direction = parseInt(e.target.closest('.calendar-nav-btn').dataset.direction);
+                    this.changeCalendarMonth(direction);
+                }
+                
+                // Handle calendar date clicks
+                const dateElement = e.target.closest('.calendar-date');
+                if (dateElement) {
+                    const year = parseInt(dateElement.dataset.year);
+                    const month = parseInt(dateElement.dataset.month);
+                    const day = parseInt(dateElement.dataset.day);
+                    this.selectHistoryDate(year, month, day);
+                }
+            });
+        }
+    }
+
+    changeCalendarMonth(direction) {
+        this.currentHistoryDate.setMonth(this.currentHistoryDate.getMonth() + direction);
+        this.renderMiniCalendar();
     }
 
     changeHistoryDate(direction) {
         this.currentHistoryDate.setDate(this.currentHistoryDate.getDate() + direction);
-        this.renderHistoryView();
-    }
-
-    renderHistoryView() {
-        // Update current date display
+        
+        // Update date display
         const dateDisplay = document.getElementById('history-current-date');
         if (dateDisplay) {
             dateDisplay.textContent = this.currentHistoryDate.toLocaleDateString('en-US', { 
@@ -868,18 +1120,17 @@ class ProductivityApp {
                 day: 'numeric' 
             });
         }
+        
+        // Update tasks and stats
+        this.loadTasksForDate(this.currentHistoryDate);
+        this.calculateHistoryStatistics();
+        
+        // Re-render calendar to show the new month
+        this.renderMiniCalendar();
+    }
 
-        // Update selected date in timeline
-        const selectedDateSpan = document.getElementById('selected-date');
-        if (selectedDateSpan) {
-            selectedDateSpan.textContent = this.currentHistoryDate.toLocaleDateString('en-US', { 
-                month: 'short', 
-                day: 'numeric', 
-                year: 'numeric' 
-            });
-        }
-
-        // Render mini calendar
+    renderHistoryView() {
+        // Render mini calendar first
         this.renderMiniCalendar();
         
         // Load tasks for selected date
@@ -887,6 +1138,17 @@ class ProductivityApp {
         
         // Calculate statistics
         this.calculateHistoryStatistics();
+        
+        // Update current date display last
+        const dateDisplay = document.getElementById('history-current-date');
+        if (dateDisplay) {
+            dateDisplay.textContent = this.currentHistoryDate.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        }
     }
 
     renderMiniCalendar() {
@@ -904,7 +1166,22 @@ class ProductivityApp {
         // Get task data for this month
         const monthTasks = this.getTasksForMonth(year, month);
         
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                          'July', 'August', 'September', 'October', 'November', 'December'];
+        
+        console.log('Month value:', month, 'Type:', typeof month);
+        console.log('Month name:', monthNames[month]);
+        
         let calendarHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <button class="calendar-nav-btn" data-direction="-1" style="background: none; border: none; cursor: pointer; padding: 8px; border-radius: 4px;">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <h4 style="margin: 0; color: var(--text-primary);">${monthNames[month] || 'Invalid Month'} ${year}</h4>
+                <button class="calendar-nav-btn" data-direction="1" style="background: none; border: none; cursor: pointer; padding: 8px; border-radius: 4px;">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
             <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; margin-bottom: 8px;">
                 <div style="font-weight: 600; color: var(--text-secondary); font-size: 12px;">Sun</div>
                 <div style="font-weight: 600; color: var(--text-secondary); font-size: 12px;">Mon</div>
@@ -932,19 +1209,25 @@ class ProductivityApp {
             const isSelected = currentDate.toDateString() === this.currentHistoryDate.toDateString();
             
             let bgColor = 'var(--background)';
-            if (isSelected) bgColor = 'var(--primary-color)';
+            if (isSelected) {
+                bgColor = '#6366F1'; // Hardcoded primary color
+            }
             else if (isToday) bgColor = '#FEF3C7';
             else if (hasTasks) bgColor = '#D1FAE5';
             
             let textColor = 'var(--text-primary)';
-            if (isSelected) textColor = 'white';
+            if (isSelected) {
+                textColor = 'white';
+            }
+            
+            const selectedClass = isSelected ? ' selected' : '';
             
             calendarHTML += `
-                <div onclick="app.selectHistoryDate(${year}, ${month}, ${day})" 
+                <div class="calendar-date${selectedClass}" data-year="${year}" data-month="${month}" data-day="${day}" 
                      style="padding: 8px; border-radius: 6px; cursor: pointer; background: ${bgColor}; color: ${textColor}; 
                             font-weight: ${isToday || isSelected ? '600' : '400'}; font-size: 14px; position: relative;">
                     ${day}
-                    ${hasTasks ? `<div style="position: absolute; bottom: 2px; right: 2px; width: 6px; height: 6px; background: ${isSelected ? 'white' : '#10B981'}; border-radius: 50%;"></div>` : ''}
+                    ${hasTasks ? `<div class="task-indicator" style="position: absolute; bottom: 2px; right: 2px; width: 6px; height: 6px; background: ${isSelected ? 'white' : '#10B981'}; border-radius: 50%;"></div>` : ''}
                 </div>
             `;
         }
@@ -955,32 +1238,79 @@ class ProductivityApp {
 
     selectHistoryDate(year, month, day) {
         this.currentHistoryDate = new Date(year, month, day);
-        this.renderHistoryView();
+        
+        // Update only the date display first
+        const dateDisplay = document.getElementById('history-current-date');
+        if (dateDisplay) {
+            dateDisplay.textContent = this.currentHistoryDate.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        }
+        
+        // Update tasks and stats
+        this.loadTasksForDate(this.currentHistoryDate);
+        this.calculateHistoryStatistics();
+        
+        // Re-render calendar to show the selected date's month
+        this.renderMiniCalendar();
     }
 
     getTasksForMonth(year, month) {
         const monthTasks = {};
         
         // Get all task types
-        const taskTypes = ['daily-tasks', 'daily-schedule', 'daily-highlights'];
+        const taskTypes = ['productivityTasks', 'daily-schedule', 'daily-highlights'];
         
         taskTypes.forEach(type => {
             const data = localStorage.getItem(type);
             if (data) {
                 try {
-                    const items = JSON.parse(data);
-                    items.forEach(item => {
-                        if (item.date) {
-                            const itemDate = new Date(item.date);
-                            if (itemDate.getFullYear() === year && itemDate.getMonth() === month) {
-                                const dateStr = itemDate.toISOString().split('T')[0];
+                    if (type === 'productivityTasks') {
+                        // Handle the tasks object structure (stored by day names)
+                        const tasksByDay = JSON.parse(data);
+                        const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+                        
+                        // Get all days in the specified month
+                        const firstDay = new Date(year, month, 1);
+                        const lastDay = new Date(year, month + 1, 0);
+                        
+                        for (let day = 1; day <= lastDay.getDate(); day++) {
+                            const currentDate = new Date(year, month, day);
+                            const dayName = dayNames[currentDate.getDay()];
+                            const dateStr = currentDate.toISOString().split('T')[0];
+                            
+                            // Check if there are tasks for this day name
+                            if (tasksByDay[dayName] && tasksByDay[dayName].length > 0) {
                                 if (!monthTasks[dateStr]) monthTasks[dateStr] = [];
-                                monthTasks[dateStr].push({ ...item, type });
+                                
+                                tasksByDay[dayName].forEach(task => {
+                                    monthTasks[dateStr].push({ 
+                                        ...task, 
+                                        type: 'Tasks',
+                                        date: dateStr // Add date property for consistency
+                                    });
+                                });
                             }
                         }
-                    });
+                    } else {
+                        // Handle array-based data
+                        const items = JSON.parse(data);
+                        items.forEach(item => {
+                            if (item.date) {
+                                const itemDate = new Date(item.date);
+                                if (itemDate.getFullYear() === year && itemDate.getMonth() === month) {
+                                    const dateStr = itemDate.toISOString().split('T')[0];
+                                    if (!monthTasks[dateStr]) monthTasks[dateStr] = [];
+                                    monthTasks[dateStr].push({ ...item, type: type.replace('daily-', '').charAt(0).toUpperCase() + type.replace('daily-', '').slice(1) });
+                                }
+                            }
+                        });
+                    }
                 } catch (e) {
-                    console.error('Error parsing task data:', e);
+                    console.error('Error processing task data for', type, e);
                 }
             }
         });
@@ -989,7 +1319,7 @@ class ProductivityApp {
     }
 
     loadTasksForDate(date) {
-        const tasksContainer = document.getElementById('history-tasks');
+        const tasksContainer = document.getElementById('task-timeline');
         if (!tasksContainer) return;
 
         const dateStr = date.toISOString().split('T')[0];
@@ -997,7 +1327,7 @@ class ProductivityApp {
         
         // Get all task types for this date
         const taskTypes = [
-            { key: 'daily-tasks', name: 'Tasks', icon: '📋' },
+            { key: 'productivityTasks', name: 'Tasks', icon: '📋' },
             { key: 'daily-schedule', name: 'Schedule', icon: '📅' },
             { key: 'daily-highlights', name: 'Highlights', icon: '🌟' }
         ];
@@ -1006,18 +1336,37 @@ class ProductivityApp {
             const data = localStorage.getItem(type.key);
             if (data) {
                 try {
-                    const items = JSON.parse(data);
-                    const dateTasks = items.filter(item => {
-                        if (item.date) {
-                            const itemDate = new Date(item.date).toISOString().split('T')[0];
-                            return itemDate === dateStr;
+                    if (type.key === 'productivityTasks') {
+                        // Handle the tasks object structure (stored by day names)
+                        const tasksByDay = JSON.parse(data);
+                        const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+                        const dayName = dayNames[date.getDay()];
+                        
+                        if (tasksByDay[dayName] && tasksByDay[dayName].length > 0) {
+                            tasksByDay[dayName].forEach(task => {
+                                allTasks.push({ 
+                                    ...task, 
+                                    category: type.name, 
+                                    icon: type.icon,
+                                    date: dateStr // Add date for consistency
+                                });
+                            });
                         }
-                        return false;
-                    });
-                    
-                    dateTasks.forEach(task => {
-                        allTasks.push({ ...task, category: type.name, icon: type.icon });
-                    });
+                    } else {
+                        // Handle array-based data
+                        const items = JSON.parse(data);
+                        const dateTasks = items.filter(item => {
+                            if (item.date) {
+                                const itemDate = new Date(item.date).toISOString().split('T')[0];
+                                return itemDate === dateStr;
+                            }
+                            return false;
+                        });
+                        
+                        dateTasks.forEach(task => {
+                            allTasks.push({ ...task, category: type.name, icon: type.icon });
+                        });
+                    }
                 } catch (e) {
                     console.error('Error parsing task data:', e);
                 }
@@ -1029,31 +1378,37 @@ class ProductivityApp {
             return;
         }
 
-        // Sort tasks by time
-        allTasks.sort((a, b) => new Date(a.date) - new Date(b.date));
+        // Sort tasks by time if available
+        allTasks.sort((a, b) => {
+            if (a.time && b.time) {
+                return a.time.localeCompare(b.time);
+            }
+            return 0;
+        });
 
         let tasksHTML = '';
-        allTasks.forEach(task => {
-            const taskTime = new Date(task.date).toLocaleTimeString('en-US', { 
-                hour: '2-digit', 
-                minute: '2-digit' 
-            });
+        allTasks.forEach((task, index) => {
+            const taskTime = task.time || '';
+            const taskDescription = task.description || task.text || task.task || 'No description';
             
             const statusBadge = task.completed ? 
                 '<span style="background: #10B981; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px;">Completed</span>' :
-                '<span style="background: #F59E0B; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px;">Pending</span>';
+                '';
 
             tasksHTML += `
                 <div style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 8px; background: var(--background);">
                     <div style="font-size: 1.2rem;">${task.icon}</div>
                     <div style="flex: 1;">
-                        <div style="font-weight: 500; color: var(--text-primary);">${task.text || task.description || task.task}</div>
+                        <div style="font-weight: 500; color: var(--text-primary);">${taskDescription}</div>
                         <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">
-                            ${task.category} • ${taskTime}
+                            ${task.category} ${taskTime ? '• ' + taskTime : ''}
                         </div>
                     </div>
                     <div style="display: flex; align-items: center; gap: 8px;">
                         ${statusBadge}
+                        <button onclick="app.removeTaskFromHistory('${task.category}', ${index})" style="background: #EF4444; color: white; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 12px;">
+                            <i class="fas fa-trash"></i>
+                        </button>
                     </div>
                 </div>
             `;
@@ -1062,20 +1417,99 @@ class ProductivityApp {
         tasksContainer.innerHTML = tasksHTML;
     }
 
+    removeTaskFromHistory(category, taskIndex) {
+        if (!confirm('Are you sure you want to remove this task?')) {
+            return;
+        }
+
+        let storageKey;
+        if (category === 'Tasks') {
+            storageKey = 'productivityTasks';
+        } else if (category === 'Schedule') {
+            storageKey = 'daily-schedule';
+        } else if (category === 'Highlights') {
+            storageKey = 'daily-highlights';
+        }
+
+        if (storageKey) {
+            try {
+                const data = localStorage.getItem(storageKey);
+                if (data) {
+                    if (storageKey === 'productivityTasks') {
+                        // Handle day-based tasks
+                        const tasksByDay = JSON.parse(data);
+                        const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+                        const dayName = dayNames[this.currentHistoryDate.getDay()];
+                        
+                        if (tasksByDay[dayName] && tasksByDay[dayName].length > taskIndex) {
+                            tasksByDay[dayName].splice(taskIndex, 1);
+                            localStorage.setItem(storageKey, JSON.stringify(tasksByDay));
+                        }
+                    } else {
+                        // Handle array-based data
+                        const items = JSON.parse(data);
+                        const dateStr = this.currentHistoryDate.toISOString().split('T')[0];
+                        const dateItems = items.filter(item => {
+                            if (item.date) {
+                                const itemDate = new Date(item.date).toISOString().split('T')[0];
+                                return itemDate === dateStr;
+                            }
+                            return false;
+                        });
+                        
+                        if (dateItems.length > taskIndex) {
+                            // Find the actual index in the full array
+                            const itemToRemove = dateItems[taskIndex];
+                            const fullIndex = items.findIndex(item => item === itemToRemove);
+                            if (fullIndex !== -1) {
+                                items.splice(fullIndex, 1);
+                                localStorage.setItem(storageKey, JSON.stringify(items));
+                            }
+                        }
+                    }
+                    
+                    // Refresh the display
+                    this.loadTasksForDate(this.currentHistoryDate);
+                    this.calculateHistoryStatistics();
+                    this.renderMiniCalendar();
+                }
+            } catch (e) {
+                console.error('Error removing task:', e);
+                alert('Error removing task. Please try again.');
+            }
+        }
+    }
+
     calculateHistoryStatistics() {
-        const statsContainer = document.getElementById('history-statistics');
+        const statsContainer = document.getElementById('history-stats');
         if (!statsContainer) return;
 
         // Get all tasks
         const allTasks = [];
-        const taskTypes = ['daily-tasks', 'daily-schedule', 'daily-highlights'];
+        const taskTypes = ['productivityTasks', 'daily-schedule', 'daily-highlights'];
         
         taskTypes.forEach(type => {
             const data = localStorage.getItem(type);
             if (data) {
                 try {
-                    const items = JSON.parse(data);
-                    allTasks.push(...items);
+                    if (type === 'productivityTasks') {
+                        // Handle the tasks object structure (stored by day names)
+                        const tasksByDay = JSON.parse(data);
+                        Object.keys(tasksByDay).forEach(dayName => {
+                            const tasks = tasksByDay[dayName];
+                            if (Array.isArray(tasks)) {
+                                tasks.forEach(task => {
+                                    allTasks.push({ ...task, type: 'Tasks' });
+                                });
+                            }
+                        });
+                    } else {
+                        // Handle array-based data
+                        const items = JSON.parse(data);
+                        if (Array.isArray(items)) {
+                            allTasks.push(...items);
+                        }
+                    }
                 } catch (e) {
                     console.error('Error parsing task data:', e);
                 }
@@ -1085,48 +1519,54 @@ class ProductivityApp {
         // Calculate statistics
         const totalTasks = allTasks.length;
         const completedTasks = allTasks.filter(task => task.completed).length;
-        const pendingTasks = totalTasks - completedTasks;
         const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
-        // Get tasks for current week
-        const weekStart = new Date();
-        weekStart.setDate(weekStart.getDate() - weekStart.getDay());
-        weekStart.setHours(0, 0, 0, 0);
+        // Get tasks for current week (using day-based tasks)
+        const today = new Date();
+        const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+        const currentDayIndex = today.getDay();
         
-        const thisWeekTasks = allTasks.filter(task => {
-            return new Date(task.date) >= weekStart;
-        });
+        let thisWeekTasks = [];
+        for (let i = 0; i <= currentDayIndex; i++) {
+            const dayName = dayNames[i];
+            const productivityTasks = JSON.parse(localStorage.getItem('productivityTasks') || '{}');
+            if (productivityTasks[dayName]) {
+                thisWeekTasks.push(...productivityTasks[dayName]);
+            }
+        }
 
         // Get tasks for current month
-        const monthStart = new Date(this.currentHistoryDate.getFullYear(), this.currentHistoryDate.getMonth(), 1);
+        const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
         const thisMonthTasks = allTasks.filter(task => {
-            return new Date(task.date) >= monthStart;
+            if (task.date) {
+                return new Date(task.date) >= monthStart;
+            }
+            // For day-based tasks without dates, count them all for current month
+            return true;
         });
 
         const statsHTML = `
-            <div style="background: var(--background); padding: 16px; border-radius: var(--radius); text-align: center;">
-                <div style="font-size: 2rem; font-weight: 700; color: var(--primary-color);">${totalTasks}</div>
-                <div style="font-size: 0.875rem; color: var(--text-secondary);">Total Tasks</div>
-            </div>
-            <div style="background: var(--background); padding: 16px; border-radius: var(--radius); text-align: center;">
-                <div style="font-size: 2rem; font-weight: 700; color: #10B981;">${completedTasks}</div>
-                <div style="font-size: 0.875rem; color: var(--text-secondary);">Completed</div>
-            </div>
-            <div style="background: var(--background); padding: 16px; border-radius: var(--radius); text-align: center;">
-                <div style="font-size: 2rem; font-weight: 700; color: #F59E0B;">${pendingTasks}</div>
-                <div style="font-size: 0.875rem; color: var(--text-secondary);">Pending</div>
-            </div>
-            <div style="background: var(--background); padding: 16px; border-radius: var(--radius); text-align: center;">
-                <div style="font-size: 2rem; font-weight: 700; color: #8B5CF6;">${completionRate}%</div>
-                <div style="font-size: 0.875rem; color: var(--text-secondary);">Completion Rate</div>
-            </div>
-            <div style="background: var(--background); padding: 16px; border-radius: var(--radius); text-align: center;">
-                <div style="font-size: 2rem; font-weight: 700; color: #3B82F6;">${thisWeekTasks.length}</div>
-                <div style="font-size: 0.875rem; color: var(--text-secondary);">This Week</div>
-            </div>
-            <div style="background: var(--background); padding: 16px; border-radius: var(--radius); text-align: center;">
-                <div style="font-size: 2rem; font-weight: 700; color: #EC4899;">${thisMonthTasks.length}</div>
-                <div style="font-size: 0.875rem; color: var(--text-secondary);">This Month</div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px;">
+                <div style="background: var(--background); padding: 16px; border-radius: var(--radius); text-align: center;">
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--primary-color);">${totalTasks}</div>
+                    <div style="font-size: 0.875rem; color: var(--text-secondary);">Total Tasks</div>
+                </div>
+                <div style="background: var(--background); padding: 16px; border-radius: var(--radius); text-align: center;">
+                    <div style="font-size: 2rem; font-weight: 700; color: #10B981;">${completedTasks}</div>
+                    <div style="font-size: 0.875rem; color: var(--text-secondary);">Completed</div>
+                </div>
+                <div style="background: var(--background); padding: 16px; border-radius: var(--radius); text-align: center;">
+                    <div style="font-size: 2rem; font-weight: 700; color: #8B5CF6;">${completionRate}%</div>
+                    <div style="font-size: 0.875rem; color: var(--text-secondary);">Completion Rate</div>
+                </div>
+                <div style="background: var(--background); padding: 16px; border-radius: var(--radius); text-align: center;">
+                    <div style="font-size: 2rem; font-weight: 700; color: #3B82F6;">${thisWeekTasks.length}</div>
+                    <div style="font-size: 0.875rem; color: var(--text-secondary);">This Week</div>
+                </div>
+                <div style="background: var(--background); padding: 16px; border-radius: var(--radius); text-align: center;">
+                    <div style="font-size: 2rem; font-weight: 700; color: #EC4899;">${thisMonthTasks.length}</div>
+                    <div style="font-size: 0.875rem; color: var(--text-secondary);">This Month</div>
+                </div>
             </div>
         `;
 
@@ -2471,6 +2911,14 @@ window.saveHighlight = function(type) {
     }
     
     const input = document.getElementById(inputId);
+    const list = document.getElementById(listId);
+    
+    if (!input || !list) {
+        console.error('Missing elements for saveHighlight. Input:', !!input, 'List:', !!list);
+        alert('Please make sure you are on the Daily Highlights page and the input fields are visible.');
+        return;
+    }
+    
     const text = input.value.trim();
     
     if (text) {
@@ -2501,7 +2949,6 @@ window.saveHighlight = function(type) {
             <button onclick="this.parentElement.remove()" style="background: var(--accent-color); color: white; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 12px;">×</button>
         `;
         
-        const list = document.getElementById(listId);
         list.appendChild(highlightElement);
         
         input.value = '';
@@ -2509,6 +2956,11 @@ window.saveHighlight = function(type) {
         setTimeout(() => {
             input.style.borderColor = 'var(--border-color)';
         }, 1000);
+        
+        console.log('Highlight saved successfully');
+    } else {
+        console.log('No text to save');
+        alert('Please enter some text before adding a highlight.');
     }
 };
 
